@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px; /* adjust as needed */
+      }
+      #text-container {
+        text-align: center;
+      }
+      .submit {
+        margin-top: 20px; /* add space above the link */
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 14px 28px;
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s;
+      }
+      .submit:hover {
+        background-color: #0046d5;
+      }
+      .submit:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      #form-container {
+        position: absolute;
+        bottom: 20px; /* Adjust as needed */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        text-align: center;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      label {
+        font-size: 24px; /* Makes the label bigger */
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <img src="{{ url_for('gameplay.video_feed') }}" />
+    <div id="text-container">
+      On your right there are three wrist bands, select a colour for yourself
+      and and the robot.<br />
+      Hold the band infront of the robot so that the robot can acknowledge
+      it.<br />
+      Then put the band on the robot<br />
+    </div>
+    <!-- Added form for robot name -->
+    <h3>Name your robot</label><br />
+    <div id="form-container">
+      <form action="/submit_customisation" method="post">
+        <input
+          type="text"
+          id="robot-name"
+          name="robot-name"
+          placeholder="Enter robot name"
+          required
+        />
+        <input type="submit" value="Next" class="submit" />
+      </form>
+    </div>
+    <script>
+      $(document).ready(function () {
+        $("form").on("submit", function (event) {
+          var robotName = $('#robot-name').val().trim();
+          if (robotName === '') {
+            alert('Please enter a name for the robot.');
+            event.preventDefault(); // Prevent the form from being submitted
+          } else {
+            var btn = $(this).find('.submit');
+            btn.prop("disabled", true); // Disable the button
+          }
+        });
+      });
+
+      $(document).keydown(function (event) {
+        // Check if the Alt key is pressed
+        if (event.altKey) {
+          event.preventDefault();
+          var keycode = event.key;
+          if (keycode == "r") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "r" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          } else if (keycode == "g") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "g" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          } else if (keycode == "b") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "b" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          } else if (keycode == "q") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "q" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          } else if (keycode == "a") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "a" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .banner {
+            width: 100%;
+            height: auto;
+        }
+    
+        .container {
+            text-align: left;
+            margin-top: 50px;
+            padding-left: 30%; /* Add left padding */
+            padding-right: 30%; /* Add right padding */
+        }
+
+        #form-container {
+            text-align: left;
+        }
+
+        label {
+            font-size: 24px; /* Makes the label bigger */
+        }
+
+        input[type=submit] {
+            margin-top: 20px; /* add space above the link */
+            display: inline-block;
+            background-color: #007BFF;
+            color: white;
+            padding: 14px 28px;
+            font-size: 24px;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        input[type=submit]:hover {
+            background-color: #0046d5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="form-container">
+        <img class="banner" src="{{ banner_image_url }}" alt="Banner Image">
+        <form action="/submit_demograph" method="post">
+            <label for="age">What age bracket do you belong to?</label><br>
+            <input type="radio" id="18-25" name="age" value="18-25">
+            <label for="18-25">18-25</label><br>
+            <input type="radio" id="26-35" name="age" value="26-35">
+            <label for="26-35">26-35</label><br>
+            <input type="radio" id="36-45" name="age" value="36-45">
+            <label for="36-45">36-45</label><br>
+            <input type="radio" id="46-55" name="age" value="46-55">
+            <label for="46-55">46-55</label><br>
+            <input type="radio" id="56+" name="age" value="56+">
+            <label for="56+">56+</label><br><br>
+
+            <label for="gender">Gender:</label><br>
+            <input type="radio" id="male" name="gender" value="male">
+            <label for="male">Male</label><br>
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">Female</label><br>
+            <input type="radio" id="other" name="gender" value="other">
+            <label for="other">Other</label><br><br>
+
+            <label for="ethnicity">Which ethnicity best describes you?</label><br>
+            <input type="radio" id="white_caucasian" name="ethnicity" value="white_caucasian">
+            <label for="white_caucasian">White / Caucasian</label><br>
+            <input type="radio" id="asian_pacific_islander" name="ethnicity" value="asian_pacific_islander">
+            <label for="asian_pacific_islander">Asian / Pacific Islander</label><br>
+            <input type="radio" id="Hispanic_Latino" name="ethnicity" value="Hispanic_Latino">
+            <label for="Hispanic_Latino">Hispanic / Latino</label><br>
+            <input type="radio" id="black_african_american" name="ethnicity" value="black_african_american">
+            <label for="black_african_american">Black or African American</label><br><br>
+
+            <label for="education">What is your heighest level of education?</label><br>
+            <input type="radio" id="high-school" name="education" value="high-school">
+            <label for="high-school">High School</label><br>
+            <input type="radio" id="bachelor" name="education" value="bachelor">
+            <label for="bachelor">Bachelor's Degree</label><br>
+            <input type="radio" id="master" name="education" value="master">
+            <label for="master">Master's Degree</label><br>
+            <input type="radio" id="phd" name="education" value="phd">
+            <label for="phd">PhD</label><br><br>
+
+            <label for="robot_familiarity">How familiar are you with Robots:</label><br>
+            <input type="radio" id="not-familiar" name="robot_familiarity" value="not-familiar">
+            <label for="not-familiar">Not Familiar</label><br>
+            <input type="radio" id="somewhat-familiar" name="robot_familiarity" value="somewhat-familiar">
+            <label for="somewhat-familiar">Somewhat Familiar</label><br>
+            <input type="radio" id="very-familiar" name="robot_familiarity" value="very-familiar">
+            <label for="very-familiar">Very Familiar</label><br><br>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    
+</body>
+</html>

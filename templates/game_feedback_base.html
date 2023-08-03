@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px; /* adjust as needed */
+        }
+        #text-container {
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        setTimeout(function(){
+            window.location.href = '/play';
+        }, 10);
+    </script>
+</head>
+<body>
+    <div id="text-container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

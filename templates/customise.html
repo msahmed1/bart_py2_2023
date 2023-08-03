@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* CSS styles */
+        #form-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            text-align: center;
+        }
+
+        input[type=text] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            /* Removes the up and down arrows */
+            -moz-appearance: textfield; /* Firefox */
+            appearance: textfield; /* Standard */
+        }
+
+        input[type=text]::-webkit-inner-spin-button,  /* Chrome, Safari, Edge, Opera */
+        input[type=text]::-webkit-outer-spin-button { /* Chrome, Safari, Edge, Opera */
+            -webkit-appearance: none; /* Removes the up and down arrows */
+        }
+
+        input[type=submit] {
+            margin-top: 20px; /* add space above the link */
+            display: inline-block;
+            background-color: #007BFF;
+            color: white;
+            padding: 14px 28px;
+            font-size: 24px;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        input[type=submit]:hover {
+            background-color: #0046d5;
+        }
+
+        label {
+            font-size: 24px; /* Makes the label bigger */
+        }
+    </style>
+</head>
+<body>
+    <div id="form-container">
+        <form action="/submit" method="post">
+            <label for="number">Name the robot</label>
+            <input type="text" id="text" name="robot_name" required>
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

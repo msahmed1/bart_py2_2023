@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Website</title>
+    <style>
+      .banner {
+        width: 100%;
+        height: auto;
+      }
+
+      .container {
+        text-align: left;
+        margin-top: 50px;
+        padding-left: 30%;
+        /* Add left padding */
+        padding-right: 30%;
+        /* Add right padding */
+      }
+
+      #consent-question {
+        display: flex;
+        flex-direction: column;
+        /* align-items: center; */
+      }
+
+      #next-button {
+        margin-top: 20px;
+        text-align: center;
+        /* Center the contents of this div */
+      }
+
+      /* CSS for highlighting the consent question */
+      .highlight {
+        border: 1px solid red;
+      }
+
+      a {
+        margin-top: 20px; /* add space above the link */
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 14px 28px;
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s;
+      }
+      a:hover {
+        background-color: #0046d5;
+      }
+      .disabled {
+        pointer-events: none;
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image">
+      <p>
+        Your aim in this task is to win points by pumping the balloon up. You
+        may pump the balloon up as many times as you wish but pressing 'Air'
+        button:
+      </p>
+      <ol>
+        <li>Every pump will give you more points</li>
+        <li>But it also increases the risk of the baloon bursting.</li>
+        <li>
+          The speed at with you pump does not affect the likelyhood of the
+          baloon bursting.
+        </li>
+      </ol>
+      <h3>If you burst the baloon you loose the points from that baloon</h3>
+      <p>
+        You can stop pumping the balloon up at any point and collect the points
+        you have earnt, by pressing the 'Collect Points' button
+      </p>
+      <p>There are 30 baloons in this block.</p>
+      <a id="next-button">Next</a>
+    </div>
+    <script>
+      $(document).ready(function () {
+        var isClicked = false; // Add this line
+
+        $("#next-button").on("click", function (event) {
+          if (!isClicked) {
+            // Add this line
+            isClicked = true; // Add this line
+            window.location.href = "/gameIntro_robot"; // Add this line
+            $(this).addClass("disabled");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

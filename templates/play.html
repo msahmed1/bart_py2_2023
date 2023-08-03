@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      /* CSS styles */
+      .page-container {
+        padding: 10vh 10vw;
+        /* Adjust as needed */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+      }
+
+      .flex-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
+      #progress-counter {
+        margin-right: 20px;
+        margin-left: 20px;
+        font-size: 20px;
+        /* Increase the text size */
+        width: 100px;
+        /* Set a fixed width */
+        height: 50px;
+      }
+
+      #inflate-text {
+        text-align: center;
+        font-size: 20px;
+        /* Increase the text size */
+      }
+
+      .balloon-container {
+        width: 200px;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #balloon {
+        width: 100px;
+        /* Adjust this to the size you want */
+        height: auto;
+        /* This keeps the aspect ratio of the image */
+        transition: width 0.3s ease;
+        /* Add a transition effect for smooth resizing */
+      }
+
+      .inflate {
+        width: 200px;
+        /* Adjust this to the inflated size */
+      }
+
+      #inflate-button {
+        margin-top: 350px;
+        /* add space above the link */
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 14px 28px;
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s;
+      }
+
+      #collect-button,
+      #help-button {
+        margin-top: 40px;
+        /* add space above the link */
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 14px 28px;
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s;
+      }
+
+      #inflate-button:hover,
+      #collect-button:hover,
+      #help-button:hover {
+        background-color: #0046d5;
+      }
+
+      #help-button:disabled {
+        /* Color when the button is disabled */
+        background-color: #cccccc;
+        color: #666666;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body>
+    <div class="page-container">
+      <div class="flex-row">
+        <div>
+          <div id="inflate-text">Score: {{ score }}</div>
+          <form action="/collect" method="post">
+            <input id="collect-button" type="submit" value="Collect" />
+          </form>
+        </div>
+        <div class="balloon-container">
+          <img
+            id="balloon"
+            src="static/{{ balloon_color }}Balloon.png"
+            alt="Balloon"
+          />
+        </div>
+        <div>
+          <div id="progress-counter">
+            Balloons completed: {{ balloons_completed }} / {{ balloon_limit }}
+          </div>
+          <form id="help-form" action="/help" method="post">
+            <input id="help-button" type="submit" value="help" {% if
+            game_round==1 or help_clicked %}disabled{% endif %}>
+          </form>
+        </div>
+      </div>
+      <form id="inflate-form" action="/inflate" method="post">
+        <input id="inflate-button" type="submit" value="Inflate" />
+      </form>
+    </div>
+    <script>
+      $(document).ready(function () {
+        $("#inflate-form").on("submit", function (event) {
+          event.preventDefault(); // Prevent the form submission
+
+          $.post("/inflate", function (data) {
+            if (data.status === "burst") {
+              // If the balloon has burst, redirect to the burst page
+              window.location.href = "/burst";
+            } else {
+              // Otherwise, update the score and inflate the balloon
+              $("#inflate-text").text("Score: " + data.score);
+              $("#progress-counter").text(
+                "Balloons completed: " +
+                  data.balloons_completed +
+                  " / " +
+                  data.balloon_limit
+              );
+              var balloon = $("#balloon");
+              balloon.width(balloon.width() + 20);
+
+              // If help_clicked in the response is true, disable the Help button
+              // Otherwise, enable it
+              if (data.game_round == 1) {
+                $("#help-button").prop("disabled", true);
+              } else {
+                $("#help-button").prop("disabled", data.help_clicked);
+              }
+            }
+          });
+        });
+      });
+
+      // When the help button is clicked, prevent the form submission and make an AJAX request
+      $("#help-form").on("submit", function (event) {
+        event.preventDefault(); // Prevent the form submission
+
+        // Disable the button immediately after it's clicked
+        $("#help-button").prop("disabled", true);
+
+        $.post("/help", function (data) {
+          /// Update help_clicked based on the server response
+          $("#help-button").prop("disabled", data.help_clicked);
+        });
+      });
+    </script>
+  </body>
+</html>
