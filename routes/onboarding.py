@@ -47,7 +47,7 @@ def submit_id():
     while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
         player_id = generate_id()  # Generate a new ID
     
-    player = Players(player_id, False)  # Pass the consent to the Players constructor
+    player = Players(player_id, False, False)  # Pass the consent to the Players constructor
     session['player_id'] = player_id
     db.session.add(player)
     
@@ -61,7 +61,7 @@ def submit_dev_id():
         player_id = generate_id()  # Generate a new ID
     
     # Set testing to True if dev button is clicked
-    player = Players(player_id, False, True)  # Pass the consent to the Players constructor
+    player = Players(player_id, True, False)  # Pass the consent to the Players constructor
     session['player_id'] = player_id
     db.session.add(player)
     
