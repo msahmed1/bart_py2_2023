@@ -26,12 +26,13 @@ PORT = 9559
 
 class RobotController:
     def __init__(self, robotIP):
-        self.tts = ALProxy("ALTextToSpeech", robotIP, PORT)
-        self.tts.setParameter("defaultVoiceSpeed", 80)
-        self.motionProxy = ALProxy("ALMotion", robotIP, PORT)
+        self.speech_service = ALProxy("ALTextToSpeech", robotIP, PORT)
+        self.speech_service.setParameter("defaultVoiceSpeed", 80)
+        self.speech_service.setVolume(0.8)
+        self.motion_service = ALProxy("ALMotion", robotIP, PORT)
         self.leds = ALProxy("ALLeds", robotIP, PORT)
-        self.postureProxy = ALProxy("ALRobotPosture", robotIP, PORT)
-        self.audioProxy = ALProxy("ALAudioPlayer", robotIP, PORT)
+        self.posture_service = ALProxy("ALRobotPosture", robotIP, PORT)
+        # self.audio_service = ALProxy("ALAudioPlayer", robotIP, PORT)
         self.life_service = ALProxy("ALAutonomousLife", robotIP, PORT)
         self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", False)
         self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
@@ -45,10 +46,10 @@ class RobotController:
         self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
 
         # Wake up robot
-        self.motionProxy.wakeUp()
+        self.motion_service.wakeUp()
 
         # Send robot to Stand Zero
-        self.postureProxy.goToPosture("Sit", 0.5)
+        self.posture_service.goToPosture("Sit", 0.5)
         
         time.sleep(1.0)
 
@@ -68,18 +69,18 @@ class RobotController:
 
     def face_participant(self):
         names  = ["HeadYaw", "HeadPitch"]
-        angles  = [-0.5, 0]
+        angles  = [0.5, 0]
         fractionMaxSpeed  = 0.2
-        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
     def face_screen(self):
         names  = ["HeadYaw", "HeadPitch"]
-        angles  = [0.8, 0]
+        angles  = [-0.5, 0]
         fractionMaxSpeed  = 0.2
-        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
     def nod_head(self):
-        self.motionProxy.angleInterpolation(
+        self.motion_service.angleInterpolation(
             ["HeadPitch"],
             [0.5, 0.0],
             [1  , 1.5],
@@ -91,28 +92,28 @@ class RobotController:
         names  = ["HeadYaw", "HeadPitch"]
         angles  = [-0.8, 0]
         fractionMaxSpeed  = 0.2
-        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
         time.sleep(0.3)
 
         names  = ["HeadYaw", "HeadPitch"]
         angles  = [0.5, 0]
         fractionMaxSpeed  = 0.2
-        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
         time.sleep(0.3)
 
         names  = ["HeadYaw", "HeadPitch"]
         angles  = [-0.8, 0]
         fractionMaxSpeed  = 0.2
-        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
         time.sleep(0.3)
 
         names  = ["HeadYaw", "HeadPitch"]
         angles  = [0.5, 0]
         fractionMaxSpeed  = 0.2
-        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
         time.sleep(0.3)
 
@@ -128,7 +129,7 @@ class RobotController:
         self.face_screen()
 
     def talk(self, text):
-        self.tts.say(text)
+        self.speech_service.say(text)
         # print(text)
 
     def inflate(self):
@@ -174,7 +175,7 @@ class RobotController:
         time.sleep(2)
 
         # Lift right hand
-        self.motionProxy.angleInterpolation(
+        self.motion_service.angleInterpolation(
             ["RShoulderPitch", "RShoulderRoll", "RElbowRoll", "RElbowYaw"],
             [-1.2, -0.1, -0.4, -0.1],
             [1, 1, 1, 1],
@@ -183,7 +184,7 @@ class RobotController:
         )
     
     def accept_band(self, colour):
-        self.postureProxy.goToPosture("Sit", 0.5)
+        self.posture_service.goToPosture("Sit", 0.5)
 
         self.talk('Thank you')
 
@@ -191,7 +192,7 @@ class RobotController:
 
         reponse = "I saw another {colour} wrist band, why don't you put one on as well, so we can be matching".format(colour=colour)
 
-        self.motionProxy.angleInterpolation(
+        self.motion_service.angleInterpolation(
             ["LShoulderPitch", "LShoulderRoll", "LElbowRoll", "LElbowYaw"],
             [-0.5, -0.1, 1, 0],
             [1, 1, 1, 1],
@@ -204,7 +205,7 @@ class RobotController:
         self.face_participant()
 
     def acknowledge_participant(self):
-        self.postureProxy.goToPosture("Sit", 0.5)
+        self.posture_service.goToPosture("Sit", 0.5)
 
         self.talk('Looking good')
 
@@ -212,13 +213,13 @@ class RobotController:
 
     def sleep(self):
         # Return to sit position
-        self.postureProxy.goToPosture("Sit", 0.5)
+        self.posture_service.goToPosture("Sit", 0.5)
 
         # Bow head
         names  = ["HeadYaw", "HeadPitch"]
         angles  = [0, 1]
         fractionMaxSpeed  = 0.2
-        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
         time.sleep(1.0)
 
@@ -226,7 +227,7 @@ class RobotController:
         self.leds.fadeRGB("AllLeds", 0, 0.0, 0, 0.0)
 
         # Go to rest position
-        self.motionProxy.rest()
+        self.motion_service.rest()
 
     def low_battery(self):
         self.talk('Warning 801, low battery')
@@ -236,13 +237,13 @@ class RobotController:
         time.sleep(1)
 
         # Return to sit position
-        self.postureProxy.goToPosture("Sit", 0.5)
+        self.posture_service.goToPosture("Sit", 0.5)
 
         # Bow head
         names  = ["HeadYaw", "HeadPitch"]
         angles  = [0, 1]
         fractionMaxSpeed  = 0.2
-        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
         time.sleep(1.0)
 
@@ -253,10 +254,10 @@ class RobotController:
         time.sleep(30)
 
         # Wake up robot
-        self.motionProxy.wakeUp()
+        self.motion_service.wakeUp()
 
         # Send robot to Stand Zero
-        self.postureProxy.goToPosture("Sit", 0.5)
+        self.posture_service.goToPosture("Sit", 0.5)
 
     def null_attempt(self):
         self.face_participant()
@@ -271,6 +272,16 @@ class RobotController:
         self.talk(message)
 
         self.face_screen()
+
+    def set_voice(self, voice):
+        if voice == 1:
+            self.speech_service.setParameter('pitchShift', 1)
+        elif voice == 2:
+            self.speech_service.setParameter('pitchShift', 1.25)
+        elif voice == 3:
+            self.speech_service.setParameter('pitchShift', 1.5)
+        else:
+            self.speech_service.setParameter('pitchShift', 1.13)
 
 # Initialize the robot controller with the IP address of the robot
 app.config['robot_controller'] = RobotController(robotIp) # replace with the robot's actual IP address
