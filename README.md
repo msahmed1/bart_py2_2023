@@ -1,4 +1,7 @@
-# Set up environment
+# Prerequisiete
+This code uses python2 and the robot used is a Nao. You will need to 'install the required packages' and configure the robot_controller, on the webapp.py script.
+
+# Start up virtual environment
 activate the environment by running source .venv/bin/activate
 
 # Install required packages
@@ -8,4 +11,12 @@ Anyone (or any build server) that receives a copy of the project needs only to r
 pip freeze > requirements.txt
 
 # Run app
-In the Integrated Terminal, run the app by entering python -m flask run, which runs the Flask development server.
+In the Terminal, go to the location where this application is located.
+
+Set flask enviroment vairable to
+$ export FLASK_APP=webapp.py
+This is so that flask knows which application to run.
+
+To run the app enter
+$ python -m flask run
+this will run the Flask app in the development server.
