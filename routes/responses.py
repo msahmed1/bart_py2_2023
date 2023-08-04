@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session, current_app
 from models import db, Players, GameRoundSurvey
 import threading
+import datetime
 
 responses = Blueprint('responses', __name__)
 
@@ -158,8 +159,10 @@ def survey():
     else:
         robot_controller = current_app.config['robot_controller']
         thread = threading.Thread(target=robot_controller.sleep)
-        thread.start() 
-        return render_template('close.html')
+        thread.start()
+        
+        withdrawl_date = datetime.date.today() + datetime.timedelta(days=7)
+        return render_template('close.html', banner_image_url=banner_image_url, participant_id=player_id, datetime = str(withdrawl_date.strftime("%b/%d/%Y")))
 
 
 # @responses.route('/final_survey', methods=['GET', 'POST'])

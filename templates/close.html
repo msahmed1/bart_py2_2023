@@ -3,16 +3,16 @@
 
 <head>
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            /* adjust as needed */
+            .banner {
+            width: 100%;
+            height: auto;
+        }
+
+        .container {
+            text-align: left;
+            margin-top: 50px;
+            padding-left: 30%; /* Add left padding */
+            padding-right: 30%; /* Add right padding */
         }
 
         #text-container {
@@ -46,8 +46,11 @@
 </head>
 
 <body>
-    <div id="text-container">
+    <div id="container">
+        <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
         Thank you for participating</br>
+        Your participant ID is: {{ participant_id }}, please write this down for your records.
+        If you would like to withdraw your data you can do so up untill {{ datetime }}, please contact the researcher at hi20047@bristol.ac.uk.
     </div>
     <a href="/">Next</a>
 </body>
