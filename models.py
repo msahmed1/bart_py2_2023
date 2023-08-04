@@ -6,6 +6,7 @@ db = SQLAlchemy()
 
 class Players(db.Model):
     player_id = db.Column(db.Integer, primary_key=True)
+    testing = db.Column(db.Boolean)
     consent = db.Column(db.Boolean)
     balloon_inflates = db.relationship(
         'BalloonInflate', backref='player', lazy=True)
@@ -19,74 +20,11 @@ class Players(db.Model):
     education = db.Column(db.String(50))
     robot_familiarity = db.Column(db.Integer)
     
-    # End of study questions
-    this_is_my_robot = db.Column(db.Integer)
-    i_feel_high_degree_of_personal_ownership_for_this_robot = db.Column(
-        db.Integer)
-    i_sense_that_i_own_this_robot = db.Column(db.Integer)
-    robot_incorporates_a_part_of_myself = db.Column(db.Integer)
 
-    i_feel_i_have_control_over_my_robot = db.Column(db.Integer)
-    when_i_consider_my_robot_i_feel_in_control = db.Column(db.Integer)
-    i_feel_that_i_have_no_control_over_my_robot = db.Column(db.Integer)
-    i_feel_in_control_of_my_robot = db.Column(db.Integer)
-    in_general_to_what_extent_do_you_have_control_over_your_robot = db.Column(
-        db.Integer)
-
-    i_feel_very_involved_in_my_relationship_with_my_robot_like_i_have_put_a_great_deal_into_it = db.Column(
-        db.Integer)
-    i_have_invested_a_great_deal_in_my_relationship_with_my_robot = db.Column(
-        db.Integer)
-    the_time_i_have_spent_on_my_robot_is_significant = db.Column(db.Integer)
-    compared_to_other_things_i_have_spent_a_lot_of_effort_using_my_robot = db.Column(
-        db.Integer)
-
-    my_robot_has_the_functionality_I_need = db.Column(db.Integer)
-    my_robot_has_the_required_features_for_my_tasks = db.Column(db.Integer)
-    my_robot_has_the_ability_to_do_what_i_want_it_to_do = db.Column(db.Integer)
-
-    my_robot_supplies_my_need_for_help_through_a_help_function = db.Column(
-        db.Integer)
-    my_robot_provides_competent_guidanceas_through_a_help_function = db.Column(
-        db.Integer)
-    my_robot_provides_very_sensible_and_effective_advice_if_needed = db.Column(
-        db.Integer)
-
-    my_robot_is_a_very_reliable_technology = db.Column(db.Integer)
-    my_robot_does_not_fail_me = db.Column(db.Integer)
-    my_robot_is_extremely_dependable = db.Column(db.Integer)
-
-    def __init__(self, player_id, this_is_my_robot=None, i_feel_high_degree_of_personal_ownership_for_this_robot=None, i_sense_that_i_own_this_robot=None, robot_incorporates_a_part_of_myself=None, i_feel_i_have_control_over_my_robot=None, when_i_consider_my_robot_i_feel_in_control=None, i_feel_that_i_have_no_control_over_my_robot=None, i_feel_in_control_of_my_robot=None, in_general_to_what_extent_do_you_have_control_over_your_robot=None, i_feel_very_involved_in_my_relationship_with_my_robot_like_i_have_put_a_great_deal_into_it=None, i_have_invested_a_great_deal_in_my_relationship_with_my_robot=None, the_time_i_have_spent_on_my_robot_is_significant=None, compared_to_other_things_i_have_spent_a_lot_of_effort_using_my_robot=None, my_robot_has_the_functionality_I_need=None, my_robot_has_the_required_features_for_my_tasks=None, my_robot_has_the_ability_to_do_what_i_want_it_to_do=None, my_robot_supplies_my_need_for_help_through_a_help_function=None, my_robot_provides_competent_guidanceas_through_a_help_function=None, my_robot_provides_very_sensible_and_effective_advice_if_needed=None, my_robot_is_a_very_reliable_technology=None, my_robot_does_not_fail_me=None, my_robot_is_extremely_dependable=None, consent=False):
+    def __init__(self, player_id, testing, consent=False):
         self.player_id = player_id
+        self.testing = testing
         self.consent = consent
-
-        self.this_is_my_robot = this_is_my_robot
-        self.i_feel_high_degree_of_personal_ownership_for_this_robot = i_feel_high_degree_of_personal_ownership_for_this_robot
-        self.i_sense_that_i_own_this_robot = i_sense_that_i_own_this_robot
-        self.robot_incorporates_a_part_of_myself = robot_incorporates_a_part_of_myself
-
-        self.i_feel_i_have_control_over_my_robot = i_feel_i_have_control_over_my_robot
-        self.when_i_consider_my_robot_i_feel_in_control = when_i_consider_my_robot_i_feel_in_control
-        self.i_feel_that_i_have_no_control_over_my_robot = i_feel_that_i_have_no_control_over_my_robot
-        self.i_feel_in_control_of_my_robot = i_feel_in_control_of_my_robot
-        self.in_general_to_what_extent_do_you_have_control_over_your_robot = in_general_to_what_extent_do_you_have_control_over_your_robot
-
-        self.i_feel_very_involved_in_my_relationship_with_my_robot_like_i_have_put_a_great_deal_into_it = i_feel_very_involved_in_my_relationship_with_my_robot_like_i_have_put_a_great_deal_into_it
-        self.i_have_invested_a_great_deal_in_my_relationship_with_my_robot = i_have_invested_a_great_deal_in_my_relationship_with_my_robot
-        self.the_time_i_have_spent_on_my_robot_is_significant = the_time_i_have_spent_on_my_robot_is_significant
-        self.compared_to_other_things_i_have_spent_a_lot_of_effort_using_my_robot = compared_to_other_things_i_have_spent_a_lot_of_effort_using_my_robot
-
-        self.my_robot_has_the_functionality_I_need = my_robot_has_the_functionality_I_need
-        self.my_robot_has_the_required_features_for_my_tasks = my_robot_has_the_required_features_for_my_tasks
-        self.my_robot_has_the_ability_to_do_what_i_want_it_to_do = my_robot_has_the_ability_to_do_what_i_want_it_to_do
-
-        self.my_robot_supplies_my_need_for_help_through_a_help_function = my_robot_supplies_my_need_for_help_through_a_help_function
-        self.my_robot_provides_competent_guidanceas_through_a_help_function = my_robot_provides_competent_guidanceas_through_a_help_function
-        self.my_robot_provides_very_sensible_and_effective_advice_if_needed = my_robot_provides_very_sensible_and_effective_advice_if_needed
-
-        self.my_robot_is_a_very_reliable_technology = my_robot_is_a_very_reliable_technology
-        self.my_robot_does_not_fail_me = my_robot_does_not_fail_me
-        self.my_robot_is_extremely_dependable = my_robot_is_extremely_dependable
 
 
 class BalloonInflate(db.Model):

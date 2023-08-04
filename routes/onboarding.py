@@ -1,9 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, session, current_app
 from models import db, Players
+import random
 
 onboarding = Blueprint('onboarding', __name__)
 
 banner_image_url = 'static/logos.png'
+
+def generate_id():
+    first_digit = random.randint(1, 9)
+    middle_digits = random.randint(0, 99)
+    last_digit = random.randint(1, 9)
+    return first_digit * 1000 + middle_digits * 10 + last_digit
 
 @onboarding.route('/')
 def index():
@@ -36,8 +43,25 @@ def index():
 
 @onboarding.route('/submit_id', methods=['POST'])
 def submit_id():
-    player_id = request.form['player_id']
+    player_id = generate_id()
+    while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
+        player_id = generate_id()  # Generate a new ID
+    
     player = Players(player_id, False)  # Pass the consent to the Players constructor
+    session['player_id'] = player_id
+    db.session.add(player)
+    
+    db.session.commit()
+    return redirect('/consent')
+
+@onboarding.route('/submit_dev_id', methods=['POST'])
+def submit_dev_id():
+    player_id = generate_id()
+    while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
+        player_id = generate_id()  # Generate a new ID
+    
+    # Set testing to True if dev button is clicked
+    player = Players(player_id, False, True)  # Pass the consent to the Players constructor
     session['player_id'] = player_id
     db.session.add(player)
     

@@ -12,25 +12,9 @@
             text-align: center;
         }
 
-        input[type=number] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            /* Removes the up and down arrows */
-            -moz-appearance: textfield; /* Firefox */
-            appearance: textfield; /* Standard */
-        }
-
-        input[type=number]::-webkit-inner-spin-button,  /* Chrome, Safari, Edge, Opera */
-        input[type=number]::-webkit-outer-spin-button { /* Chrome, Safari, Edge, Opera */
-            -webkit-appearance: none; /* Removes the up and down arrows */
-        }
-
-        input[type=submit] {
+        button[type=submit] {
             margin-top: 20px; /* add space above the link */
             display: inline-block;
-            background-color: #007BFF;
-            color: white;
             padding: 14px 28px;
             font-size: 24px;
             cursor: pointer;
@@ -40,22 +24,36 @@
             transition: all 0.3s;
         }
 
-        input[type=submit]:hover {
+        #start-button {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        #start-button:hover {
             background-color: #0046d5;
         }
 
-        label {
-            font-size: 24px; /* Makes the label bigger */
+        #dev-button {
+            background-color: #FF0000;
+            color: white;
         }
+
+        #dev-button:hover {
+            background-color: #CC0000;
+        }
+
     </style>
 </head>
 <body>
     <div id="form-container">
         <form action="/submit_id" method="post">
-            <label for="number">Enter player id:</label>
-            <input type="number" id="number" name="player_id" required>
             <div>
-                <input type="submit" value="Submit">
+                <button type="submit" id="start-button">Start</button>
+            </div>
+        </form>
+        <form action="/submit_dev_id" method="post">
+            <div>
+                <button type="submit" id="dev-button">Dev</button>
             </div>
         </form>
     </div>
