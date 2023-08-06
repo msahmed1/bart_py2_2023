@@ -152,15 +152,11 @@ def survey():
     elif session['game_round'] < 3:
         session['totalScore'] = 0
         session['game_round'] += 1
-        robot_controller = current_app.config['robot_controller']
-        thread = threading.Thread(target=robot_controller.low_battery)
-        thread.start() 
-        return redirect('/non_custom_cond')
+        return redirect('/non_custom_bw')
     else:
-        robot_controller = current_app.config['robot_controller']
-        thread = threading.Thread(target=robot_controller.sleep)
-        thread.start()
-        
+        # robot_controller = current_app.config['robot_controller']
+        # thread = threading.Thread(target=robot_controller.sleep)
+        # thread.start()
         withdrawl_date = datetime.date.today() + datetime.timedelta(days=7)
         return render_template('close.html', banner_image_url=banner_image_url, participant_id=player_id, datetime = str(withdrawl_date.strftime("%b/%d/%Y")))
 

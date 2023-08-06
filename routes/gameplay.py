@@ -112,15 +112,24 @@ def button_click(button_name):
         # Set the state of the clicked button to True
         button_states[button_name] = True
         # Call the function in robot_controller
-        robot_controller = current_app.config['robot_controller']
-        threading.Thread(target=robot_controller.set_voice, args=(button_name,)).start()
+        # robot_controller = current_app.config['robot_controller']
+        # threading.Thread(target=robot_controller.set_voice, args=(button_name,)).start()
     return jsonify({'status': 'success'})
 
 
-@gameplay.route('/non_custom_cond')
-def non_custom_cond():
+@gameplay.route('/non_custom_bw')
+def non_custom_bw():
+    return render_template('non_custom_before_warning.html', banner_image_url=banner_image_url)
 
-    return render_template('non_custom_cond.html', banner_image_url=banner_image_url)
+@gameplay.route('/non_custom_aw')
+def non_custom_aw():
+    return render_template('non_custom_after_warning.html', banner_image_url=banner_image_url)
+
+@gameplay.route('/warning_message')
+def warning_message():
+    # robot_controller = current_app.config['robot_controller']
+    # threading.Thread(target=robot_controller.low_battery).start()
+    return render_template('warning_message.html')
 
 @gameplay.route('/trigger_robot_behavior', methods=['POST'])
 def trigger_robot_behavior():

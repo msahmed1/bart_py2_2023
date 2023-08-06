@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <style>
+      .banner {
+        width: 100%;
+        height: auto;
+      }
+
+      .container {
+        text-align: center;
+        margin-top: 50px;
+        padding-left: 30%;
+        padding-right: 30%;
+      }
+    </style>
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.location.href = '/warning_message';  // Replace with your desired route
+            }, 2000);  // 2000 milliseconds = 2 seconds
+        };
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      This is the third and final round <br />
+      You will again attempt complete the balloon analog risk task<br />
+      Try and get the heighest score possible<br />
+      <button class="button" id="next-button">Next</button>
+    </div>
+  </body>
+</html>
