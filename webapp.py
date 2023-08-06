@@ -34,6 +34,7 @@ class RobotController:
         self.posture_service = ALProxy("ALRobotPosture", robotIP, PORT)
         # self.audio_service = ALProxy("ALAudioPlayer", robotIP, PORT)
         self.life_service = ALProxy("ALAutonomousLife", robotIP, PORT)
+
         self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", False)
         self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
 
@@ -69,13 +70,13 @@ class RobotController:
 
     def face_participant(self):
         names  = ["HeadYaw", "HeadPitch"]
-        angles  = [0.5, 0]
+        angles  = [0.5, 0.05]
         fractionMaxSpeed  = 0.2
         self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
     def face_screen(self):
         names  = ["HeadYaw", "HeadPitch"]
-        angles  = [-0.5, 0]
+        angles  = [-0.5, 0.1]
         fractionMaxSpeed  = 0.2
         self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
@@ -172,16 +173,17 @@ class RobotController:
 
         self.talk('Can you please choose a wrist band for me?')
 
-        time.sleep(2)
-
         # Lift right hand
         self.motion_service.angleInterpolation(
-            ["RShoulderPitch", "RShoulderRoll", "RElbowRoll", "RElbowYaw"],
-            [-1.2, -0.1, -0.4, -0.1],
+            ["LShoulderPitch", "LShoulderRoll", "LElbowRoll", "LElbowYaw"],
+            [-1, -0.1, -0.4, -0.1],
             [1, 1, 1, 1],
             False,
             _async=True
         )
+
+        self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
+        self.life_service.setAutonomousAbilityEnabled("BasicAwareness", True)
     
     def accept_band(self, colour):
         self.posture_service.goToPosture("Sit", 0.5)
@@ -190,11 +192,11 @@ class RobotController:
 
         self.face_participant()
 
-        reponse = "I saw another {colour} wrist band, why don't you put one on as well, so we can be matching".format(colour=colour)
+        reponse = "I saw another {colour} wrist band, why don't you put one on as well".format(colour=colour)
 
         self.motion_service.angleInterpolation(
-            ["LShoulderPitch", "LShoulderRoll", "LElbowRoll", "LElbowYaw"],
-            [-0.5, -0.1, 1, 0],
+            ["RShoulderPitch", "RShoulderRoll", "RElbowRoll", "RElbowYaw"],
+            [-0.5, -0.1, -0.8, 0],
             [1, 1, 1, 1],
             False,
             _async=True
@@ -207,9 +209,12 @@ class RobotController:
     def acknowledge_participant(self):
         self.posture_service.goToPosture("Sit", 0.5)
 
-        self.talk('Looking good')
+        self.talk('We are both matching')
 
         self.face_participant()
+
+        self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", False)
+        self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
 
     def sleep(self):
         # Return to sit position
@@ -274,17 +279,21 @@ class RobotController:
         self.face_screen()
 
     def set_voice(self, voice):
-        if voice == 1:
+        if voice == 'voice1':
             self.speech_service.setParameter('pitchShift', 1)
-        elif voice == 2:
-            self.speech_service.setParameter('pitchShift', 1.25)
-        elif voice == 3:
-            self.speech_service.setParameter('pitchShift', 1.5)
-        else:
+            self.talk('This is how my new voice sounds like')
+        elif voice == 'voice2':
             self.speech_service.setParameter('pitchShift', 1.13)
+            self.talk('This is how my new voice sounds like')
+        elif voice == 'voice3':
+            self.speech_service.setParameter('pitchShift', 1.25)
+            self.talk('This is how my new voice sounds like')
+        elif voice == 'voice4':
+            self.speech_service.setParameter('pitchShift', 1.5)
+            self.talk('This is how my new voice sounds like')
 
 # Initialize the robot controller with the IP address of the robot
-app.config['robot_controller'] = RobotController(robotIp) # replace with the robot's actual IP address
+# app.config['robot_controller'] = RobotController(robotIp) # replace with the robot's actual IP address
 
 if __name__ == '__main__':
     app.run()

@@ -112,7 +112,8 @@ def button_click(button_name):
         # Set the state of the clicked button to True
         button_states[button_name] = True
         # Call the function in robot_controller
-        # robot_controller.voice_change(button_name)
+        robot_controller = current_app.config['robot_controller']
+        threading.Thread(target=robot_controller.set_voice, args=(button_name,)).start()
     return jsonify({'status': 'success'})
 
 
