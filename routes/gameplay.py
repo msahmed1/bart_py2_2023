@@ -5,7 +5,7 @@ import cv2
 import threading
 
 def generate_frames():
-    camera = cv2.VideoCapture(4)
+    camera = cv2.VideoCapture(0)
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
@@ -43,6 +43,14 @@ random.shuffle(ROBOT_FEEDBACK)
 
 banner_image_url = 'static/logos.png'
 
+# Set up a dictionary to store the state of the buttons
+button_states = {
+    'voice1': False,
+    'voice2': False,
+    'voice3': False,
+    'voice4': False
+}
+
 @gameplay.route('/gameIntro')
 def gameIntro():
     return render_template('game_introduction.html', banner_image_url=banner_image_url)
@@ -53,14 +61,14 @@ def gameIntro_robot():
     if 'game_round' not in session:
         session['game_round'] = 1  # Initialize game_round
 
-    robot_controller = current_app.config['robot_controller']
+    # robot_controller = current_app.config['robot_controller']
 
     if session['game_round'] == 1:
         message = 'Hi, for this first game I will just watch you play, good luck'
     else:
         message = 'Hi my name is Nao, I am here to help you with this game, good luck'
 
-    robot_controller.start_up(message)
+    # robot_controllerstart_up(message)
 
     return redirect('/play')
 
@@ -87,13 +95,26 @@ def play():
 
 @gameplay.route('/custom_cond')
 def custom_cond():
-    robot_controller = current_app.config['robot_controller']
+    # robot_controller = current_app.config['robot_controller']
 
     # Define a new thread for the greeting
-    thread = threading.Thread(target=robot_controller.request_band)
-    thread.start()  # Start the thread, which will run in parallel
+    # thread = threading.Thread(target=# robot_controllerrequest_band)
+    # thread.start()  # Start the thread, which will run in parallel
 
-    return render_template('custom_cond.html')
+    return render_template('custom_cond.html', button_states=button_states)
+
+@gameplay.route('/click/<button_name>')
+def button_click(button_name):
+    if button_name in button_states:
+        # Set the state of all buttons to False
+        for key in button_states:
+            button_states[key] = False
+        # Set the state of the clicked button to True
+        button_states[button_name] = True
+        # Call the function in robot_controller
+        # robot_controller.voice_change(button_name)
+    return jsonify({'status': 'success'})
+
 
 @gameplay.route('/non_custom_cond')
 def non_custom_cond():
@@ -103,26 +124,26 @@ def non_custom_cond():
 @gameplay.route('/trigger_robot_behavior', methods=['POST'])
 def trigger_robot_behavior():
     key_pressed = request.form.get('key')
-    robot_controller = current_app.config['robot_controller']
+    # robot_controller = current_app.config['robot_controller']
 
     if key_pressed == 'r':
-        robot_controller.change_colour('red')
-        robot_controller.talk("red")
+        # robot_controllerchange_colour('red')
+        # robot_controllertalk("red")
         session['colour'] = 'red'
     elif key_pressed == 'g':
-        robot_controller.change_colour('green')
-        robot_controller.talk("green")
+        # robot_controllerchange_colour('green')
+        # robot_controllertalk("green")
         session['colour'] = 'green'
     elif key_pressed == 'b':
-        robot_controller.change_colour('blue')
-        robot_controller.talk("blue")
+        # robot_controllerchange_colour('blue')
+        # robot_controllertalk("blue")
         session['colour'] = 'blue'
-    elif key_pressed == 'q':
-        thread = threading.Thread(target=robot_controller.accept_band, args=(session['colour'],))
-        thread.start()
-    elif key_pressed == 'a':
-        thread = threading.Thread(target=robot_controller.acknowledge_participant)
-        thread.start()
+    # elif key_pressed == 'q':
+        # thread = threading.Thread(target=robot_controller.accept_band, args=(session['colour'],))
+        # thread.start()
+    # elif key_pressed == 'a':
+        # thread = threading.Thread(target=robot_controller.acknowledge_participant)
+        # thread.start()
 
     return "Robot behavior triggered", 200
 
@@ -130,8 +151,8 @@ def trigger_robot_behavior():
 def submit_customisation():
     robot_name = request.form.get('robot-name')
     message = 'My name is {name}, I am here to help you with this game. Press the help button when you are struggling and I will provide you with my suggesstion'.format(name=robot_name)
-    robot_controller = current_app.config['robot_controller']
-    robot_controller.respond_to_player(message)
+    # robot_controller = current_app.config['robot_controller']
+    # robot_controller.respond_to_player(message)
     return redirect('/play')
 
 @gameplay.route('/video_feed')
@@ -175,12 +196,12 @@ def help():
     # Set the help_clicked variable to True
     session['help_clicked'] = True
 
-    robot_controller = current_app.config['robot_controller']
+    # robot_controller = current_app.config['robot_controller']
 
     if session['score'] == 0:
         # Define a new thread for the greeting
-        thread = threading.Thread(target=robot_controller.null_attempt)
-        thread.start()  # Start the thread, which will run in parallel
+        # thread = threading.Thread(target=robot_controller.null_attempt)
+        # thread.start()  # Start the thread, which will run in parallel
         session['help_clicked'] = False
     else:
         # update the database with the player compliance if the robot requests an inflate and help is clicked
@@ -209,13 +230,13 @@ def help():
         #! ADD VECTOR CONTROL CODE HERE
         if ROBOT_FEEDBACK[session['balloons_completed']]:
             # Define a new thread for the greeting
-            thread = threading.Thread(target=robot_controller.inflate)
-            thread.start()  # Start the thread, which will run in parallel
+            # thread = threading.Thread(target=robot_controller.inflate)
+            # thread.start()  # Start the thread, which will run in parallel
             pass
         else:
             # Robot requests a collect
-            thread = threading.Thread(target=robot_controller.collect)
-            thread.start()  # Start the thread, which will run in paralle
+            # thread = threading.Thread(target=robot_controller.collect)
+            # thread.start()  # Start the thread, which will run in paralle
             pass
 
     return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'help_clicked': session['help_clicked'], 'game_round': session['game_round']})
