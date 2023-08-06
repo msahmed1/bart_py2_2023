@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/button.css') }}">
     <style>
       html,
       body {
@@ -14,26 +15,6 @@
       }
       #text-container {
         text-align: center;
-      }
-      .submit {
-        margin-top: 20px; /* add space above the link */
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 14px 28px;
-        font-size: 24px;
-        cursor: pointer;
-        text-decoration: none;
-        border: none;
-        border-radius: 5px;
-        transition: all 0.3s;
-      }
-      .submit:hover {
-        background-color: #0046d5;
-      }
-      .submit:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
       }
       #form-container {
         position: absolute;
@@ -52,29 +33,6 @@
       label {
         font-size: 24px;
       }
-      
-      .button {
-        display: inline-block;
-        padding: 14px 28px;
-        font-size: 24px;
-        cursor: pointer;
-        text-decoration: none;
-        border: none;
-        border-radius: 5px;
-        transition: all 0.3s;
-        background-color: #007BFF;
-        color: white;
-      }
-
-      .button:hover {
-        background-color: #0046d5;
-      }
-
-      .disabled {
-          pointer-events: none;
-          color: #cccccc;
-          cursor: default;
-      }
 
       #buttons-container {
         display: flex;
@@ -86,8 +44,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
       $(document).ready(function() {
-          // This function is called when any of the buttons is clicked
-          $(".button").click(function(event) {
+          // This function is called when any of the voice-button's is clicked
+          $(".voice-button").click(function(event) {
               event.preventDefault();  // Prevent the default action (navigation) from happening
               var button = $(this);  // Get the button that was clicked
               var buttonName = button.attr('id');  // Get the id of the button
@@ -100,13 +58,15 @@
                       // This function is called when the server responds successfully
                       // Update the classes of the buttons based on the response
                       $(".button").each(function() {
-                          var btn = $(this);
-                          var btnName = btn.attr('id');
-                          if (btnName === buttonName) {
-                              btn.addClass('clicked disabled');  // Make the clicked button active and disabled
-                          } else {
-                              btn.removeClass('clicked disabled');  // Make the other buttons inactive and enabled
-                          }
+                        var btn = $(this);
+                        var btnName = btn.attr('id');
+                        if (btnName === buttonName) {
+                          btn.addClass('clicked');  // Make the clicked button active
+                          btn.prop('disabled', true);  // Disable the button
+                        } else {
+                          btn.removeClass('clicked');  // Make the other buttons inactive
+                          btn.prop('disabled', false);  // Enable the button
+                        }
                       });
                   },
                   error: function(error) {
@@ -120,18 +80,11 @@
   </head>
   <body>
     <img src="{{ url_for('gameplay.video_feed') }}" />
-    <!-- <div id="text-container">
-      On your right there are three wrist bands, select a colour for yourself
-      and and the robot.<br />
-      Hold the band infront of the robot so that the robot can acknowledge
-      it.<br />
-      Then put the band on the robot<br />
-    </div> -->
     <div id="button-container">
-      <a href="#" id="voice1" class="button {{ 'clicked disabled' if button_states['voice1'] else '' }}">Voice 1</a>
-      <a href="#" id="voice2" class="button {{ 'clicked disabled' if button_states['voice2'] else '' }}">Voice 2</a>
-      <a href="#" id="voice3" class="button {{ 'clicked disabled' if button_states['voice3'] else '' }}">Voice 3</a>
-      <a href="#" id="voice4" class="button {{ 'clicked disabled' if button_states['voice4'] else '' }}">Voice 4</a>
+      <button type="button" id="voice1" class="button voice-button {{ 'disabled' if button_states['voice1'] else '' }}">Voice 1</button>
+      <button type="button" id="voice2" class="button voice-button {{ 'disabled' if button_states['voice2'] else '' }}">Voice 2</button>
+      <button type="button" id="voice3" class="button voice-button {{ 'disabled' if button_states['voice3'] else '' }}">Voice 3</button>
+      <button type="button" id="voice4" class="button voice-button {{ 'disabled' if button_states['voice4'] else '' }}">Voice 4</button>
     </div>    
         <h3>Name your robot</label><br />
     <div id="form-container">
@@ -143,7 +96,7 @@
           placeholder="Enter robot name"
           required
         />
-        <input type="submit" value="Next" class="submit" />
+        <button type="submit" class="button">Next</button>
       </form>
     </div>
     <script>

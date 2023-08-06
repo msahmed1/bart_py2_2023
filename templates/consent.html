@@ -1,102 +1,132 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>My Website</title>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
     <style>
-        /* CSS for image banner */
-        .banner {
-            width: 100%;
-            height: auto;
-        }
-    
-        .container {
-            text-align: left;
-            margin-top: 50px;
-            padding-left: 30%; /* Add left padding */
-            padding-right: 30%; /* Add right padding */
-        }
-        
-        #consent-question {
-            display: flex;
-            flex-direction: column;
-            /* align-items: center; */
-        }
+      .banner {
+        width: 100%;
+        height: auto;
+      }
 
-        #next-button {
-            margin-top: 20px;
-            text-align: center;  /* Center the contents of this div */
-        }
+      .container {
+        text-align: left;
+        margin-top: 50px;
+        padding-left: 30%;
+        padding-right: 30%;
+      }
 
-        .submit-button {
-            margin-top: 20px;
-            display: inline-block;
-            background-color: #007BFF;
-            color: white;
-            padding: 14px 28px;
-            font-size: 24px;
-            cursor: pointer;
-            text-decoration: none;
-            border: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        .submit-button:hover {
-            background-color: #0046d5;
-        }
-
-        /* CSS for highlighting the consent question */
-        .highlight {
-            border: 1px solid red;
-        }
-    </style>    
+      #consent-question {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .highlight {
+        border: 1px solid red;
+      }
+    </style>
     <script>
-        function validateForm() {
-            var consent = document.getElementById("consent");
-            var isChecked = consent.checked;
+      function validateForm() {
+        var consent = document.getElementById("consent");
+        var isChecked = consent.checked;
 
-            if (!isChecked) {
-                document.getElementById("consent-question").classList.add("highlight");
-                return false;
-            } else {
-                document.getElementById("consent-question").classList.remove("highlight");
-                return true;
-            }
+        if (!isChecked) {
+          document
+            .getElementById("consent-question")
+            .classList.add("highlight");
+          return false;
+        } else {
+          document
+            .getElementById("consent-question")
+            .classList.remove("highlight");
+          return true;
         }
+      }
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <img class="banner" src="{{ banner_image_url }}" alt="Banner Image">
-        <h3>Study Title: Exploring user experience and Interaction with a robot</h3>
-        <p>You are invited to participate in this survey, which is being conducted as part of the FARSCOPE robotics and autonomous systems CDT at the University of Bristol and the University of the West of England. Before you decide whether to take part, it is important for you to understand why the study is being done and what it will involve. Please read the following information carefully. If you have any queries or want more information, please get in touch with Shabaj (Mohammed12.ahmed@live.uwe.ac.uk).</p>
-        <P>Please take a look at the Participant information sheets and Research Privacy Notice that was given to you.</P>
-        <p>If you are happy to take part, please read the statements and give your consent to continue:</p>
-        <ol type="1">
-            <li>I have read and understood the information sheet.</li>
-            <li>I have been given the opportunity to ask questions and have had my questions answered to my satisfaction.</li>
-            <li>I am aware of the risks and benefits of taking part in the study.</li>
-            <li>I am aware that the collected data will be anonymised, kept in accordance with the General Data Protection Regulation (GDPR), and will be viewed and analysed by the research team as part of their studies.</li>
-            <li>I am aware that any quotes made from free text entries during this study will be anonymised and may be published to support the discussion of the findings.</li>
-            <li>I am aware that I have the right to withdraw consent and discontinue participation without penalty before or during the study.</li>
-            <li>I am aware that I have the right to withdraw consent and discontinue participation without penalty before or during the study.</li>
-        </ol>
-        <p>This survey should take a maximum of 30 minutes to complete. Thank you for your time - we appreciate all responses.</p>
-        <hr class="solid">
-        <div>
-            <form action="/submit_consent" method="post" onsubmit="return validateForm()">
-                <div id="consent-question">
-                    Do you consent to take part in the study?
-                    <div>
-                        <input type="checkbox" id="consent" name="consent" value="agree"> I Agree
-                    </div>
-                </div>
-                <div id="next-button">
-                    <input class="submit-button" type="submit" value="Next">
-                </div>
-            </form>
-        </div>
-        
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <h3>
+        Study Title: Exploring user experience and Interaction with a robot
+      </h3>
+      <p>
+        You are invited to participate in this survey, which is being conducted
+        as part of the FARSCOPE robotics and autonomous systems CDT at the
+        University of Bristol and the University of the West of England. Before
+        you decide whether to take part, it is important for you to understand
+        why the study is being done and what it will involve. Please read the
+        following information carefully. If you have any queries or want more
+        information, please get in touch with Shabaj
+        (Mohammed12.ahmed@live.uwe.ac.uk).
+      </p>
+      <p>
+        Please take a look at the Participant information sheets and Research
+        Privacy Notice that was given to you.
+      </p>
+      <p>
+        If you are happy to take part, please read the statements and give your
+        consent to continue:
+      </p>
+      <ol type="1">
+        <li>I have read and understood the information sheet.</li>
+        <li>
+          I have been given the opportunity to ask questions and have had my
+          questions answered to my satisfaction.
+        </li>
+        <li>
+          I am aware of the risks and benefits of taking part in the study.
+        </li>
+        <li>
+          I am aware that the collected data will be anonymised, kept in
+          accordance with the General Data Protection Regulation (GDPR), and
+          will be viewed and analysed by the research team as part of their
+          studies.
+        </li>
+        <li>
+          I am aware that any quotes made from free text entries during this
+          study will be anonymised and may be published to support the
+          discussion of the findings.
+        </li>
+        <li>
+          I am aware that I have the right to withdraw consent and discontinue
+          participation without penalty before or during the study.
+        </li>
+        <li>
+          I am aware that I have the right to withdraw consent and discontinue
+          participation without penalty before or during the study.
+        </li>
+      </ol>
+      <p>
+        This survey should take a maximum of 30 minutes to complete. Thank you
+        for your time - we appreciate all responses.
+      </p>
+      <hr class="solid" />
+      <div>
+        <form
+          action="/submit_consent"
+          method="post"
+          onsubmit="return validateForm()"
+        >
+          <div id="consent-question">
+            Do you consent to take part in the study?
+            <div>
+              <input
+                type="checkbox"
+                id="consent"
+                name="consent"
+                value="agree"
+              />
+              I Agree
+            </div>
+          </div>
+          <div id="button-container">
+            <button type="submit" class="button">Next</button>
+          </div>
+        </form>
+      </div>
     </div>
-</body>
+  </body>
 </html>
