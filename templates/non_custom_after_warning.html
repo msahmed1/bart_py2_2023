@@ -31,13 +31,12 @@
 
     <script>
       $(document).ready(function () {
-        var isClicked = false; // Add this line
+        var isClicked = false;
 
         $("#next-button").on("click", function (event) {
           if (!isClicked) {
-            // Add this line
-            isClicked = true; // Add this line
-            window.location.href = "/gameIntro_robot"; // Add this line
+            isClicked = true;
+            window.location.href = "/gameIntro_robot";
             $(this).addClass("disabled");
           }
         });

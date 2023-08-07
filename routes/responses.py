@@ -154,7 +154,7 @@ def survey():
         session['game_round'] += 1
         return redirect('/non_custom_bw')
     else:
-        robot_controller = current_app.config['robot_controller']
+        robot_controller = current_app.config['robot_controller_1']
         thread = threading.Thread(target=robot_controller.sleep)
         thread.start()
         withdrawl_date = datetime.date.today() + datetime.timedelta(days=7)
@@ -184,7 +184,7 @@ def survey():
 #         return render_template('final_survey.html', question_group=final_questions[session['question_group_index']], action_url="/final_survey", banner_image_url=banner_image_url)
 #     # If all the final surveys are completed, redirect to the '/close' route
 #     else:
-#         robot_controller = current_app.config['robot_controller']
+#         robot_controller = current_app.config['robot_controller_1']
 #         thread = threading.Thread(target=robot_controller.sleep)
 #         thread.start() 
 #         return render_template('close.html')

@@ -21,14 +21,16 @@ app.register_blueprint(onboarding)
 app.register_blueprint(gameplay)
 app.register_blueprint(responses)
 
-robotIp = "164.11.72.14"
+robotIp1 = "164.11.72.14"
+robotIp2 = "164.11.73.190"
+
 PORT = 9559
 
 class RobotController:
     def __init__(self, robotIP):
         self.speech_service = ALProxy("ALTextToSpeech", robotIP, PORT)
         self.speech_service.setParameter("defaultVoiceSpeed", 80)
-        self.speech_service.setVolume(0.8)
+        self.speech_service.setVolume(0.6)
         self.motion_service = ALProxy("ALMotion", robotIP, PORT)
         self.leds = ALProxy("ALLeds", robotIP, PORT)
         self.posture_service = ALProxy("ALRobotPosture", robotIP, PORT)
@@ -233,7 +235,7 @@ class RobotController:
 
         # Go to rest position
         self.motion_service.rest()
-
+ 
     def low_battery(self):
         self.talk('Warning 801, low battery')
 
@@ -293,7 +295,8 @@ class RobotController:
             self.talk('This is how my new voice sounds like')
 
 # Initialize the robot controller with the IP address of the robot
-app.config['robot_controller'] = RobotController(robotIp) # replace with the robot's actual IP address
+app.config['robot_controller_1'] = RobotController(robotIp1) # replace with the robot's actual IP address
+app.config['robot_controller_2'] = RobotController(robotIp2) # replace with the robot's actual IP address
 
 if __name__ == '__main__':
     app.run()
