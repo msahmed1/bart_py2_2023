@@ -50,12 +50,6 @@
         transition: width 0.3s ease;
         /* Add a transition effect for smooth resizing */
       }
-
-      #help-button:disabled {
-        /* Color when the button is disabled */
-        background-color: #cccccc;
-        color: #666666;
-      }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
@@ -66,7 +60,7 @@
         <div>
           <div id="inflate-text">Score: {{ score }}</div>
           <form action="/collect" method="post">
-            <button type="submit" class="button">Collect</button>
+            <input type="submit" class="button" value="Collect" />
           </form>
         </div>
         <div class="balloon-container">
@@ -80,10 +74,6 @@
           <div id="progress-counter">
             Balloons completed: {{ balloons_completed }} / {{ balloon_limit }}
           </div>
-          <form id="help-form" action="/help" method="post">
-            <input id="help-button" type="submit" class="button" value="Help" {%
-            if game_round==1 or help_clicked %}disabled{% endif %}>
-          </form>
         </div>
       </div>
       <form id="inflate-form" action="/inflate" method="post">
@@ -110,29 +100,8 @@
               );
               var balloon = $("#balloon");
               balloon.width(balloon.width() + 20);
-
-              // If help_clicked in the response is true, disable the Help button
-              // Otherwise, enable it
-              if (data.game_round == 1) {
-                $("#help-button").prop("disabled", true);
-              } else {
-                $("#help-button").prop("disabled", data.help_clicked);
-              }
             }
           });
-        });
-      });
-
-      // When the help button is clicked, prevent the form submission and make an AJAX request
-      $("#help-form").on("submit", function (event) {
-        event.preventDefault(); // Prevent the form submission
-
-        // Disable the button immediately after it's clicked
-        $("#help-button").prop("disabled", true);
-
-        $.post("/help", function (data) {
-          /// Update help_clicked based on the server response
-          $("#help-button").prop("disabled", data.help_clicked);
         });
       });
     </script>

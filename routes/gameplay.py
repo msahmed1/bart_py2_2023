@@ -5,7 +5,7 @@ import cv2
 import threading
 
 def generate_frames():
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(4)
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
@@ -93,8 +93,12 @@ def play():
     if 'help_clicked' not in session:
         session['help_clicked'] = False
 
-    return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], help_clicked=session['help_clicked'], game_round=session['game_round'])
+     # If it is the second game round, handle the collect button functionality like the help button
+    if session['game_round'] == 2:
+        return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], game_round=session['game_round'])
 
+    return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], game_round=session['game_round'])
+    
 @gameplay.route('/custom_cond')
 def custom_cond():
     robot_controller = current_app.config['robot_controller_1']
@@ -198,15 +202,15 @@ def inflate():
     db.session.commit()
 
     if inflates > session['balloon_limit']:
-        return jsonify({'status': 'burst', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'help_clicked': session['help_clicked'], 'game_round': session['game_round']})
+        return jsonify({'status': 'burst', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'game_round': session['game_round']})
     else:
-        return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'help_clicked': session['help_clicked'], 'game_round': session['game_round']})
+        return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'game_round': session['game_round']})
 
-
-@gameplay.route('/help', methods=['POST'])
+@gameplay.route('/help')
 def help():
     # Set the help_clicked variable to True
     session['help_clicked'] = True
+
     if session['game_round'] == 2:
         robot_controller = current_app.config['robot_controller_1']
     else:
@@ -240,25 +244,29 @@ def help():
         
         db.session.commit()
 
-        
-        #! ADD VECTOR CONTROL CODE HERE
+        print('prividing help')
         if ROBOT_FEEDBACK[session['balloons_completed']]:
+            print('requesting inflate')
             # Define a new thread for the greeting
             thread = threading.Thread(target=robot_controller.inflate)
             thread.start()  # Start the thread, which will run in parallel
             pass
         else:
+            print('requesting collect')
             # Robot requests a collect
             thread = threading.Thread(target=robot_controller.collect)
             thread.start()  # Start the thread, which will run in paralle
             pass
-
-    return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'help_clicked': session['help_clicked'], 'game_round': session['game_round']})
-
+    
+    return '', 204
 
 @gameplay.route('/burst')
 @gameplay.route('/collect', methods=['POST'])
 def collect_or_burst():
+    if session['help_clicked'] == False and session['game_round'] > 1:
+        print('Providing help')
+        return redirect('/help')
+    
     # Record the balloon inflate in the database
     # Check if an entry already exists for this balloon
     balloon_inflate = BalloonInflate.query.filter_by(
@@ -284,7 +292,7 @@ def collect_or_burst():
     collected_score = session['score']  # Store the score before resetting it
     session['inflates'] = 0  # Reset the inflates
     session['balloons_completed'] += 1  # Increment the balloons_completed
-
+    
     # Set the help_clicked variable to False for the next game round
     session['help_clicked'] = False
 
