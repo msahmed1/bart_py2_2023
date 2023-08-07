@@ -37,11 +37,9 @@ def index():
     session['balloon_number'] = 0
 
     robot_controller_1 = current_app.config['robot_controller_1']
-    robot_controller_1.talk('I am robot 1')
     robot_controller_1.sleep()
 
     robot_controller_2 = current_app.config['robot_controller_2']
-    robot_controller_2.talk('I am robot 2')
     robot_controller_2.sleep()
 
     return render_template('onboarding.html')
