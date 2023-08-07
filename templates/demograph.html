@@ -39,33 +39,41 @@
         input[type=submit]:hover {
             background-color: #0046d5;
         }
+
+        .question {
+            border: 1px solid transparent;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="form-container">
         <img class="banner" src="{{ banner_image_url }}" alt="Banner Image">
         <form action="/submit_demograph" method="post">
-            <label for="age">What age bracket do you belong to?</label><br>
-            <input type="radio" id="18-25" name="age" value="18-25">
-            <label for="18-25">18-25</label><br>
-            <input type="radio" id="26-35" name="age" value="26-35">
-            <label for="26-35">26-35</label><br>
-            <input type="radio" id="36-45" name="age" value="36-45">
-            <label for="36-45">36-45</label><br>
-            <input type="radio" id="46-55" name="age" value="46-55">
-            <label for="46-55">46-55</label><br>
-            <input type="radio" id="56+" name="age" value="56+">
-            <label for="56+">56+</label><br><br>
+            <div class="question">
+                <span class="question-text">What age bracket do you belong to?</span><br>
+                <input type="radio" id="18-25" name="age" value="18-25">
+                <label for="18-25">18-25</label><br>
+                <input type="radio" id="26-35" name="age" value="26-35">
+                <label for="26-35">26-35</label><br>
+                <input type="radio" id="36-45" name="age" value="36-45">
+                <label for="36-45">36-45</label><br>
+                <input type="radio" id="46-55" name="age" value="46-55">
+                <label for="46-55">46-55</label><br>
+                <input type="radio" id="56+" name="age" value="56+">
+                <label for="56+">56+</label><br><br>
+            </div>
 
-            <label for="gender">Gender:</label><br>
-            <input type="radio" id="male" name="gender" value="male">
-            <label for="male">Male</label><br>
-            <input type="radio" id="female" name="gender" value="female">
-            <label for="female">Female</label><br>
-            <input type="radio" id="other" name="gender" value="other">
-            <label for="other">Other</label><br><br>
+            <div class="question">
+                <span class="question-text">What gender do you identify as?</span><br>
+                <input type="radio" id="male" name="gender" value="male">
+                <label for="male">Male</label><br>
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female">Female</label><br>
+                <input type="radio" id="other" name="gender" value="other">
+                <label for="other">Other</label><br><br>
+            </div>
 
-            <label for="ethnicity">Which ethnicity best describes you?</label><br>
+            <!-- <label for="ethnicity">Which ethnicity best describes you?</label><br>
             <input type="radio" id="white_caucasian" name="ethnicity" value="white_caucasian">
             <label for="white_caucasian">White / Caucasian</label><br>
             <input type="radio" id="asian_pacific_islander" name="ethnicity" value="asian_pacific_islander">
@@ -91,11 +99,54 @@
             <input type="radio" id="somewhat-familiar" name="robot_familiarity" value="somewhat-familiar">
             <label for="somewhat-familiar">Somewhat Familiar</label><br>
             <input type="radio" id="very-familiar" name="robot_familiarity" value="very-familiar">
-            <label for="very-familiar">Very Familiar</label><br><br>
+            <label for="very-familiar">Very Familiar</label><br><br> -->
 
             <input type="submit" value="Submit">
         </form>
     </div>
-    
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+        var form = event.target;
+        var inputs = form.querySelectorAll('input[type="radio"]');
+        var groups = {};
+        var allFilled = true;
+        var firstNotFilled;
+
+        inputs.forEach(function(input) {
+            if (!groups[input.name]) {
+                groups[input.name] = [];
+            }
+
+            groups[input.name].push(input);
+        });
+
+        for (var groupName in groups) {
+            var group = groups[groupName];
+            var groupFilled = group.some(function(input) {
+                return input.checked;
+            });
+
+            if (!groupFilled) {
+                allFilled = false;
+                group.forEach(function(input) {
+                    input.closest('.question').querySelector('.question-text').style.color = 'red';
+                });
+
+                if (!firstNotFilled) {
+                    firstNotFilled = group[0];
+                }
+            } else {
+                group.forEach(function(input) {
+                    input.closest('.question').querySelector('.question-text').style.color = '';
+                });
+            }
+        }
+
+        if (!allFilled) {
+            event.preventDefault();
+            firstNotFilled.scrollIntoView();
+        }
+    });
+    </script>    
 </body>
 </html>

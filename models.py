@@ -16,9 +16,9 @@ class Players(db.Model):
     # Demographics
     age = db.Column(db.Integer)
     gender = db.Column(db.String(10))
-    ethnicity = db.Column(db.String(50))
-    education = db.Column(db.String(50))
-    robot_familiarity = db.Column(db.Integer)
+    # ethnicity = db.Column(db.String(50))
+    # education = db.Column(db.String(50))
+    # robot_familiarity = db.Column(db.Integer)
     
 
     def __init__(self, player_id, testing, consent=False):

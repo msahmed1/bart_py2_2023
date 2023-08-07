@@ -90,17 +90,17 @@ def submit_demograph():
     player_id = session['player_id']
     age = request.form['age']
     gender = request.form['gender']
-    ethnicity = request.form['ethnicity']
-    education = request.form['education']
-    robot_familiarity = request.form['robot_familiarity']
+    # ethnicity = request.form['ethnicity']
+    # education = request.form['education']
+    # robot_familiarity = request.form['robot_familiarity']
 
     player = Players.query.get(player_id)  # Get the player from the database
 
     player.age = age
     player.gender = gender
-    player.ethnicity = ethnicity
-    player.education = education
-    player.robot_familiarity = robot_familiarity
+    # player.ethnicity = ethnicity
+    # player.education = education
+    # player.robot_familiarity = robot_familiarity
 
     db.session.commit()  # Commit the changes to the database
     
