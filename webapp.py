@@ -293,7 +293,7 @@ class RobotController:
             self.talk('This is how my new voice sounds like')
 
 # Initialize the robot controller with the IP address of the robot
-# app.config['robot_controller'] = RobotController(robotIp) # replace with the robot's actual IP address
+app.config['robot_controller'] = RobotController(robotIp) # replace with the robot's actual IP address
 
 if __name__ == '__main__':
     app.run()
