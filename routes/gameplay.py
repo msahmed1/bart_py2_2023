@@ -89,16 +89,16 @@ def play():
     if session['balloons_completed'] >= total_trials:
         return redirect('/end')
 
-    # Check if the help_clicked has been initialised, if not, initialise it
-    if 'help_clicked' not in session:
-        session['help_clicked'] = False
+    # Check if the help_provided has been initialised, if not, initialise it
+    if 'help_provided' not in session:
+        session['help_provided'] = False
 
      # If it is the second game round, handle the collect button functionality like the help button
-    if session['game_round'] == 2:
-        return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], game_round=session['game_round'])
+    if session['game_round'] > 1:
+        return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], button_value=' Help ')
 
-    return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], game_round=session['game_round'])
-    
+    return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], button_value='Collect')
+
 @gameplay.route('/custom_cond')
 def custom_cond():
     robot_controller = current_app.config['robot_controller_1']
@@ -196,7 +196,7 @@ def inflate():
             game_round=session['game_round'],
         )
         db.session.add(balloon_inflate)
-    elif session['help_clicked']:
+    elif session['help_provided']:
         balloon_inflate.inflate_after_help_request = True
 
     db.session.commit()
@@ -206,10 +206,9 @@ def inflate():
     else:
         return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'game_round': session['game_round']})
 
-@gameplay.route('/help')
 def help():
-    # Set the help_clicked variable to True
-    session['help_clicked'] = True
+    # Set the help_provided variable to True
+    session['help_provided'] = True
 
     if session['game_round'] == 2:
         robot_controller = current_app.config['robot_controller_1']
@@ -220,7 +219,7 @@ def help():
         # Define a new thread for the greeting
         thread = threading.Thread(target=robot_controller.null_attempt)
         thread.start()  # Start the thread, which will run in parallel
-        session['help_clicked'] = False
+        session['help_provided'] = False
     else:
         # update the database with the player compliance if the robot requests an inflate and help is clicked
         balloon_inflate = BalloonInflate.query.filter_by(
@@ -243,29 +242,30 @@ def help():
             balloon_inflate.robot_response = ROBOT_FEEDBACK[session['balloons_completed']]
         
         db.session.commit()
-
-        print('prividing help')
+        
         if ROBOT_FEEDBACK[session['balloons_completed']]:
-            print('requesting inflate')
             # Define a new thread for the greeting
             thread = threading.Thread(target=robot_controller.inflate)
             thread.start()  # Start the thread, which will run in parallel
             pass
         else:
-            print('requesting collect')
             # Robot requests a collect
             thread = threading.Thread(target=robot_controller.collect)
             thread.start()  # Start the thread, which will run in paralle
             pass
     
-    return '', 204
+    if session['help_provided'] == False and session['game_round'] > 1:
+        return jsonify({'button_value': ' Help '})
+    else:
+        return jsonify({'button_value': 'Collect'})
 
 @gameplay.route('/burst')
 @gameplay.route('/collect', methods=['POST'])
 def collect_or_burst():
-    if session['help_clicked'] == False and session['game_round'] > 1:
-        print('Providing help')
-        return redirect('/help')
+
+    if session['help_provided'] == False and session['game_round'] > 1 and session['balloons_completed'] < total_trials:
+        print('######## ------------>calling help()')
+        return help()
     
     # Record the balloon inflate in the database
     # Check if an entry already exists for this balloon
@@ -292,29 +292,42 @@ def collect_or_burst():
     collected_score = session['score']  # Store the score before resetting it
     session['inflates'] = 0  # Reset the inflates
     session['balloons_completed'] += 1  # Increment the balloons_completed
+    print('######## ------------>balloons_completed:', session['balloons_completed'])
     
-    # Set the help_clicked variable to False for the next game round
-    session['help_clicked'] = False
+    # Set the help_provided variable to False for the next game round
+    session['help_provided'] = False
 
     # If the score is 0, redirect to the /noPoints route
     if collected_score == 0:
-        return render_template('noPoints.html')
+        return jsonify({'redirect_url': url_for('gameplay.noPoints')})
     elif request.path == '/burst':
         session['score'] = 0  # Reset the score
-        return render_template('burst.html')
+        return redirect('/burst')
     
     # Add the collected score to the total score
     session['totalScore'] = int(session['totalScore']) + int(collected_score)
 
     # Check if the game is over
     if session['balloons_completed'] >= total_trials:
-        return redirect('/end')
+        return jsonify({'redirect_url': url_for('gameplay.end')})
 
+    # Pass the collected score to the template
+    return jsonify({'redirect_url': url_for('gameplay.collect_page')})
+
+@gameplay.route('/noPoints')
+def noPoints():
+    return render_template('noPoints.html')
+
+@gameplay.route('/burst')
+def burst():
+    return render_template('burst.html')
+
+@gameplay.route('/collect_page')
+def collect_page():
+    collected_score = session['score']  # Store the score before resetting it
     # Reset the score
     session['score'] = 0  # Reset the score
-    # Pass the collected score to the template
     return render_template('collect.html', score=collected_score)
-
 
 @gameplay.route('/end')
 def end():
@@ -343,5 +356,5 @@ def end():
     session['scales_index'] = 0
     session['question_group_index'] = 0
     session['totalScore'] = 0
-
+    
     return render_template('end.html', score=total)

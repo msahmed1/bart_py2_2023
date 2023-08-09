@@ -22,7 +22,7 @@ def index():
     session.pop('score', None)
     session.pop('scales_index', None)
     session.pop('question_group_index', None)
-    session.pop('help_clicked', None)
+    session.pop('help_provided', None)
     session.pop('balloon_color', None)
     session.pop('totalScore', None)
     session.pop('score', None)

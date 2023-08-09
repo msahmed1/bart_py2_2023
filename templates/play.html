@@ -59,8 +59,10 @@
       <div class="flex-row">
         <div>
           <div id="inflate-text">Score: {{ score }}</div>
-          <form action="/collect" method="post">
-            <input type="submit" class="button" value="Collect" />
+          <form id="collect-form" action="/collect" method="post">
+            <button type="submit" class="button" id="collect-button">
+              {{ button_value }}
+            </button>
           </form>
         </div>
         <div class="balloon-container">
@@ -72,7 +74,7 @@
         </div>
         <div>
           <div id="progress-counter">
-            Balloons completed: {{ balloons_completed }} / {{ balloon_limit }}
+            Progress: {{ balloons_completed }} of {{ balloon_limit }}
           </div>
         </div>
       </div>
@@ -82,6 +84,7 @@
     </div>
     <script>
       $(document).ready(function () {
+        // Existing Inflate handler
         $("#inflate-form").on("submit", function (event) {
           event.preventDefault(); // Prevent the form submission
 
@@ -93,13 +96,27 @@
               // Otherwise, update the score and inflate the balloon
               $("#inflate-text").text("Score: " + data.score);
               $("#progress-counter").text(
-                "Balloons completed: " +
+                "Progress: " +
                   data.balloons_completed +
-                  " / " +
+                  " of " +
                   data.balloon_limit
               );
               var balloon = $("#balloon");
               balloon.width(balloon.width() + 20);
+            }
+          });
+        });
+
+        $("#collect-form").on("submit", function (event) {
+          event.preventDefault(); // This stops the form from submitting and causing a page navigation
+
+          $.post("/collect", function (data) {
+            if (data.redirect_url) {
+              // If the server sends a 'redirect_url', navigate to that URL
+              window.location.href = data.redirect_url;
+            } else {
+              // Otherwise, update the button text
+              $("#collect-button").text(data.button_value);
             }
           });
         });
