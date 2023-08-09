@@ -20,14 +20,12 @@ def generate_frames():
 
 gameplay = Blueprint('gameplay', __name__)
 
+# All the baloons should start at 1 and be pumped up to different levesl
 # Define the inflate limit for each balloon
 BALLOON_LIMITS = {
-    'red': [
-        5, # Lower limit of the inflate limit
-        8  # Upper limit of the inflate limit
-    ],
-    'blue': [7, 12],
-    'green': [11, 16]
+    'red': 8,
+    'blue': 16,
+    'green': 32
 }
 
 balloon_colour = list(BALLOON_LIMITS.keys())
@@ -77,8 +75,7 @@ def gameIntro_robot():
 @gameplay.route('/play', methods=['GET', 'POST'])
 def play():
     session['balloon_color'] = random.choice(balloon_colour)
-    session['balloon_limit'] = random.randint(
-        BALLOON_LIMITS[session['balloon_color']][0], BALLOON_LIMITS[session['balloon_color']][1])
+    session['balloon_limit'] = random.randint( 1, BALLOON_LIMITS[session['balloon_color']])
 
     # Check if balloon_index and balloons_completed have been initialized, if not, initialize them
     if 'balloons_completed' not in session or 'inflates' not in session:
@@ -263,7 +260,7 @@ def help():
 @gameplay.route('/collect', methods=['POST'])
 def collect_or_burst():
 
-    if session['help_provided'] == False and session['game_round'] > 1 and session['balloons_completed'] < total_trials:
+    if session['help_provided'] == False and session['game_round'] > 1 and session['balloons_completed'] < total_trials and session['inflates'] <= session['balloon_limit']:
         print('######## ------------>calling help()')
         return help()
     
@@ -300,9 +297,9 @@ def collect_or_burst():
     # If the score is 0, redirect to the /noPoints route
     if collected_score == 0:
         return jsonify({'redirect_url': url_for('gameplay.noPoints')})
-    elif request.path == '/burst':
+    elif request.path == '/burst' or session['inflates'] > session['balloon_limit']:
         session['score'] = 0  # Reset the score
-        return redirect('/burst')
+        return render_template('burst.html')
     
     # Add the collected score to the total score
     session['totalScore'] = int(session['totalScore']) + int(collected_score)
@@ -317,10 +314,6 @@ def collect_or_burst():
 @gameplay.route('/noPoints')
 def noPoints():
     return render_template('noPoints.html')
-
-@gameplay.route('/burst')
-def burst():
-    return render_template('burst.html')
 
 @gameplay.route('/collect_page')
 def collect_page():
