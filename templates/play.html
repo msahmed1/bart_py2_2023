@@ -6,20 +6,9 @@
       href="{{ url_for('static', filename='styles/button.css') }}"
     />
     <style>
-      /* CSS styles */
-      .page-container {
-        padding: 10vh 10vw;
-        /* Adjust as needed */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 80vh;
-      }
-
       .flex-row {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         width: 100%;
       }
@@ -27,16 +16,15 @@
       #progress-counter {
         margin-right: 20px;
         margin-left: 20px;
-        font-size: 20px;
-        /* Increase the text size */
         width: 100px;
-        /* Set a fixed width */
         height: 50px;
+        align-items: center;
+        text-align: center;
       }
 
       .balloon-container {
-        width: 200px;
-        height: 200px;
+        width: 850px;
+        height: 850px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -44,44 +32,63 @@
 
       #balloon {
         width: 100px;
-        /* Adjust this to the size you want */
         height: auto;
-        /* This keeps the aspect ratio of the image */
         transition: width 0.3s ease;
         /* Add a transition effect for smooth resizing */
+      }
+
+      body {
+        display: flex;
+        flex-direction: column; /* Stack children vertically */
+        justify-content: center; /* Center children vertically */
+        align-items: center; /* Center children horizontally */
+        height: 100vh; /* Take up full viewport height */
+        margin: 0; /* Reset default margin */
+      }
+
+      #inflate-form {
+        display: flex;
+        justify-content: center; /* Center button horizontally */
+        width: 100%; /* Take up full width of its container */
+      }
+      .score-container {
+        display: flex;
+        flex-direction: column; /* Stack children vertically */
+        align-items: center; /* Center children horizontally */
+        justify-content: center; /* Center children vertically */
+      }
+      .text-style {
+        font-size: 20px;
+        color: black;
       }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
-
   <body>
-    <div class="page-container">
-      <div class="flex-row">
-        <div>
-          <div id="inflate-text">Score: {{ score }}</div>
-          <form id="collect-form" action="/collect" method="post">
-            <button type="submit" class="button" id="collect-button">
-              {{ button_value }}
-            </button>
-          </form>
-        </div>
-        <div class="balloon-container">
-          <img
-            id="balloon"
-            src="static/{{ balloon_color }}Balloon.png"
-            alt="Balloon"
-          />
-        </div>
-        <div>
-          <div id="progress-counter">
-            Progress: {{ balloons_completed }} of {{ balloon_limit }}
-          </div>
-        </div>
+    <div class="flex-row">
+      <div class="score-container">
+        <div id="inflate-text" class="text-style">Score: {{ score }}</div>
+        <form id="collect-form" action="/collect" method="post">
+          <button type="submit" class="button" id="collect-button">
+            {{ button_value }}
+          </button>
+        </form>
       </div>
-      <form id="inflate-form" action="/inflate" method="post">
-        <button type="submit" class="button">Inflate</button>
-      </form>
+      <div class="balloon-container">
+        <img
+          id="balloon"
+          src="static/{{ balloon_color }}Balloon.png"
+          alt="Balloon"
+        />
+      </div>
+      <div id="progress-counter" class="text-style">
+        Progress: <br />
+        {{ balloons_completed }} of {{ balloon_limit }}
+      </div>
     </div>
+    <form id="inflate-form" action="/inflate" method="post">
+      <button type="submit" class="button">Inflate</button>
+    </form>
     <script>
       $(document).ready(function () {
         // Existing Inflate handler
