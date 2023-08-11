@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
     <style>
       .banner {
         width: 100%;
@@ -148,7 +152,7 @@
             <input type="radio" id="very-familiar" name="robot_familiarity" value="very-familiar">
             <label for="very-familiar">Very Familiar</label><br><br> -->
 
-        <input type="submit" value="Submit" />
+        <button type="submit" class="button"> Submit </button>
       </form>
     </div>
     <script>

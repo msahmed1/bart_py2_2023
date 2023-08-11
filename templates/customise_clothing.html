@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px; /* adjust as needed */
+      }
+      #text-container {
+        text-align: center;
+      }
+      #form-container {
+        position: absolute;
+        bottom: 20px; /* Adjust as needed */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        text-align: center;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      label {
+        font-size: 24px;
+      }
+
+      #buttons-container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin: 20px 0; /* Add some space above and below the buttons */
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // This function is called when any of the voice-button's is clicked
+        $(".voice-button").click(function (event) {
+          event.preventDefault(); // Prevent the default action (navigation) from happening
+          var button = $(this); // Get the button that was clicked
+          var buttonName = button.attr("id"); // Get the id of the button
+
+          // Make an AJAX request to the Flask route
+          $.ajax({
+            url: "/click/" + buttonName,
+            type: "GET",
+            success: function (response) {
+              // This function is called when the server responds successfully
+              // Update the classes of the buttons based on the response
+              $(".button").each(function () {
+                var btn = $(this);
+                var btnName = btn.attr("id");
+                if (btnName === buttonName) {
+                  btn.addClass("clicked"); // Make the clicked button active
+                  btn.prop("disabled", true); // Disable the button
+                } else {
+                  btn.removeClass("clicked"); // Make the other buttons inactive
+                  btn.prop("disabled", false); // Enable the button
+                }
+              });
+            },
+            error: function (error) {
+              // This function is called when the server responds with an error
+              console.log(error);
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <img src="{{ url_for('gameplay.video_feed') }}" />
+
+      <button type="submit" class="button" id="nextButton">Next</button>
+    </div>
+    <script>
+      $(document).ready(function () {
+        $("#nextButton").click(function (event) {
+          event.preventDefault(); // Prevent the default action (form submission)
+
+          $(this).prop("disabled", true); // Disable the button
+
+          // Redirect to the next Flask route
+          window.location.href = "/custom_voice"; // replace '/next_route' with your next route URL
+        });
+      });
+
+      $(document).keydown(function (event) {
+        // Check if the Alt key is pressed
+        if (event.altKey) {
+          event.preventDefault();
+          var keycode = event.key;
+          if (keycode == "r") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "r" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          } else if (keycode == "g") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "g" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          } else if (keycode == "b") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "b" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          } else if (keycode == "q") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "q" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          } else if (keycode == "a") {
+            $.ajax({
+              url: "/trigger_robot_behavior",
+              type: "POST",
+              data: { key: "a" },
+              success: function (response) {
+                console.log(response);
+              },
+              error: function (error) {
+                console.log(error);
+              },
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

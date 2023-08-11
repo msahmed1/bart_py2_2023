@@ -5,7 +5,7 @@ import cv2
 import threading
 
 def generate_frames():
-    camera = cv2.VideoCapture(4)
+    camera = cv2.VideoCapture(0)
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
@@ -106,7 +106,19 @@ def custom_cond():
     thread = threading.Thread(target= robot_controller.request_band)
     thread.start()  # Start the thread, which will run in parallel
 
-    return render_template('custom_cond.html', button_states=button_states)
+    return render_template('customise_clothing.html')
+
+@gameplay.route('/custom_voice')
+def custom_voice():
+    # robot_controller = current_app.config['robot_controller_1']
+
+    # threading.Thread(target=robot_controller.request_voice_change).start()
+
+    return render_template('customise_voice.html', button_states=button_states)
+
+@gameplay.route('/custom_name')
+def custom_name():
+    return render_template('customise_name.html')
 
 @gameplay.route('/click/<button_name>')
 def button_click(button_name):

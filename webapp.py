@@ -255,14 +255,18 @@ class RobotController:
             reponse = "{colour} looks good on me".format(colour=colour)
 
             self.talk(reponse)
-
-            self.talk('Why not change my voice as well')
-
-            # self.face_participant()
         else:
             pass
 
-    def acknowledge_participant(self):
+    def request_voice_change(self):
+        if self.disable == False:
+            self.face_participant()
+
+            self.talk('Why not change my voice as well')
+        else:
+            pass
+
+    def request_voice_change(self):
         if self.disable == False:
 
             # self.posture_service.goToPosture("Sit", 0.5)
@@ -379,8 +383,8 @@ class RobotController:
             pass
 
 # Initialize the robot controller with the IP address of the robot
-app.config['robot_controller_1'] = RobotController(robotIp1, disable=False) # replace with the robot's actual IP address
-app.config['robot_controller_2'] = RobotController(robotIp2, disable=False) # replace with the robot's actual IP address
+app.config['robot_controller_1'] = RobotController(robotIp1, disable=True) # replace with the robot's actual IP address
+app.config['robot_controller_2'] = RobotController(robotIp2, disable=True) # replace with the robot's actual IP address
 
 if __name__ == '__main__':
     app.run()
