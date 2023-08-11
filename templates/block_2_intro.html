@@ -72,19 +72,16 @@
         type="video/mp4"> Your browser does not support the video tag.
       </video> -->
       <p>
-        Thank you for agreeing to take part in this study.
+        You will repeat the same task as before.
       </p>
       <p>
-        Your aim in this study is to win points by pumping the balloon up. You may pump the balloon up as many times as you wish by pressing the 'Inflate' button. Each pump will give you 10 points, but it also increases the risk of the balloon bursting, the speed at which you pump the balloon does not affect the likelihood of the balloon bursting. However, if you burst the balloon, you will lose all the points collected from that balloon.
+        On this block the robot will make suggestions to you based on your privious performance
       </p>
       <p>
-        You can stop pumping the balloon up at any point and collect your earned points by pressing the 'Collect' button.
+        Before you start the next block, we though it would be entertaining for you to customise your robot.
       </p>
       <p>
-        The robot on your left was programmed to watch and learn when you decide to inflate the balloon and when you decide to collect the points. Later in this study, the robot will use what it has learned to provide you with suggestions on whether or not to inflate the balloon based on your behaviour.
-      </p>
-      <p>
-        In this study, you will complete 3 blocks each with 30 balloon trials.
+        click the next button to start your customisation.
       </p>
       <a id="next-button">Next</a>
     </div>
@@ -96,7 +93,7 @@
           if (!isClicked) {
             // Add this line
             isClicked = true; // Add this line
-            window.location.href = "/gameIntro_robot"; // Add this line
+            window.location.href = "/custom_cond"; // Add this line
             $(this).addClass("disabled");
           }
         });

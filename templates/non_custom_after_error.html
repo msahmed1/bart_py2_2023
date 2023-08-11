@@ -23,22 +23,24 @@
   <body>
     <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
-      This is the third and final round <br />
-      You will again attempt complete the balloon analog risk task<br />
-      Try and get the heighest score possible<br />
+      <p>
+        This is the final block of the study.
+      </p>
+      <p>
+        You will repeat the same task as before, with the robot.
+      </p>
+      <p>
+        This time the robots suggestion will be based on the combination of your previous performance on the previous blocks.
+      </p>
       <button class="button" id="next-button">Next</button>
     </div>
 
     <script>
       $(document).ready(function () {
-        var isClicked = false;
 
         $("#next-button").on("click", function (event) {
-          if (!isClicked) {
-            isClicked = true;
+            $(this).prop('disabled', true);
             window.location.href = "/gameIntro_robot";
-            $(this).addClass("disabled");
-          }
         });
       });
     </script>

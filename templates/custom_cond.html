@@ -107,7 +107,7 @@
             alert('Please enter a name for the robot.');
             event.preventDefault(); // Prevent the form from being submitted
           } else {
-            var btn = $(this).find('.submit');
+            var btn = $(this).find('button[type="submit"]');
             btn.prop("disabled", true); // Disable the button
           }
         });

@@ -28,24 +28,24 @@ PORT = 9559
 
 class RobotController:
     def __init__(self, robotIP, disable=False):
+        self.disable = disable
         if disable == False:
             self.speech_service = ALProxy("ALTextToSpeech", robotIP, PORT)
             self.speech_service.setParameter("defaultVoiceSpeed", 80)
-            self.speech_service.setVolume(0.6)
+            self.speech_service.setVolume(0.5)
             self.motion_service = ALProxy("ALMotion", robotIP, PORT)
             self.leds = ALProxy("ALLeds", robotIP, PORT)
             self.posture_service = ALProxy("ALRobotPosture", robotIP, PORT)
             # self.audio_service = ALProxy("ALAudioPlayer", robotIP, PORT)
             self.life_service = ALProxy("ALAutonomousLife", robotIP, PORT)
 
-            self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", False)
+            self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
             self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
 
             self.inflate_messages = ["I would inflate the balloon"] #, "I think the balloon is not inflated enough", "I think this balloon can take more air", "I would inflate the balloon more", "I would inflate the balloon a little more",  "I think this baloon can take a little more air"]
             self.collect_messages = ["I would not inflate the balloon"] #, "I think the balloon is inflated enough", "I think the balloon is too inflated", "I think this balloon is going to pop"]
             self.null_messages = ["I can not make a suggestion as you have to make an attempt first"] #["You have to at least try", "Please make an attempt", "Your goal is to collect as many points as you can", "I can't make a suggestion as you have to make an attempt first"]            
         else:
-            self.disable = disable
             pass
 
     def start_up(self, message):
@@ -207,9 +207,31 @@ class RobotController:
         if self.disable == False:
             self.face_participant()
 
-            self.talk('Can you please choose a wrist band for me?')
+            # Point with right hand
+            self.motion_service.angleInterpolation(
+                ["RShoulderPitch", "RShoulderRoll", "RElbowRoll", "RElbowYaw"],
+                [-0.5, -0.1, -0.8, 0],
+                [1, 1, 1, 1],
+                False,
+                _async=True
+            )
+            
+            self.talk('I see there are different coloured wrist bands on the table')
 
-            # Lift right hand
+            time.sleep(1.0)
+
+            self.talk('Can you choose one and put it on me')
+
+            # lower right hand
+            self.motion_service.angleInterpolation(
+                ["RShoulderPitch", "RShoulderRoll", "RElbowRoll", "RElbowYaw"],
+                [0.5, 0.2, 0.55, 0],
+                [1, 1, 1, 1],
+                False,
+                _async=True
+            )
+
+            # Lift left hand
             self.motion_service.angleInterpolation(
                 ["LShoulderPitch", "LShoulderRoll", "LElbowRoll", "LElbowYaw"],
                 [-1, -0.1, -0.4, -0.1],
@@ -217,9 +239,6 @@ class RobotController:
                 False,
                 _async=True
             )
-
-            self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
-            self.life_service.setAutonomousAbilityEnabled("BasicAwareness", True)
         else:
             pass
     
@@ -229,34 +248,34 @@ class RobotController:
 
             self.talk('Thank you')
 
+            time.sleep(0.5)
+
             self.face_participant()
 
-            reponse = "I saw another {colour} wrist band, why don't you put one on as well".format(colour=colour)
-
-            self.motion_service.angleInterpolation(
-                ["RShoulderPitch", "RShoulderRoll", "RElbowRoll", "RElbowYaw"],
-                [-0.5, -0.1, -0.8, 0],
-                [1, 1, 1, 1],
-                False,
-                _async=True
-            )
+            reponse = "{colour} looks good on me".format(colour=colour)
 
             self.talk(reponse)
 
-            self.face_participant()
+            self.talk('Why not change my voice as well')
+
+            # self.face_participant()
         else:
             pass
 
     def acknowledge_participant(self):
         if self.disable == False:
-            self.posture_service.goToPosture("Sit", 0.5)
 
-            self.talk('We are both matching')
+            # self.posture_service.goToPosture("Sit", 0.5)
 
             self.face_participant()
 
-            self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", False)
-            self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
+            self.talk('Before we start playing')
+
+            time.sleep(0.5)
+
+            self.talk('can you give me a name')
+
+            # self.face_participant()
         else:
             pass
 
@@ -283,7 +302,7 @@ class RobotController:
  
     def low_battery(self):
         if self.disable == False:
-            self.talk('Warning 801, low battery')
+            self.talk('error 801, low battery')
 
             self.talk('Shutting down')
 
@@ -324,9 +343,17 @@ class RobotController:
         else:
             pass
 
-    def respond_to_player(self, message):
+    def respond_to_player(self, robot_name):
         if self.disable == False:
             self.face_participant()
+
+            message = '{name}, I like it'.format(name=robot_name)
+
+            self.talk(message)
+
+            time.sleep(0.5)
+            
+            message = 'I will help you during this game, Before you collect your points I will provide you with my suggesstion. Good luck'
 
             self.talk(message)
 
@@ -352,8 +379,8 @@ class RobotController:
             pass
 
 # Initialize the robot controller with the IP address of the robot
-app.config['robot_controller_1'] = RobotController(robotIp1) # replace with the robot's actual IP address
-app.config['robot_controller_2'] = RobotController(robotIp2) # replace with the robot's actual IP address
+app.config['robot_controller_1'] = RobotController(robotIp1, disable=False) # replace with the robot's actual IP address
+app.config['robot_controller_2'] = RobotController(robotIp2, disable=False) # replace with the robot's actual IP address
 
 if __name__ == '__main__':
     app.run()

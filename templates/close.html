@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <style>
-            .banner {
+        .banner {
             width: 100%;
             height: auto;
         }
@@ -26,7 +25,6 @@
 
         a {
             margin-top: 20px;
-            /* add space above the link */
             display: inline-block;
             background-color: #007BFF;
             color: white;
@@ -44,15 +42,19 @@
         }
     </style>
 </head>
-
 <body>
-    <div id="container">
+    <div class="container">
         <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
-        Thank you for participating</br>
-        Your participant ID is: {{ participant_id }}, please write this down for your records.
-        If you would like to withdraw your data you can do so up untill {{ datetime }}, please contact the researcher at hi20047@bristol.ac.uk.
+        <p>
+            Thank you for participating
+        </p>
+        <p>
+            Your participant ID is: {{ participant_id }}, please write this down for your records.
+        </p>
+        <p>
+            If you would like to withdraw your data you can do so up untill {{ datetime }}, please contact the researcher at hi20047@bristol.ac.uk.
+        </p>
+        <a href="/">Next</a>
     </div>
-    <a href="/">Next</a>
 </body>
-
 </html>

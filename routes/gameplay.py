@@ -59,8 +59,6 @@ def gameIntro_robot():
     if 'game_round' not in session:
         session['game_round'] = 1  # Initialize game_round
 
-    
-
     if session['game_round'] == 1:
         message = 'Hi, for this first game I will just watch you play, good luck'
         robot_controller = current_app.config['robot_controller_1']
@@ -96,6 +94,10 @@ def play():
 
     return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], button_value='Collect')
 
+@gameplay.route('/block_2_intro')
+def block_2_intro():
+    return render_template('block_2_intro.html', banner_image_url=banner_image_url)
+
 @gameplay.route('/custom_cond')
 def custom_cond():
     robot_controller = current_app.config['robot_controller_1']
@@ -120,19 +122,19 @@ def button_click(button_name):
     return jsonify({'status': 'success'})
 
 
-@gameplay.route('/non_custom_bw')
-def non_custom_bw():
-    return render_template('non_custom_before_warning.html', banner_image_url=banner_image_url)
+@gameplay.route('/non_custom_pre_error')
+def non_custom_pre_error():
+    return render_template('non_custom_before_error.html', banner_image_url=banner_image_url)
 
-@gameplay.route('/non_custom_aw')
-def non_custom_aw():
-    return render_template('non_custom_after_warning.html', banner_image_url=banner_image_url)
+@gameplay.route('/non_custom_post_error')
+def non_custom_post_error():
+    return render_template('non_custom_after_error.html', banner_image_url=banner_image_url)
 
-@gameplay.route('/warning_message')
-def warning_message():
+@gameplay.route('/error_message')
+def error_message():
     robot_controller = current_app.config['robot_controller_1']
     threading.Thread(target=robot_controller.low_battery).start()
-    return render_template('warning_message.html')
+    return render_template('error_message.html')
 
 @gameplay.route('/trigger_robot_behavior', methods=['POST'])
 def trigger_robot_behavior():
@@ -163,9 +165,8 @@ def trigger_robot_behavior():
 @gameplay.route('/submit_customisation', methods=['POST'])
 def submit_customisation():
     robot_name = request.form.get('robot-name')
-    message = 'My name is {name}, I am here to help you with this game. Press the help button when you are struggling and I will provide you with my suggesstion'.format(name=robot_name)
     robot_controller = current_app.config['robot_controller_1']
-    robot_controller.respond_to_player(message)
+    robot_controller.respond_to_player(robot_name)
     return redirect('/play')
 
 @gameplay.route('/video_feed')

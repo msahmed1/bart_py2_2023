@@ -97,7 +97,7 @@ def survey():
     if(session['game_round'] == 1):
         session['totalScore'] = 0
         session['game_round'] += 1
-        return redirect('/custom_cond')
+        return redirect('/block_2_intro')
 
     if 'question_group_index' not in session:
         session['question_group_index'] = 0
@@ -152,7 +152,7 @@ def survey():
     elif session['game_round'] < 3:
         session['totalScore'] = 0
         session['game_round'] += 1
-        return redirect('/non_custom_bw')
+        return redirect('/non_custom_pre_error')
     else:
         robot_controller = current_app.config['robot_controller_1']
         thread = threading.Thread(target=robot_controller.sleep)
