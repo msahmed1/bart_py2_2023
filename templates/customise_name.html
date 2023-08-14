@@ -17,11 +17,6 @@
         text-align: center;
       }
       #form-container {
-        position: absolute;
-        bottom: 20px; /* Adjust as needed */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;
         text-align: center;
       }
       input[type="text"] {
@@ -44,8 +39,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
   <body>
-    <h3>Name your robot</label><br />
     <div id="form-container">
+      <h3>Name your robot</label><br />
       <form action="/submit_customisation" method="post">
         <input
           type="text"

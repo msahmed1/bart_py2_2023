@@ -266,11 +266,8 @@ class RobotController:
         else:
             pass
 
-    def request_voice_change(self):
+    def request_name_change(self):
         if self.disable == False:
-
-            # self.posture_service.goToPosture("Sit", 0.5)
-
             self.face_participant()
 
             self.talk('Before we start playing')
@@ -278,8 +275,6 @@ class RobotController:
             time.sleep(0.5)
 
             self.talk('can you give me a name')
-
-            # self.face_participant()
         else:
             pass
 
@@ -300,7 +295,7 @@ class RobotController:
             self.leds.fadeRGB("AllLeds", 0, 0.0, 0, 0.0)
 
             # Go to rest position
-            self.motion_service.rest()
+            # self.motion_service.rest()
         else:
             pass
  
@@ -347,7 +342,7 @@ class RobotController:
         else:
             pass
 
-    def respond_to_player(self, robot_name):
+    def start_game_after_customisation(self, robot_name):
         if self.disable == False:
             self.face_participant()
 

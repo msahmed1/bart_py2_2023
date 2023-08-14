@@ -110,14 +110,18 @@ def custom_cond():
 
 @gameplay.route('/custom_voice')
 def custom_voice():
-    # robot_controller = current_app.config['robot_controller_1']
+    robot_controller = current_app.config['robot_controller_1']
 
-    # threading.Thread(target=robot_controller.request_voice_change).start()
+    threading.Thread(target=robot_controller.request_voice_change).start()
 
     return render_template('customise_voice.html', button_states=button_states)
 
 @gameplay.route('/custom_name')
 def custom_name():
+    robot_controller = current_app.config['robot_controller_1']
+
+    threading.Thread(target=robot_controller.request_name_change).start()
+
     return render_template('customise_name.html')
 
 @gameplay.route('/click/<button_name>')
@@ -178,7 +182,7 @@ def trigger_robot_behavior():
 def submit_customisation():
     robot_name = request.form.get('robot-name')
     robot_controller = current_app.config['robot_controller_1']
-    robot_controller.respond_to_player(robot_name)
+    robot_controller.start_game_after_customisation(robot_name)
     return redirect('/play')
 
 @gameplay.route('/video_feed')
@@ -274,7 +278,6 @@ def help():
 def collect_or_burst():
 
     if session['help_provided'] == False and session['game_round'] > 1 and session['balloons_completed'] < total_trials and session['inflates'] <= session['balloon_limit']:
-        print('######## ------------>calling help()')
         return help()
     
     # Record the balloon inflate in the database
@@ -302,7 +305,6 @@ def collect_or_burst():
     collected_score = session['score']  # Store the score before resetting it
     session['inflates'] = 0  # Reset the inflates
     session['balloons_completed'] += 1  # Increment the balloons_completed
-    print('######## ------------>balloons_completed:', session['balloons_completed'])
     
     # Set the help_provided variable to False for the next game round
     session['help_provided'] = False
