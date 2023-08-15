@@ -26,57 +26,100 @@ robotIp2 = "164.11.73.190"
 
 PORT = 9559
 
+MAX_RETRIES = 5
+RETRY_DELAY = 2
+
 class RobotController:
     def __init__(self, robotIP, disable=False):
+        self.robotIP = robotIP
         self.disable = disable
-        if disable == False:
-            self.speech_service = ALProxy("ALTextToSpeech", robotIP, PORT)
-            self.speech_service.setParameter("defaultVoiceSpeed", 80)
-            self.speech_service.setVolume(0.5)
-            self.motion_service = ALProxy("ALMotion", robotIP, PORT)
-            self.leds = ALProxy("ALLeds", robotIP, PORT)
-            self.posture_service = ALProxy("ALRobotPosture", robotIP, PORT)
-            # self.audio_service = ALProxy("ALAudioPlayer", robotIP, PORT)
-            self.life_service = ALProxy("ALAutonomousLife", robotIP, PORT)
+        self.connected = False
 
-            self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
-            self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
+        if not self.disable:
+            self.connect()
 
-            self.inflate_messages = ["I would inflate the balloon"] #, "I think the balloon is not inflated enough", "I think this balloon can take more air", "I would inflate the balloon more", "I would inflate the balloon a little more",  "I think this baloon can take a little more air"]
-            self.collect_messages = ["I would not inflate the balloon"] #, "I think the balloon is inflated enough", "I think the balloon is too inflated", "I think this balloon is going to pop"]
-            self.null_messages = ["I can not make a suggestion as you have to make an attempt first"] #["You have to at least try", "Please make an attempt", "Your goal is to collect as many points as you can", "I can't make a suggestion as you have to make an attempt first"]            
-        else:
-            pass
+        self.speech_service.setParameter("defaultVoiceSpeed", 80)
+        self.speech_service.setVolume(0.2)
+        self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
+        self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
 
+        self.inflate_messages = ["I would inflate the balloon"]
+        self.collect_messages = ["I would not inflate the balloon"]
+        self.null_messages = ["I can not make a suggestion as you have to make an attempt first"] 
+
+        names = "body"
+        stiffnessLists = 1.0
+        timeLimits = 1.0
+        self.motion_service.stiffnessInterpolation(names, stiffnessLists, timeLimits)
+
+    def connect(self):
+        retry_count = 0
+        while retry_count < MAX_RETRIES:
+            try:
+                self.speech_service = ALProxy("ALTextToSpeech", self.robotIP, PORT)
+                self.motion_service = ALProxy("ALMotion", self.robotIP, PORT)
+                self.leds = ALProxy("ALLeds", self.robotIP, PORT)
+                self.posture_service = ALProxy("ALRobotPosture", self.robotIP, PORT)
+                # self.audio_service = ALProxy("ALAudioPlayer", robotIP, PORT)
+                self.life_service = ALProxy("ALAutonomousLife", self.robotIP, PORT)
+                
+                self.connected = True
+                break
+            except Exception as e:
+                print("###### Failed to connect to robot at %s. Retrying in %s seconds..." % (self.robotIP, RETRY_DELAY))
+            retry_count += 1
+            time.sleep(RETRY_DELAY)
+
+        if not self.connected:
+            print("###### Failed to connect to robot at %s after %s attempts." % (self.robotIP, MAX_RETRIES))
+    
+    def reconnect_on_fail(func):
+        def wrapper(self, *args, **kwargs):
+            try:
+                return func(self, *args, **kwargs)
+            except Exception as e:
+                print("###### Failed to connect to robot at %s due to %s. Attempting to reconnect..." % (self.robotIP, str(e)))
+                self.connected = False
+                self.connect()
+                if self.connected:
+                    return func(self, *args, **kwargs)
+                time.sleep(RETRY_DELAY)
+        return wrapper
+    
+    @reconnect_on_fail
     def start_up(self, message):
-        if self.disable == False:
-            self.leds.on("AllLeds")
-            self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
+        if self.disable:
+            print("In Start Up and robot is disabled")
+            return
+        
+        self.motion_service.wakeUp()
+        
+        # Wake up robot
+        self.motion_service.wakeUp()
+        
+        self.leds.on("AllLeds")
+        self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
 
-            # Wake up robot
-            self.motion_service.wakeUp()
+        # Send robot to Stand Zero
+        self.posture_service.goToPosture("Sit", 0.5)
+        
+        time.sleep(1.0)
 
-            # Send robot to Stand Zero
-            self.posture_service.goToPosture("Sit", 0.5)
-            
-            time.sleep(1.0)
+        self.face_participant()
 
-            self.face_participant()
+        time.sleep(1.0)
 
-            time.sleep(1.0)
+        self.talk(message)
 
-            self.talk(message)
+        time.sleep(1.0)
 
-            time.sleep(1.0)
+        self.nod_head()
 
-            self.nod_head()
+        time.sleep(1.0)
 
-            time.sleep(1.0)
+        self.face_screen()
 
-            self.face_screen()
-        else:
-            pass
-
+    @reconnect_on_fail
     def face_participant(self):
         if self.disable == False:
             names  = ["HeadYaw", "HeadPitch"]
@@ -86,6 +129,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def face_screen(self):
         if self.disable == False:
             names  = ["HeadYaw", "HeadPitch"]
@@ -95,6 +139,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def nod_head(self):
         if self.disable == False:
             self.motion_service.angleInterpolation(
@@ -107,6 +152,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def shake_head(self):
         if self.disable == False:
             names  = ["HeadYaw", "HeadPitch"]
@@ -139,6 +185,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def greetings(self, message):
         if self.disable == False:
             self.face_participant()
@@ -153,12 +200,14 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def talk(self, text):
         if self.disable == False:
             self.speech_service.say(text)
         else:
             print(text)
 
+    @reconnect_on_fail
     def inflate(self):
         if self.disable == False:
             # Yes
@@ -176,6 +225,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def collect(self):
         if self.disable == False:
             # No
@@ -191,6 +241,7 @@ class RobotController:
         else:
             pass
     
+    @reconnect_on_fail
     def change_colour(self, colour):
         if self.disable == False:
             self.leds.on("AllLeds")
@@ -202,7 +253,7 @@ class RobotController:
                 self.leds.fadeRGB("AllLeds", 0.0, 0.0, 255.0, 0.0)
         else:
             pass
-
+    @reconnect_on_fail
     def request_band(self):
         if self.disable == False:
             self.face_participant()
@@ -242,6 +293,7 @@ class RobotController:
         else:
             pass
     
+    @reconnect_on_fail
     def accept_band(self, colour):
         if self.disable == False:
             self.posture_service.goToPosture("Sit", 0.5)
@@ -255,9 +307,12 @@ class RobotController:
             reponse = "{colour} looks good on me".format(colour=colour)
 
             self.talk(reponse)
+
+            self.talk("press the next button for some more customsation")
         else:
             pass
 
+    @reconnect_on_fail
     def request_voice_change(self):
         if self.disable == False:
             self.face_participant()
@@ -266,6 +321,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def request_name_change(self):
         if self.disable == False:
             self.face_participant()
@@ -278,6 +334,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def sleep(self):
         if self.disable == False:
             # Return to sit position
@@ -299,6 +356,7 @@ class RobotController:
         else:
             pass
  
+    @reconnect_on_fail
     def low_battery(self):
         if self.disable == False:
             self.talk('error 801, low battery')
@@ -332,6 +390,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def null_attempt(self):
         if self.disable == False:
             self.face_participant()
@@ -342,6 +401,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def start_game_after_customisation(self, robot_name):
         if self.disable == False:
             self.face_participant()
@@ -360,6 +420,7 @@ class RobotController:
         else:
             pass
 
+    @reconnect_on_fail
     def set_voice(self, voice):
         if self.disable == False:
             if voice == 'voice1':
@@ -377,9 +438,11 @@ class RobotController:
         else:
             pass
 
+    
+
 # Initialize the robot controller with the IP address of the robot
-app.config['robot_controller_1'] = RobotController(robotIp1, disable=True) # replace with the robot's actual IP address
-app.config['robot_controller_2'] = RobotController(robotIp2, disable=True) # replace with the robot's actual IP address
+app.config['robot_controller_1'] = RobotController(robotIp1, disable=False) # replace with the robot's actual IP address
+app.config['robot_controller_2'] = RobotController(robotIp2, disable=False) # replace with the robot's actual IP address
 
 if __name__ == '__main__':
     app.run()
