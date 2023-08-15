@@ -20,6 +20,7 @@ class Players(db.Model):
     # education = db.Column(db.String(50))
     # robot_familiarity = db.Column(db.Integer)
     
+    freetext = db.Column(db.Text, nullable=True)
 
     def __init__(self, player_id, testing, consent=False):
         self.player_id = player_id

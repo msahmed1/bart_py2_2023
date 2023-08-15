@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, session, current_app
-from models import db, GameRoundSurvey
+from models import db, GameRoundSurvey, Players
 import threading
 import datetime
 
@@ -122,5 +122,19 @@ def survey():
         robot_controller = current_app.config['robot_controller_1']
         thread = threading.Thread(target=robot_controller.sleep)
         thread.start()
-        withdrawl_date = datetime.date.today() + datetime.timedelta(days=7)
-        return render_template('close.html', banner_image_url=banner_image_url, participant_id=player_id, datetime = str(withdrawl_date.strftime("%b/%d/%Y")))
+        return render_template('freetext.html', banner_image_url=banner_image_url)
+        
+
+@responses.route('/freetext', methods=['GET', 'POST'])
+def freetext():
+    player_id = session['player_id']
+
+    if request.method == 'POST':
+        player = Players.query.filter_by(
+            player_id=player_id).first()
+        
+        setattr(player, "freetext", request.form["response"])
+        db.session.commit()
+
+    withdrawl_date = datetime.date.today() + datetime.timedelta(days=7)
+    return render_template('close.html', banner_image_url=banner_image_url, participant_id=player_id, datetime = str(withdrawl_date.strftime("%b/%d/%Y")))
