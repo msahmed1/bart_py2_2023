@@ -1,60 +1,41 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <style>
-        .banner {
-            width: 100%;
-            height: auto;
-        }
-
-        .container {
-            text-align: left;
-            margin-top: 50px;
-            padding-left: 30%; /* Add left padding */
-            padding-right: 30%; /* Add right padding */
-        }
-
-        #text-container {
-            text-align: center;
-        }
-
-        #image-container img {
-            /* width: 100px; adjust as needed */
-            height: auto;
-        }
-
-        a {
-            margin-top: 20px;
-            display: inline-block;
-            background-color: #007BFF;
-            color: white;
-            padding: 14px 28px;
-            font-size: 24px;
-            cursor: pointer;
-            text-decoration: none;
-            border: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        a:hover {
-            background-color: #0046d5;
-        }
-    </style>
-</head>
-<body>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/textfield.css') }}"
+    />
+  </head>
+  <body>
     <div class="container">
-        <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
-        <p>
-            Thank you for participating
-        </p>
-        <p>
-            Your participant ID is: {{ participant_id }}, please write this down for your records.
-        </p>
-        <p>
-            If you would like to withdraw your data you can do so up untill {{ datetime }}, please contact the researcher at hi20047@bristol.ac.uk.
-        </p>
-        <a href="/">Next</a>
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <p>Thank you for participating</p>
+      <p>
+        Your participant ID is: {{ participant_id }}, please write this down for
+        your records.
+      </p>
+      <p>
+        If you would like to withdraw your data you can do so up untill {{
+        datetime }}, please contact the researcher at hi20047@bristol.ac.uk.
+      </p>
+      <div id="next-container">
+        <button type="submit" class="button" onclick="navigateToHome()">
+          Next
+        </button>
+      </div>
     </div>
-</body>
+    <script>
+      function navigateToHime() {
+        window.location.href = "/";
+      }
+    </script>
+  </body>
 </html>

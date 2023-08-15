@@ -1,33 +1,92 @@
-{% extends "survey_base.html" %} {% block content %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/questions.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/textfield.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <form method="POST" action="{{ action_url }}" class="form-container">
+        <div id="text-container">{{ title }}<br /></div>
 
-<div id="text-container">
-  {{ title }}<br />
-</div>
+        {% for question in scales %}
+        <div class="likert-name">
+          <h4>{{ question.question}}</h4>
+        </div>
+        <div class="likert">
+          <div class="likert-label-left">{{ question.left }}</div>
+          <div class="likert-numbers-radios">
+            <div class="likert-numbers">
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>6</span>
+              <span>7</span>
+            </div>
+            <div class="likert-radios">
+              {% for i in range(1, 8) %}
+              <label
+                ><input type="radio" name="{{ question.name }}" value="{{ i }}"
+              /></label>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="likert-label-right">{{ question.right }}</div>
+        </div>
+        {% endfor %}
 
-{% for question in scales %}
-<div class="likert-name">
-  <h4>{{ question.question}}</h4>
-</div>
-<div class="likert">
-  <div class="likert-label-left">{{ question.left }}</div>
-  <div class="likert-numbers-radios">
-    <div class="likert-numbers">
-      <span>1</span>
-      <span>2</span>
-      <span>3</span>
-      <span>4</span>
-      <span>5</span>
-      <span>6</span>
-      <span>7</span>
+        <div id="next-container">
+          <button type="submit" class="button">Next</button>
+        </div>
+      </form>
     </div>
-    <div class="likert-radios">
-      {% for i in range(1, 8) %}
-      <label
-        ><input type="radio" name="{{ question.name }}" value="{{ i }}"
-      /></label>
-      {% endfor %}
-    </div>
-  </div>
-  <div class="likert-label-right">{{ question.right }}</div>
-</div>
-{% endfor %} {% endblock %}
+    <script>
+      document
+        .querySelector(".form-container")
+        .addEventListener("submit", function (event) {
+          // Prevent the form from submitting by default
+          event.preventDefault();
+
+          // Get all the likert groups
+          const likerts = Array.from(document.querySelectorAll(".likert"));
+
+          // Remove 'required' class from all likert groups (will remove the red border)
+          likerts.forEach((likert) => likert.classList.remove("required"));
+
+          // Check if all likert groups have a selected radio button
+          const allSelected = likerts.every((likert) =>
+            likert.querySelector('input[type="radio"]:checked')
+          );
+
+          if (allSelected) {
+            // If all likert groups have a selected radio button, submit the form
+            event.target.submit();
+          } else {
+            // If not all likert groups have a selected radio button, add 'required' class to those without a selection
+            likerts.forEach((likert) => {
+              if (!likert.querySelector('input[type="radio"]:checked')) {
+                likert.classList.add("required");
+              }
+            });
+          }
+        });
+    </script>
+  </body>
+</html>

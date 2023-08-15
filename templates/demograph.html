@@ -5,73 +5,26 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/button.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/textfield.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/questions.css') }}"
+    />
     <style>
-      .banner {
-        width: 100%;
-        height: auto;
-      }
-
-      .container {
-        text-align: left;
-        margin-top: 50px;
-        padding-left: 30%; /* Add left padding */
-        padding-right: 30%; /* Add right padding */
-      }
-
-      #form-container {
-        text-align: left;
-      }
-
       label {
-        font-size: 24px; /* Makes the label bigger */
-      }
-
-      input[type="submit"] {
-        margin-top: 20px; /* add space above the link */
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 14px 28px;
         font-size: 24px;
-        cursor: pointer;
-        text-decoration: none;
-        border: none;
-        border-radius: 5px;
-        transition: all 0.3s;
-      }
-
-      input[type="submit"]:hover {
-        background-color: #0046d5;
-      }
-
-      .question {
-        border: 1px solid transparent;
-      }
-
-      input[type="radio"] {
-        margin: 0 2%;
-        transform: scale(1.5);
-        vertical-align: middle;
-        margin-left: 10px;
-        margin-right: 10px;
-      }
-
-      .Radio {
-        display: inline-flex;
-        align-items: center;
-      }
-
-      .Radio--large {
-        font-size: 2em;
-      }
-
-      .Radio-Input {
-        margin: 0 0.5em 0;
       }
     </style>
   </head>
   <body>
-    <div class="container" id="form-container">
+    <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
       <form action="/submit_demograph" method="post">
         <div class="question">
@@ -151,8 +104,9 @@
             <label for="somewhat-familiar">Somewhat Familiar</label><br>
             <input type="radio" id="very-familiar" name="robot_familiarity" value="very-familiar">
             <label for="very-familiar">Very Familiar</label><br><br> -->
-
-        <button type="submit" class="button"> Submit </button>
+        <div id="next-container">
+          <button class="button">Submit</button>
+        </div>
       </form>
     </div>
     <script>

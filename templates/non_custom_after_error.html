@@ -5,42 +5,35 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/button.css') }}"
     />
-    <style>
-      .banner {
-        width: 100%;
-        height: auto;
-      }
-
-      .container {
-        text-align: center;
-        margin-top: 50px;
-        padding-left: 30%;
-        padding-right: 30%;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/textfield.css') }}"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
   <body>
     <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <p>This is the final block of the study.</p>
+      <p>You will repeat the same task as before, with the robot.</p>
       <p>
-        This is the final block of the study.
+        This time the robots suggestion will be based on the combination of your
+        previous performance on the previous blocks.
       </p>
-      <p>
-        You will repeat the same task as before, with the robot.
-      </p>
-      <p>
-        This time the robots suggestion will be based on the combination of your previous performance on the previous blocks.
-      </p>
-      <button class="button" id="next-button">Next</button>
+      <div id="next-container">
+        <button class="button" id="next-button">Next</button>
+      </div>
     </div>
 
     <script>
       $(document).ready(function () {
-
         $("#next-button").on("click", function (event) {
-            $(this).prop('disabled', true);
-            window.location.href = "/gameIntro_robot";
+          $(this).prop("disabled", true);
+          window.location.href = "/gameIntro_robot";
         });
       });
     </script>

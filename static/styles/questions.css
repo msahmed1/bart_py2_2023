@@ -1,0 +1,90 @@
+/* Consent */
+input[type="checkbox"] {
+    margin: 4px 0 0;
+    line-height: normal;
+    width: 20px;
+    height: 20px;
+}
+
+#consent-question {
+    display: flex;
+    flex-direction: column;
+}
+
+.highlight {
+    border: 1px solid red;
+}
+
+/* Demographic */
+.question {
+    border: 1px solid transparent;
+}
+
+input[type="radio"] {
+    margin: 0 2%;
+    transform: scale(1.5);
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.Radio {
+    display: inline-flex;
+    align-items: center;
+}
+
+.Radio--large {
+    font-size: 2em;
+}
+
+.Radio-Input {
+    margin: 0 0.5em 0;
+}
+
+/* Study questionnaire */
+
+.likert-name {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.likert {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    margin-bottom: 2em;
+}
+
+.likert-label-left,
+.likert-label-right {
+    text-align: center;
+}
+
+.likert-numbers-radios {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.likert-numbers,
+.likert-radios {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.likert-numbers span,
+.likert-radios label {
+    text-align: center;
+    width: 0%;
+}
+
+.likert-radios label input {
+    margin: 0 5%;
+    transform: scale(1.5);
+}
+
+.likert.required {
+    border: 2px solid red;
+}

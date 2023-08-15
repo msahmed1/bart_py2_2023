@@ -5,35 +5,18 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/button.css') }}"
     />
-    <style>
-      .banner {
-        width: 100%;
-        height: auto;
-      }
-
-      .container {
-        text-align: left;
-        margin-top: 50px;
-        padding-left: 30%;
-        padding-right: 30%;
-      }
-
-      #consent-question {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .highlight {
-        border: 1px solid red;
-      }
-
-      input[type="checkbox"] {
-        margin: 4px 0 0;
-        line-height: normal;
-        width: 20px;
-        height: 20px;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/textfield.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/questions.css') }}"
+    />
     <script>
       function validateForm() {
         var consent = document.getElementById("consent");
@@ -129,7 +112,7 @@
               I Agree
             </div>
           </div>
-          <div id="button-container">
+          <div id="next-container">
             <button type="submit" class="button">Next</button>
           </div>
         </form>

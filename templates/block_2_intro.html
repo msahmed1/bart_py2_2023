@@ -1,60 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Website</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/textfield.css') }}"
+    />
     <style>
-      .banner {
-        width: 100%;
-        height: auto;
-      }
-
-      .container {
-        text-align: left;
-        margin-top: 50px;
-        padding-left: 30%;
-        /* Add left padding */
-        padding-right: 30%;
-        /* Add right padding */
-      }
-
-      #consent-question {
-        display: flex;
-        flex-direction: column;
-        /* align-items: center; */
-      }
-
-      #next-button {
-        margin-top: 20px;
-        text-align: center;
-        /* Center the contents of this div */
-      }
-
-      /* CSS for highlighting the consent question */
-      .highlight {
-        border: 1px solid red;
-      }
-
-      a {
-        margin-top: 20px; /* add space above the link */
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 14px 28px;
-        font-size: 24px;
-        cursor: pointer;
-        text-decoration: none;
-        border: none;
-        border-radius: 5px;
-        transition: all 0.3s;
-      }
-      a:hover {
-        background-color: #0046d5;
-      }
-      .disabled {
-        pointer-events: none;
-        background-color: #cccccc;
-        cursor: not-allowed;
-      }
       video.center {
         display: block;
         margin-left: auto;
@@ -81,17 +40,19 @@
         you to customise your robot.
       </p>
       <p>click the next button to start your customisation.</p>
-      <a id="next-button">Next</a>
+
+      <div id="next-container">
+        <button type="submit" class="button" id="next-button">Next</button>
+      </div>
     </div>
     <script>
       $(document).ready(function () {
-        var isClicked = false; // Add this line
+        var isClicked = false;
 
         $("#next-button").on("click", function (event) {
           if (!isClicked) {
-            // Add this line
-            isClicked = true; // Add this line
-            window.location.href = "/custom_cond"; // Add this line
+            isClicked = true;
+            window.location.href = "/custom_cond";
             $(this).addClass("disabled");
           }
         });

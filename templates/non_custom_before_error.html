@@ -5,34 +5,34 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/button.css') }}"
     />
-    <style>
-      .banner {
-        width: 100%;
-        height: auto;
-      }
-
-      .container {
-        text-align: center;
-        margin-top: 50px;
-        padding-left: 30%;
-        padding-right: 30%;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/textfield.css') }}"
+    />
     <script>
-        window.onload = function() {
-            setTimeout(function() {
-                window.location.href = '/error_message';  // Replace with your desired route
-            }, 2000);  // 2000 milliseconds = 2 seconds
-        };
+      window.onload = function () {
+        setTimeout(function () {
+          window.location.href = "/error_message"; // Replace with your desired route
+        }, 2000); // 2000 milliseconds = 2 seconds
+      };
     </script>
   </head>
   <body>
     <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
-      This is the third and final round <br />
-      You will again attempt complete the balloon analog risk task<br />
-      Try and get the heighest score possible<br />
-      <button class="button" id="next-button">Next</button>
+      p>This is the final block of the study.</p>
+      <p>You will repeat the same task as before, with the robot.</p>
+      <p>
+        This time the robots suggestion will be based on the combination of your
+        previous performance on the previous blocks.
+      </p>
+      <div id="next-container">
+        <button class="button" id="next-button">Next</button>
+      </div>
     </div>
   </body>
 </html>
