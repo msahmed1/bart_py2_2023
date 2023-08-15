@@ -5,7 +5,7 @@ import cv2
 import threading
 
 def generate_frames():
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(4)
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
@@ -29,7 +29,7 @@ BALLOON_LIMITS = {
 }
 
 balloon_colour = list(BALLOON_LIMITS.keys())
-total_trials = 6 #! MODIFY THIS FOR THE FINAL STUDY
+total_trials = 30 #! MODIFY THIS FOR THE FINAL STUDY
 
 # Generate list with 50/50 split of 0s and 1s
 half_length = total_trials // 2
@@ -172,9 +172,9 @@ def trigger_robot_behavior():
     elif key_pressed == 'q':
         thread = threading.Thread(target=robot_controller.accept_band, args=(session['colour'],))
         thread.start()
-    elif key_pressed == 'a':
-        thread = threading.Thread(target=robot_controller.acknowledge_participant)
-        thread.start()
+    # elif key_pressed == 'a':
+    #     thread = threading.Thread(target=robot_controller.acknowledge_participant)
+    #     thread.start()
 
     return "Robot behavior triggered", 200
 

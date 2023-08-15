@@ -133,19 +133,20 @@
                 console.log(error);
               },
             });
-          } else if (keycode == "a") {
-            $.ajax({
-              url: "/trigger_robot_behavior",
-              type: "POST",
-              data: { key: "a" },
-              success: function (response) {
-                console.log(response);
-              },
-              error: function (error) {
-                console.log(error);
-              },
-            });
           }
+          // else if (keycode == "a") {
+          //   $.ajax({
+          //     url: "/trigger_robot_behavior",
+          //     type: "POST",
+          //     data: { key: "a" },
+          //     success: function (response) {
+          //       console.log(response);
+          //     },
+          //     error: function (error) {
+          //       console.log(error);
+          //     },
+          //   });
+          // }
         }
       });
     </script>
