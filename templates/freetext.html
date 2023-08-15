@@ -13,25 +13,20 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/textfield.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/questions.css') }}"
+    />
     <style>
       textarea {
         width: 100%;
-        /* height: 100%;
-            resize: none;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            font-size: 16px;
-            background-color: #f8f8f8;
-            padding: 12px 20px 12px 20px; */
       }
     </style>
   </head>
   <body>
     <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <div class="question-text">Do you have any thoughts, about the survey, that you would like to share?<br /></div>
       <form action="/freetext" method="post">
         <textarea name="response" rows="10" cols="30" class="text-field">
         </textarea

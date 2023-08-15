@@ -88,3 +88,9 @@ input[type="radio"] {
 .likert.required {
     border: 2px solid red;
 }
+
+.question-text {
+    font-size: 24px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

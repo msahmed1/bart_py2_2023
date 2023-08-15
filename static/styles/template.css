@@ -1,6 +1,7 @@
 .banner {
     width: 100%;
     height: auto;
+    margin-bottom: 5px;
 }
 
 .container {
@@ -8,4 +9,6 @@
     margin-top: 50px;
     padding-left: 30%;
     padding-right: 30%;
+    font-size: 18px;
+    line-height: 1.2;
 }
