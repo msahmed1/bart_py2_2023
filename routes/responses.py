@@ -59,9 +59,9 @@ survey_questions = [
         ],
     },
     {
-        "title": "By usign this robotic advisor...",
+        "title": "By Using this robotic advisor...",
         "questions": [
-            {"left": "Disagree", "right": "Completely agree", "question": "I can decide more quickly and eality which action to take than without using this robotic advisor", "name": "i_can_decide_more_quickly_and_easily_which_action_to_take_than_without_using_this_robotic_advisor"},
+            {"left": "Disagree", "right": "Completely agree", "question": "I can decide more quickly and easily which action to take than without using this robotic advisor", "name": "i_can_decide_more_quickly_and_easily_which_action_to_take_than_without_using_this_robotic_advisor"},
             {"left": "Disagree", "right": "Completely agree", "question": "I can make better decisions than without using this robotic advisor", "name": "i_can_make_better_decisions_than_without_using_this_robotic_advisor"},
             {"left": "Disagree", "right": "Completely agree", "question": "I am better informed about what action to take than without using this robotic advisor", "name": "i_am_better_informed_about_what_action_to_take_than_without_using_this_robotic_advisor"},
             {"left": "Disagree", "right": "Completely agree", "question": "I can make more accurate decisions than without using this robotic advisor", "name": "i_can_make_more_accurate_decisions_than_without_using_this_robotic_advisor"},
