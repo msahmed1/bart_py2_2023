@@ -61,11 +61,13 @@ def gameIntro_robot():
 
     if session['game_round'] == 1:
         message = 'Hi, for this first game I will just watch you play, good luck'
-        robot_controller = current_app.config['robot_controller_1']
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_1")
         robot_controller.start_up(message)
     else:
         message = 'Hi my name is Nao, I am here to help you with this game, good luck'
-        robot_controller = current_app.config['robot_controller_2']
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_1")
         robot_controller.start_up(message)    
 
     return redirect('/play')
@@ -100,7 +102,7 @@ def block_2_intro():
 
 @gameplay.route('/custom_cond')
 def custom_cond():
-    robot_controller = current_app.config['robot_controller_1']
+    robot_controller = current_app.config['robot_controller']
 
     # Define a new thread for the greeting
     thread = threading.Thread(target= robot_controller.request_band)
@@ -110,7 +112,7 @@ def custom_cond():
 
 @gameplay.route('/custom_voice')
 def custom_voice():
-    robot_controller = current_app.config['robot_controller_1']
+    robot_controller = current_app.config['robot_controller']
 
     threading.Thread(target=robot_controller.request_voice_change).start()
 
@@ -118,7 +120,7 @@ def custom_voice():
 
 @gameplay.route('/custom_name')
 def custom_name():
-    robot_controller = current_app.config['robot_controller_1']
+    robot_controller = current_app.config['robot_controller']
 
     threading.Thread(target=robot_controller.request_name_change).start()
 
@@ -133,7 +135,7 @@ def button_click(button_name):
         # Set the state of the clicked button to True
         button_states[button_name] = True
         # Call the function in robot_controller
-        robot_controller = current_app.config['robot_controller_1']
+        robot_controller = current_app.config['robot_controller']
         threading.Thread(target=robot_controller.set_voice, args=(button_name,)).start()
     return jsonify({'status': 'success'})
 
@@ -148,14 +150,14 @@ def non_custom_post_error():
 
 @gameplay.route('/error_message')
 def error_message():
-    robot_controller = current_app.config['robot_controller_1']
+    robot_controller = current_app.config['robot_controller']
     threading.Thread(target=robot_controller.low_battery).start()
     return render_template('error_message.html')
 
 @gameplay.route('/trigger_robot_behavior', methods=['POST'])
 def trigger_robot_behavior():
     key_pressed = request.form.get('key')
-    robot_controller = current_app.config['robot_controller_1']
+    robot_controller = current_app.config['robot_controller']
 
     if key_pressed == 'r':
         robot_controller.change_colour('red')
@@ -181,7 +183,7 @@ def trigger_robot_behavior():
 @gameplay.route('/submit_customisation', methods=['POST'])
 def submit_customisation():
     robot_name = request.form.get('robot-name')
-    robot_controller = current_app.config['robot_controller_1']
+    robot_controller = current_app.config['robot_controller']
     robot_controller.start_game_after_customisation(robot_name)
     return redirect('/play')
 
@@ -225,9 +227,11 @@ def help():
     session['help_provided'] = True
 
     if session['game_round'] == 2:
-        robot_controller = current_app.config['robot_controller_1']
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_1")
     else:
-        robot_controller = current_app.config['robot_controller_2']
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_2")
 
     if session['score'] == 0:
         # Define a new thread for the greeting

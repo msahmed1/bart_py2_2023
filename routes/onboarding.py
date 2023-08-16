@@ -36,11 +36,12 @@ def index():
     session['inflates'] = 0
     session['balloon_number'] = 0
 
-    robot_controller_1 = current_app.config['robot_controller_1']
-    robot_controller_1.sleep()
+    robot_controller = current_app.config['robot_controller']
+    robot_controller.set_robot_ip("robot_1")
+    robot_controller.sleep()
 
-    robot_controller_2 = current_app.config['robot_controller_2']
-    robot_controller_2.sleep()
+    robot_controller.set_robot_ip("robot_2")
+    robot_controller.sleep()
 
     return render_template('onboarding.html')
 

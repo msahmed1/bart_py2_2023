@@ -119,9 +119,6 @@ def survey():
         session['game_round'] += 1
         return redirect('/non_custom_pre_error')
     else:
-        robot_controller = current_app.config['robot_controller_1']
-        thread = threading.Thread(target=robot_controller.sleep)
-        thread.start()
         return render_template('freetext.html', banner_image_url=banner_image_url)
         
 

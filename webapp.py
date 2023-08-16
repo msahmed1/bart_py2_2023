@@ -30,22 +30,36 @@ MAX_RETRIES = 5
 RETRY_DELAY = 2
 
 class RobotController:
-    def __init__(self, robotIP, disable=False):
-        self.robotIP = robotIP
+    def __init__(self, disable=False):
+        self.set_robot_ip()
         self.disable = disable
         self.connected = False
 
         if not self.disable:
             self.connect()
+        
+        self.inflate_messages = ["I would inflate the balloon"]
+        self.collect_messages = ["I would not inflate the balloon"]
+        self.null_messages = ["I can not make a suggestion as you have to make an attempt first"] 
 
+        self.set_default_behaviour()
+
+    def set_robot_ip(self, robot):
+        if robot == "robot_1":
+            self.robotIP = robotIp1
+        elif robot == "robot_2":
+            self.robotIP = robotIp2
+        else:
+            self.robotIP = robotIp1
+        
+        self.connect()
+        self.set_default_behaviour()
+
+    def set_default_behaviour(self):
         self.speech_service.setParameter("defaultVoiceSpeed", 80)
         self.speech_service.setVolume(0.6)
         self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
         self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
-
-        self.inflate_messages = ["I would inflate the balloon"]
-        self.collect_messages = ["I would not inflate the balloon"]
-        self.null_messages = ["I can not make a suggestion as you have to make an attempt first"] 
 
         names = "body"
         stiffnessLists = 1.0
@@ -444,13 +458,10 @@ class RobotController:
                 self.speech_service.setParameter('pitchShift', 1.5)
                 self.talk('This is how my new voice sounds like')
         else:
-            pass
-
-    
+            pass    
 
 # Initialize the robot controller with the IP address of the robot
-app.config['robot_controller_1'] = RobotController(robotIp1, disable=False) # replace with the robot's actual IP address
-app.config['robot_controller_2'] = RobotController(robotIp2, disable=False) # replace with the robot's actual IP address
+app.config['robot_controller'] = RobotController(disable=False)
 
 if __name__ == '__main__':
     app.run()

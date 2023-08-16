@@ -1,5 +1,5 @@
 # Prerequisiete
-This code uses python2 and the robot used is a Nao. You will need to 'install the required packages' and configure the robot_controller, on the webapp.py script.
+This code uses python2 and the robot used is a Nao robot.
 
 # Start up virtual environment
 activate the environment by running source .venv/bin/activate
