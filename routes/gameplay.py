@@ -67,7 +67,7 @@ def gameIntro_robot():
     else:
         message = 'Hi my name is Nao, I am here to help you with this game, good luck'
         robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_1")
+        robot_controller.set_robot_ip("robot_2")
         robot_controller.start_up(message)    
 
     return redirect('/play')
@@ -138,7 +138,6 @@ def button_click(button_name):
         robot_controller = current_app.config['robot_controller']
         threading.Thread(target=robot_controller.set_voice, args=(button_name,)).start()
     return jsonify({'status': 'success'})
-
 
 @gameplay.route('/non_custom_pre_error')
 def non_custom_pre_error():
