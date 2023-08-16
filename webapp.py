@@ -39,7 +39,7 @@ class RobotController:
             self.connect()
 
         self.speech_service.setParameter("defaultVoiceSpeed", 80)
-        self.speech_service.setVolume(0.2)
+        self.speech_service.setVolume(0.6)
         self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
         self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
 
@@ -75,15 +75,23 @@ class RobotController:
     
     def reconnect_on_fail(func):
         def wrapper(self, *args, **kwargs):
-            try:
-                return func(self, *args, **kwargs)
-            except Exception as e:
-                print("###### Failed to connect to robot at %s due to %s. Attempting to reconnect..." % (self.robotIP, str(e)))
-                self.connected = False
-                self.connect()
-                if self.connected:
+            retries = 0
+            while retries < MAX_RETRIES:
+                try:
                     return func(self, *args, **kwargs)
-                time.sleep(RETRY_DELAY)
+                except Exception as e:
+                    print("###### Failed to connect to robot at %s due to %s. Attempting to reconnect..." % (self.robotIP, str(e)))
+                    self.connected = False
+                    self.connect()
+                    if self.connected:
+                        retries += 1
+                        time.sleep(RETRY_DELAY)
+                        continue  # retry the function
+                    else:
+                        # If unable to reconnect, raise the exception
+                        raise e
+            print("###### Reached max retries for function {}. Exiting.".format(func.__name__))
+            return None  # Or raise another custom exception if necessary
         return wrapper
     
     @reconnect_on_fail
