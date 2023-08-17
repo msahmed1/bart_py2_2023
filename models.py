@@ -6,7 +6,10 @@ db = SQLAlchemy()
 
 class Players(db.Model):
     player_id = db.Column(db.Integer, primary_key=True)
+
+    customise_first = db.Column(db.Boolean)
     testing = db.Column(db.Boolean)
+
     consent = db.Column(db.Boolean)
     balloon_inflates = db.relationship(
         'BalloonInflate', backref='player', lazy=True)
@@ -22,8 +25,9 @@ class Players(db.Model):
     
     freetext = db.Column(db.Text, nullable=True)
 
-    def __init__(self, player_id, testing, consent=False):
+    def __init__(self, player_id, customise_first, testing, consent=False):
         self.player_id = player_id
+        self.customise_first = customise_first
         self.testing = testing
         self.consent = consent
 
