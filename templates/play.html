@@ -117,13 +117,21 @@
         $("#collect-form").on("submit", function (event) {
           event.preventDefault(); // This stops the form from submitting and causing a page navigation
 
+          // Disable the button
+          var collectButton = $("#collect-button");
+          collectButton.prop("disabled", true);
+
           $.post("/collect", function (data) {
             if (data.redirect_url) {
               // If the server sends a 'redirect_url', navigate to that URL
               window.location.href = data.redirect_url;
             } else {
-              // Otherwise, update the button text
-              $("#collect-button").text(data.button_value);
+              // Update the button text and set a timeout to re-enable the button after 1 second
+              $("#collect-button").text("Help");
+              setTimeout(function () {
+                $("#collect-button").text(data.button_value);
+                collectButton.prop("disabled", false); // Re-enable the button
+              }, 1000);
             }
           });
         });
