@@ -21,40 +21,64 @@ app.register_blueprint(onboarding)
 app.register_blueprint(gameplay)
 app.register_blueprint(responses)
 
-robotIp1 = "164.11.72.14"
-robotIp2 = "164.11.73.190"
+robotIp1 = "164.11.73.60"
+robotIp2 = "164.11.72.91"
 
 PORT = 9559
 
-MAX_RETRIES = 5
+MAX_RETRIES = 3
 RETRY_DELAY = 2
 
 class RobotController:
     def __init__(self, disable=False):
-        self.set_robot_ip()
         self.disable = disable
         self.connected = False
 
         if not self.disable:
-            self.connect()
+            self.set_robot_ip()
+            # self.connect()
         
-        self.inflate_messages = ["I would inflate the balloon"]
-        self.collect_messages = ["I would not inflate the balloon"]
-        self.null_messages = ["I can not make a suggestion as you have to make an attempt first"] 
+            self.inflate_messages = ["I would inflate the balloon"]
+            self.collect_messages = ["I would not inflate the balloon"]
+            self.null_messages = ["I can not make a suggestion as you have to make an attempt first"] 
 
-        self.set_default_behaviour()
+            # self.set_default_behaviour()
 
-    def set_robot_ip(self, robot):
+    def set_robot_ip(self, robot = "robot_1"):
+        if self.disable:
+            print("In Set Robot IP and robot is disabled")
+            return
+        
         if robot == "robot_1":
             self.robotIP = robotIp1
         elif robot == "robot_2":
             self.robotIP = robotIp2
-        else:
-            self.robotIP = robotIp1
         
         self.connect()
         self.set_default_behaviour()
-
+    
+    def reconnect_on_fail(func):
+        def wrapper(self, *args, **kwargs):
+            retries = 0
+            while retries < MAX_RETRIES:
+                try:
+                    return func(self, *args, **kwargs)
+                except Exception as e:
+                    # print("###### Failed to connect to robot at %s due to %s. Attempting to reconnect..." % (self.robotIP, str(e)))
+                    self.connected = False
+                    self.connect()
+                    if self.connected:
+                        retries += 1
+                        time.sleep(RETRY_DELAY)
+                        continue  # retry the function
+                    else:
+                        # If unable to reconnect, raise the exception
+                        raise e
+            # print("###### Reached max retries for function {}. Exiting.".format(func.__name__))
+            return None  # Or raise another custom exception if necessary
+        return wrapper    
+    
+    @reconnect_on_fail
     def set_default_behaviour(self):
         self.speech_service.setParameter("defaultVoiceSpeed", 80)
         self.speech_service.setVolume(0.6)
@@ -67,6 +91,10 @@ class RobotController:
         self.motion_service.stiffnessInterpolation(names, stiffnessLists, timeLimits)
 
     def connect(self):
+        if self.disable:
+            print("In Connect and robot is disabled")
+            return
+
         retry_count = 0
         while retry_count < MAX_RETRIES:
             try:
@@ -86,27 +114,6 @@ class RobotController:
 
         if not self.connected:
             print("###### Failed to connect to robot at %s after %s attempts." % (self.robotIP, MAX_RETRIES))
-    
-    def reconnect_on_fail(func):
-        def wrapper(self, *args, **kwargs):
-            retries = 0
-            while retries < MAX_RETRIES:
-                try:
-                    return func(self, *args, **kwargs)
-                except Exception as e:
-                    print("###### Failed to connect to robot at %s due to %s. Attempting to reconnect..." % (self.robotIP, str(e)))
-                    self.connected = False
-                    self.connect()
-                    if self.connected:
-                        retries += 1
-                        time.sleep(RETRY_DELAY)
-                        continue  # retry the function
-                    else:
-                        # If unable to reconnect, raise the exception
-                        raise e
-            print("###### Reached max retries for function {}. Exiting.".format(func.__name__))
-            return None  # Or raise another custom exception if necessary
-        return wrapper
     
     @reconnect_on_fail
     def start_up(self, message):
@@ -375,6 +382,8 @@ class RobotController:
 
             # Go to rest position
             # self.motion_service.rest()
+
+            self.life_service.setState("disabled")
         else:
             pass
  
