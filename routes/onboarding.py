@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session, current_app
+from flask import Blueprint, render_template, request, redirect, session, current_app, jsonify
 from models import db, Players
 import random
 
@@ -43,6 +43,16 @@ def index():
     robot_controller.set_robot_ip("robot_2")
     robot_controller.sleep()
 
+    count_false = Players.query.filter_by(customise_first=False, testing=False).count()
+    count_true = Players.query.filter_by(customise_first=True, testing=False).count()
+
+    return render_template('set_up.html', count_false=count_false, count_true=count_true)
+
+@onboarding.route('/submit_setup', methods=['POST'])
+def submit_setup():
+    # Get the toggle state from the form
+    session['toggle_state'] = 'toggleState' in request.form
+
     return render_template('onboarding.html')
 
 @onboarding.route('/submit_id', methods=['POST'])
@@ -50,8 +60,8 @@ def submit_id():
     player_id = generate_id()
     while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
         player_id = generate_id()  # Generate a new ID
-    
-    player = Players(player_id, False, False)  # Pass the consent to the Players constructor
+
+    player = Players(player_id, session['toggle_state'], False)  # Pass the consent to the Players constructor
     session['player_id'] = player_id
     db.session.add(player)
     
@@ -62,10 +72,10 @@ def submit_id():
 def submit_dev_id():
     player_id = generate_id()
     while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
-        player_id = generate_id()  # Generate a new ID
+        player_id = generate_id()  # Generate a new I
     
     # Set testing to True if dev button is clicked
-    player = Players(player_id, True, False)  # Pass the consent to the Players constructor
+    player = Players(player_id, session['toggle_state'], True)  # Pass the consent to the Players constructor
     session['player_id'] = player_id
     db.session.add(player)
     
