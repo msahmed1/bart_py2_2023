@@ -347,6 +347,8 @@ def collect_or_burst():
     if collected_score == 0:
         return jsonify({'redirect_url': url_for('gameplay.noPoints')})
     elif request.path == '/burst' or session['inflates'] > session['balloon_limit']:
+        robot_controller = current_app.config['robot_controller']
+        threading.Thread(target=robot_controller.burst).start()
         session['score'] = 0  # Reset the score
         return render_template('burst.html')
     

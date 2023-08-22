@@ -21,8 +21,8 @@ app.register_blueprint(onboarding)
 app.register_blueprint(gameplay)
 app.register_blueprint(responses)
 
-robotIp1 = "164.11.73.60"
-robotIp2 = "164.11.72.91"
+robotIp1 = "164.11.72.91"
+robotIp2 = "164.11.72.133"
 
 PORT = 9559
 
@@ -467,10 +467,17 @@ class RobotController:
                 self.speech_service.setParameter('pitchShift', 1.5)
                 self.talk('This is how my new voice sounds like')
         else:
-            pass    
+            pass
+
+    @reconnect_on_fail
+    def burst(self):
+        if self.disable == False:
+            self.talk('Oh no')
+        else:
+            pass  
 
 # Initialize the robot controller with the IP address of the robot
-app.config['robot_controller'] = RobotController(disable=False)
+app.config['robot_controller'] = RobotController(disable=True)
 
 if __name__ == '__main__':
     app.run()
