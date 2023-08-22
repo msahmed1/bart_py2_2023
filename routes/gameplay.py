@@ -24,20 +24,24 @@ gameplay = Blueprint('gameplay', __name__)
 # Define the inflate limit for each balloon
 BALLOON_LIMITS = {
     'red': 8,
-    'blue': 16,
     'green': 32
 }
 
-balloon_colour = list(BALLOON_LIMITS.keys())
-total_trials = 6 #! MODIFY THIS FOR THE FINAL STUDY
-
+total_trials = 30 #! MODIFY THIS FOR THE FINAL STUDY
 # Generate list with 50/50 split of 0s and 1s
 half_length = total_trials // 2
+
+balloon_colours = list(BALLOON_LIMITS.keys())
+# 50% of the balloons are red and the other 50% is green
+balloon_colour = [balloon_colours[0]] * half_length + [balloon_colours[1]] * half_length
+print(balloon_colours)
+
 # Shuffle the list to get a random sequence
 ROBOT_FEEDBACK = [True] * half_length + [False] * half_length
 
 # Shuffle the list to get a random sequence
 random.shuffle(ROBOT_FEEDBACK)
+random.shuffle(balloon_colour)
 
 banner_image_url = 'static/logos.png'
 
@@ -59,24 +63,26 @@ def gameIntro_robot():
     if 'game_round' not in session:
         session['game_round'] = 1  # Initialize game_round
 
+    if session['game_round'] == 1 or session['game_round'] == 2:
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_1")
+    else:
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_2")
+
     if session['game_round'] == 1:
         message = 'Hi, for this first game I will just watch you play, good luck'
         robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_1")
         robot_controller.start_up(message)
     else:
         message = 'Hi my name is Nao, I am here to help you with this game, good luck'
         robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_2")
         robot_controller.start_up(message)    
 
     return redirect('/play')
 
 @gameplay.route('/play', methods=['GET', 'POST'])
 def play():
-    session['balloon_color'] = random.choice(balloon_colour)
-    session['balloon_limit'] = random.randint( 1, BALLOON_LIMITS[session['balloon_color']])
-
     # Check if balloon_index and balloons_completed have been initialized, if not, initialize them
     if 'balloons_completed' not in session or 'inflates' not in session:
         session['balloons_completed'] = 0
@@ -89,6 +95,9 @@ def play():
     # Check if the help_provided has been initialised, if not, initialise it
     if 'help_provided' not in session:
         session['help_provided'] = False
+
+    session['balloon_color'] = balloon_colour[session['balloons_completed']]
+    session['balloon_limit'] = random.randint( 1, BALLOON_LIMITS[session['balloon_color']])
 
      # If it is the second game round, handle the collect button functionality like the help button
     if session['game_round'] > 1:
@@ -113,6 +122,13 @@ def custom_post_error():
 
 @gameplay.route('/custom_cond')
 def custom_cond():
+    if session['game_round'] == 1 or session['game_round'] == 2:
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_1")
+    else:
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_2")
+
     robot_controller = current_app.config['robot_controller']
 
     # Define a new thread for the greeting
@@ -242,12 +258,7 @@ def help():
     # Set the help_provided variable to True
     session['help_provided'] = True
 
-    if session['game_round'] == 2:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_1")
-    else:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_2")
+    robot_controller = current_app.config['robot_controller']
 
     if session['score'] == 0:
         # Define a new thread for the greeting
@@ -274,18 +285,19 @@ def help():
         else:
             balloon_inflate.help_requested = True
             balloon_inflate.robot_response = ROBOT_FEEDBACK[session['balloons_completed']]
+            # TODO: Record inflates when help was clicked
         
         db.session.commit()
         
         if ROBOT_FEEDBACK[session['balloons_completed']]:
-            # Define a new thread for the greeting
+            # Robot requests a inflate
             thread = threading.Thread(target=robot_controller.inflate)
-            thread.start()  # Start the thread, which will run in parallel
+            thread.start()
             pass
         else:
             # Robot requests a collect
             thread = threading.Thread(target=robot_controller.collect)
-            thread.start()  # Start the thread, which will run in paralle
+            thread.start()
             pass
     
     if session['help_provided'] == False and session['game_round'] > 1:
@@ -325,6 +337,8 @@ def collect_or_burst():
     collected_score = session['score']  # Store the score before resetting it
     session['inflates'] = 0  # Reset the inflates
     session['balloons_completed'] += 1  # Increment the balloons_completed
+
+    # TODO: If help provided then recorde inflates after help provided
     
     # Set the help_provided variable to False for the next game round
     session['help_provided'] = False
