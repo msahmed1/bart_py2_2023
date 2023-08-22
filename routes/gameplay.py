@@ -29,7 +29,7 @@ BALLOON_LIMITS = {
 }
 
 balloon_colour = list(BALLOON_LIMITS.keys())
-total_trials = 30 #! MODIFY THIS FOR THE FINAL STUDY
+total_trials = 6 #! MODIFY THIS FOR THE FINAL STUDY
 
 # Generate list with 50/50 split of 0s and 1s
 half_length = total_trials // 2
@@ -96,9 +96,20 @@ def play():
 
     return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], button_value='Collect')
 
-@gameplay.route('/block_2_intro')
-def block_2_intro():
-    return render_template('block_2_intro.html', banner_image_url=banner_image_url)
+@gameplay.route('/condition_selection')
+def condition_selection():
+    if session['exp_cond']:
+        return redirect('/custom_pre_error')
+    else:
+        return redirect('/non_custom_pre_error')
+
+@gameplay.route('/custom_pre_error')
+def custom_pre_error():
+    return render_template('custom_before_error.html', banner_image_url=banner_image_url)
+
+@gameplay.route('/custom_post_error')
+def custom_post_error():
+    return render_template('custom_after_error.html', banner_image_url=banner_image_url)
 
 @gameplay.route('/custom_cond')
 def custom_cond():
@@ -147,11 +158,17 @@ def non_custom_pre_error():
 def non_custom_post_error():
     return render_template('non_custom_after_error.html', banner_image_url=banner_image_url)
 
-@gameplay.route('/error_message')
-def error_message():
+@gameplay.route('/error_message_non_customise')
+def error_message_non_customise():
     robot_controller = current_app.config['robot_controller']
     threading.Thread(target=robot_controller.low_battery).start()
-    return render_template('error_message.html')
+    return render_template('error_message_non_customise.html')
+
+@gameplay.route('/error_message_customise')
+def error_message_customise():
+    robot_controller = current_app.config['robot_controller']
+    threading.Thread(target=robot_controller.low_battery).start()
+    return render_template('error_message_customise.html')
 
 @gameplay.route('/trigger_robot_behavior', methods=['POST'])
 def trigger_robot_behavior():
@@ -368,4 +385,4 @@ def end():
     session['question_group_index'] = 0
     session['totalScore'] = 0
     
-    return render_template('end.html', score=total)
+    return render_template('total_score.html', score=total)

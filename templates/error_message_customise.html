@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/feedback.css') }}"
+    />
+    <style>
+        #image-container img {
+            width: 500px;
+            height: auto;
+        }
+    </style>
+    <script>
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                window.location.href = '/custom_post_error';
+            }
+        });
+    </script>
+</head>
+<body>
+    <div id="image-container">
+        <img src="static/error_symbol.png" alt="error Symbol">
+    </div>
+    <div id="text-container">
+        Lost connection with robot<br/>
+    </div>
+</body>
+</html>

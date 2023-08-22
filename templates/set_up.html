@@ -78,12 +78,12 @@
     <div id="form-container">
       <form action="/submit_setup" method="post">
         <div>Set condition:</div>
-        <span>{{ count_false }}</span>
+        <span>C1: {{ count_false }}</span>
         <label class="switch">
           <input type="checkbox" name="toggleState" id="toggleSwitch" />
           <span class="slider round"></span>
         </label>
-        <span>{{ count_true }}</span>
+        <span>C2: {{ count_true }}</span>
         <div id="button-container">
           <button type="submit" class="button" id="start-button">Next</button>
         </div>

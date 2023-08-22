@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/text_field.css') }}"
+    />
+    <style>
+      video.center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      window.onload = function () {
+        setTimeout(function () {
+          window.location.href = "/error_message_customise"; // Replace with your desired route
+        }, 2000); // 2000 milliseconds = 2 seconds
+      };
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <!-- <video class="center" width="320" height="240" autoplay="autoplay" controls>
+        <source src={{ url_for('static', filename="sample-video.mp4") }}
+        type="video/mp4"> Your browser does not support the video tag.
+      </video> -->
+      <p>You will repeat the same task as before.</p>
+      <p>
+        On this block the robot will make suggestions to you based on your
+        privious performance
+      </p>
+      <p>
+        Before you start the next block, we though it would be entertaining for
+        you to customise your robot.
+      </p>
+      <p>click the next button to start your customisation.</p>
+
+      <div id="next-container">
+        <button class="button" id="next-button">Next</button>
+      </div>
+    </div>
+  </body>
+</html>

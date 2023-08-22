@@ -30,6 +30,7 @@ def index():
     session.pop('balloon_number', None)
     session.pop('balloon_limit', None)
     session.pop('colour', None)
+    session.pop('exp_cond', None)
 
     session['totalScore'] = 0
     session['score'] = 0
@@ -51,7 +52,7 @@ def index():
 @onboarding.route('/submit_setup', methods=['POST'])
 def submit_setup():
     # Get the toggle state from the form
-    session['toggle_state'] = 'toggleState' in request.form
+    session['exp_cond'] = 'toggleState' in request.form
 
     return render_template('onboarding.html')
 
@@ -61,7 +62,7 @@ def submit_id():
     while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
         player_id = generate_id()  # Generate a new ID
 
-    player = Players(player_id, session['toggle_state'], False)  # Pass the consent to the Players constructor
+    player = Players(player_id, session['exp_cond'], False)  # Pass the consent to the Players constructor
     session['player_id'] = player_id
     db.session.add(player)
     
@@ -75,7 +76,7 @@ def submit_dev_id():
         player_id = generate_id()  # Generate a new I
     
     # Set testing to True if dev button is clicked
-    player = Players(player_id, session['toggle_state'], True)  # Pass the consent to the Players constructor
+    player = Players(player_id, session['exp_cond'], True)  # Pass the consent to the Players constructor
     session['player_id'] = player_id
     db.session.add(player)
     
