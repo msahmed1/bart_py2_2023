@@ -71,12 +71,10 @@ def gameIntro_robot():
         robot_controller.set_robot_ip("robot_2")
 
     if session['game_round'] == 1:
-        message = 'Hi, for this first game I will just watch you play, good luck'
-        robot_controller = current_app.config['robot_controller']
+        message = 'For this first game I will just watch you play, good luck'
         robot_controller.start_up(message)
     else:
-        message = 'Hi my name is Nao, I am here to help you with this game, good luck'
-        robot_controller = current_app.config['robot_controller']
+        message = 'Hi, my name is Nao, I am here to help you with this game, good luck'
         robot_controller.start_up(message)    
 
     return redirect('/play')
@@ -118,10 +116,14 @@ def custom_pre_error():
 
 @gameplay.route('/custom_post_error')
 def custom_post_error():
+    robot_controller = current_app.config['robot_controller']
+    robot_controller.set_robot_ip("robot_2")
+    robot_controller.start_up()
     return render_template('custom_after_error.html', banner_image_url=banner_image_url)
 
 @gameplay.route('/custom_cond')
 def custom_cond():
+    print('in custom cond, game round is: ', session['game_round'])
     if session['game_round'] == 1 or session['game_round'] == 2:
         robot_controller = current_app.config['robot_controller']
         robot_controller.set_robot_ip("robot_1")
@@ -131,9 +133,7 @@ def custom_cond():
 
     robot_controller = current_app.config['robot_controller']
 
-    # Define a new thread for the greeting
-    thread = threading.Thread(target= robot_controller.request_band)
-    thread.start()  # Start the thread, which will run in parallel
+    threading.Thread(target=robot_controller.request_band).start()
 
     return render_template('customise_clothing.html')
 

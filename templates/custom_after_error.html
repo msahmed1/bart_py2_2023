@@ -47,14 +47,9 @@
     </div>
     <script>
       $(document).ready(function () {
-        var isClicked = false;
-
         $("#next-button").on("click", function (event) {
-          if (!isClicked) {
-            isClicked = true;
-            window.location.href = "/custom_cond";
-            $(this).addClass("disabled");
-          }
+          $(this).prop("disabled", true);
+          window.location.href = "/custom_cond";
         });
       });
     </script>
