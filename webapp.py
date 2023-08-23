@@ -81,9 +81,10 @@ class RobotController:
     @reconnect_on_fail
     def set_default_behaviour(self):
         self.speech_service.setParameter("defaultVoiceSpeed", 80)
-        self.speech_service.setVolume(0.6)
+        self.speech_service.setVolume(0.4)
         self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
         self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
+        self.speech_service.setParameter('pitchShift', 1.13)
 
         names = "body"
         stiffnessLists = 1.0
@@ -116,37 +117,35 @@ class RobotController:
             print("###### Failed to connect to robot at %s after %s attempts." % (self.robotIP, MAX_RETRIES))
     
     @reconnect_on_fail
-    def start_up(self, message):
+    def start_up(self, message = ''):
         if self.disable:
             print("In Start Up and robot is disabled")
             return
         
-        self.motion_service.wakeUp()
-        
         # Wake up robot
         self.motion_service.wakeUp()
         
-        self.leds.on("AllLeds")
-        self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
+        self.change_colour('white')
 
         # Send robot to Stand Zero
         self.posture_service.goToPosture("Sit", 0.5)
         
-        time.sleep(1.0)
+        if message != '':
+            time.sleep(1.0)
 
-        self.face_participant()
+            self.face_participant()
 
-        time.sleep(1.0)
+            time.sleep(1.0)
 
-        self.talk(message)
+            self.talk(message)
 
-        time.sleep(1.0)
+            time.sleep(1.0)
 
-        self.nod_head()
+            self.nod_head()
 
-        time.sleep(1.0)
+            time.sleep(1.0)
 
-        self.face_screen()
+            self.face_screen()
 
     @reconnect_on_fail
     def face_participant(self):
@@ -280,6 +279,8 @@ class RobotController:
                 self.leds.fadeRGB("AllLeds", 0.0, 255.0, 0, 0.0)
             elif colour == 'blue':
                 self.leds.fadeRGB("AllLeds", 0.0, 0.0, 255.0, 0.0)
+            elif colour == 'white':
+                self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
         else:
             pass
     @reconnect_on_fail
@@ -300,7 +301,7 @@ class RobotController:
 
             time.sleep(1.0)
 
-            self.talk('Can you choose one and put it on me')
+            self.talk('Can you choose the colour you like best and put it on me')
 
             # lower right hand
             self.motion_service.angleInterpolation(
@@ -477,7 +478,7 @@ class RobotController:
             pass  
 
 # Initialize the robot controller with the IP address of the robot
-app.config['robot_controller'] = RobotController(disable=True)
+app.config['robot_controller'] = RobotController(disable=False)
 
 if __name__ == '__main__':
     app.run()
