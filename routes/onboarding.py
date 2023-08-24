@@ -18,7 +18,7 @@ def index():
     session.pop('game_round', None)
     session.pop('player_id', None)
     session.pop('balloons_completed', None)
-    session.pop('inflates', None)
+    session.pop('total_inflates', None)
     session.pop('score', None)
     session.pop('scales_index', None)
     session.pop('question_group_index', None)
@@ -26,7 +26,7 @@ def index():
     session.pop('balloon_color', None)
     session.pop('totalScore', None)
     session.pop('score', None)
-    session.pop('inflates', None)
+    session.pop('total_inflates', None)
     session.pop('balloon_number', None)
     session.pop('balloon_limit', None)
     session.pop('colour', None)
@@ -34,7 +34,7 @@ def index():
 
     session['totalScore'] = 0
     session['score'] = 0
-    session['inflates'] = 0
+    session['total_inflates'] = 0
     session['balloon_number'] = 0
 
     robot_controller = current_app.config['robot_controller']
@@ -105,6 +105,8 @@ def submit_demograph():
     player_id = session['player_id']
     age = request.form['age']
     gender = request.form['gender']
+    if gender == 'other_gender':
+        gender = request.form.get('other-gender-text')
     # ethnicity = request.form['ethnicity']
     # education = request.form['education']
     # robot_familiarity = request.form['robot_familiarity']

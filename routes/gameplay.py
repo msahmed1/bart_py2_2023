@@ -82,9 +82,9 @@ def gameIntro_robot():
 @gameplay.route('/play', methods=['GET', 'POST'])
 def play():
     # Check if balloon_index and balloons_completed have been initialized, if not, initialize them
-    if 'balloons_completed' not in session or 'inflates' not in session:
+    if 'balloons_completed' not in session or 'total_inflates' not in session:
         session['balloons_completed'] = 0
-        session['inflates'] = 0
+        session['total_inflates'] = 0
 
     # Check if the game is over
     if session['balloons_completed'] >= total_trials:
@@ -226,8 +226,8 @@ def video_feed():
 @gameplay.route('/inflate', methods=['POST'])
 def inflate():
     # Inflate the balloon and update the database
-    inflates = int(session['inflates']) + 1
-    session['inflates'] = inflates
+    total_inflates = int(session['total_inflates']) + 1
+    session['total_inflates'] = total_inflates
     session['score'] += 10  # Increment the score
 
     # update the database with the player compliance if the robot requests an inflate and help is clicked
@@ -245,11 +245,11 @@ def inflate():
         )
         db.session.add(balloon_inflate)
     elif session['help_provided']:
-        balloon_inflate.inflate_after_help_request = True
+        balloon_inflate.inflated_after_help_request = True
 
     db.session.commit()
 
-    if inflates > session['balloon_limit']:
+    if total_inflates > session['balloon_limit']:
         return jsonify({'status': 'burst', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'game_round': session['game_round']})
     else:
         return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'game_round': session['game_round']})
@@ -281,11 +281,12 @@ def help():
                 help_requested=True,
                 robot_response=ROBOT_FEEDBACK[session['balloons_completed']]
             )
+            balloon_inflate.inflate_before_help_request = int(session['total_inflates'])
             db.session.add(balloon_inflate)
         else:
             balloon_inflate.help_requested = True
             balloon_inflate.robot_response = ROBOT_FEEDBACK[session['balloons_completed']]
-            # TODO: Record inflates when help was clicked
+            balloon_inflate.inflate_before_help_request = int(session['total_inflates'])
         
         db.session.commit()
         
@@ -309,7 +310,7 @@ def help():
 @gameplay.route('/collect', methods=['POST'])
 def collect_or_burst():
 
-    if session['help_provided'] == False and session['game_round'] > 1 and session['balloons_completed'] < total_trials and session['inflates'] <= session['balloon_limit']:
+    if session['help_provided'] == False and session['game_round'] > 1 and session['balloons_completed'] < total_trials and session['total_inflates'] <= session['balloon_limit']:
         return help()
     
     # Record the balloon inflate in the database
@@ -325,20 +326,19 @@ def collect_or_burst():
             player_id=session['player_id'],
             balloon_id=session['balloons_completed'],
             game_round=session['game_round'],
-            inflates=int(session['inflates'])
+            total_inflates=int(session['inflates'])
         )
         db.session.add(balloon_inflate)
     else:
-        # Entry exists, update it
-        balloon_inflate.inflates = int(session['inflates']) + 1
+        balloon_inflate.total_inflates = int(session['total_inflates'])
     
     db.session.commit()
 
     collected_score = session['score']  # Store the score before resetting it
-    session['inflates'] = 0  # Reset the inflates
+    session['total_inflates'] = 0  # Reset the total_inflates
     session['balloons_completed'] += 1  # Increment the balloons_completed
 
-    # TODO: If help provided then recorde inflates after help provided
+    # TODO: If help provided then recorde total_inflates after help provided
     
     # Set the help_provided variable to False for the next game round
     session['help_provided'] = False
@@ -346,7 +346,7 @@ def collect_or_burst():
     # If the score is 0, redirect to the /noPoints route
     if collected_score == 0:
         return jsonify({'redirect_url': url_for('gameplay.noPoints')})
-    elif request.path == '/burst' or session['inflates'] > session['balloon_limit']:
+    elif request.path == '/burst' or session['total_inflates'] > session['balloon_limit']:
         robot_controller = current_app.config['robot_controller']
         threading.Thread(target=robot_controller.burst).start()
         session['score'] = 0  # Reset the score
@@ -394,7 +394,7 @@ def end():
 
     # Reset the session variables
     session.pop('balloons_completed', None)
-    session.pop('inflates', None)
+    session.pop('total_inflates', None)
     session['score'] = 0  # Reset the score
 
     session['scales_index'] = 0
