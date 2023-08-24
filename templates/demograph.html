@@ -54,6 +54,11 @@
             <input type="radio" id="56+" name="age" value="56+" />
             56+
           </label>
+          <br />
+          <label class="Radio" for="other_age">
+            <input type="radio" id="other_age" name="age" value="0" />
+            Prefer not to say
+          </label>
           <br /><br />
         </div>
 
@@ -70,10 +75,19 @@
             Female
           </label>
           <br />
-          <label class="Radio" for="other">
-            <input type="radio" id="other" name="gender" value="other" />
-            Other
+          <label class="Radio" for="other_gender">
+            <input type="radio" id="other_gender" name="gender" value="other_gender" />
+            Not listed
           </label>
+          <div id="other-gender-input" style="display: none">
+            <input
+              type="text"
+              id="other-gender-text"
+              name="other-gender-text"
+              placeholder="Please specify your gender"
+              maxlength="20"
+            />
+          </div>
           <br /><br />
         </div>
 
@@ -158,6 +172,17 @@
             firstNotFilled.scrollIntoView();
           }
         });
+      document.getElementById("other_gender").addEventListener("click", function () {
+        document.getElementById("other-gender-input").style.display = "block";
+      });
+
+      document.getElementById("male").addEventListener("click", function () {
+        document.getElementById("other-gender-input").style.display = "none";
+      });
+
+      document.getElementById("female").addEventListener("click", function () {
+        document.getElementById("other-gender-input").style.display = "none";
+      });
     </script>
   </body>
 </html>

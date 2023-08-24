@@ -11,14 +11,14 @@ class Players(db.Model):
     testing = db.Column(db.Boolean)
 
     consent = db.Column(db.Boolean)
-    balloon_inflates = db.relationship(
+    balloon_total_inflates = db.relationship(
         'BalloonInflate', backref='player', lazy=True)
     game_round_surveys = db.relationship(
         'GameRoundSurvey', backref='player', lazy=True)
     
     # Demographics
     age = db.Column(db.Integer)
-    gender = db.Column(db.String(10))
+    gender = db.Column(db.String(20))
     # ethnicity = db.Column(db.String(50))
     # education = db.Column(db.String(50))
     # robot_familiarity = db.Column(db.Integer)
@@ -37,23 +37,26 @@ class BalloonInflate(db.Model):
     player_id = db.Column(db.Integer, db.ForeignKey(
         'players.player_id'), nullable=False)
     balloon_id = db.Column(db.Integer, nullable=False)
-    inflates = db.Column(db.Integer, default=0)
+    total_inflates = db.Column(db.Integer, default=0)
 
     game_round = db.Column(db.Integer, default=0)
     help_requested = db.Column(db.Boolean, default=False)
     robot_response = db.Column(db.Boolean, default=False)
-    inflate_after_help_request = db.Column(db.Boolean, default=False)
+    inflated_after_help_request = db.Column(db.Boolean, default=False)
 
-    def __init__(self, player_id, balloon_id, inflates=0, game_round=0, help_requested=False, robot_response=False, inflate_after_help_request=False):
+    total_inflates_before_help_request = db.Column(db.Integer, default=0)
+    # Calculate inflates_after_help_request by subtracting inflates_before_help_request from total_inflates
+
+    def __init__(self, player_id, balloon_id, total_inflates=0, game_round=0, help_requested=False, robot_response=False, inflated_after_help_request=False):
         super(BalloonInflate, self).__init__()
         self.player_id = player_id
         self.balloon_id = balloon_id
-        self.inflates = inflates
+        self.total_inflates = total_inflates
         self.game_round = game_round
 
         self.help_requested = help_requested
         self.robot_response = robot_response
-        self.inflate_after_help_request = inflate_after_help_request
+        self.inflated_after_help_request = inflated_after_help_request
 
 class GameRoundSurvey(db.Model):
     id = db.Column(db.Integer, primary_key=True)
