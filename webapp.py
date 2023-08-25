@@ -329,25 +329,27 @@ class RobotController:
             self.posture_service.goToPosture("Sit", 0.5)
 
             self.talk('Thank you')
-
-            time.sleep(0.5)
-
+            
             self.face_participant()
+
+            time.sleep(1)
 
             reponse = "{colour} looks good on me".format(colour=colour)
 
             self.talk(reponse)
 
-            self.talk("press the next button for some more customsation")
+            time.sleep(0.5)
         else:
             pass
 
     @reconnect_on_fail
     def request_voice_change(self):
         if self.disable == False:
+            time.sleep(0.5)
+
             self.face_participant()
 
-            self.talk('Why not change my voice as well')
+            self.talk('My voice can be changed as well')
         else:
             pass
 

@@ -204,11 +204,7 @@ def trigger_robot_behavior():
         robot_controller.talk("blue")
         session['colour'] = 'blue'
     elif key_pressed == 'q':
-        thread = threading.Thread(target=robot_controller.accept_band, args=(session['colour'],))
-        thread.start()
-    # elif key_pressed == 'a':
-    #     thread = threading.Thread(target=robot_controller.acknowledge_participant)
-    #     thread.start()
+        robot_controller.accept_band(session['colour'],)
 
     return "Robot behavior triggered", 200
 
