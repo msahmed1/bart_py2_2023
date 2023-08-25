@@ -83,7 +83,7 @@
       </div>
       <div id="progress-counter" class="text-style">
         Progress: <br />
-        {{ balloons_completed }} of {{ balloon_limit }}
+        {{ progress }} of {{ balloon_limit }}
       </div>
     </div>
     <form id="inflate-form" action="/inflate" method="post">
@@ -104,7 +104,7 @@
               $("#inflate-text").text("Score: " + data.score);
               $("#progress-counter").text(
                 "Progress: " +
-                  data.balloons_completed +
+                  data.progress +
                   " of " +
                   data.balloon_limit
               );

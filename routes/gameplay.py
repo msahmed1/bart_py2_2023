@@ -99,9 +99,9 @@ def play():
 
      # If it is the second game round, handle the collect button functionality like the help button
     if session['game_round'] > 1:
-        return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], button_value=' Help ')
+        return render_template('play.html', score=session['score'], balloon_limit=total_trials, progress=session['balloons_completed']+1, balloon_color=session['balloon_color'], button_value=' Help ')
 
-    return render_template('play.html', score=session['score'], balloon_limit=total_trials, balloons_completed=session['balloons_completed'], balloon_color=session['balloon_color'], button_value='Collect')
+    return render_template('play.html', score=session['score'], balloon_limit=total_trials, progress=session['balloons_completed']+1, balloon_color=session['balloon_color'], button_value='Collect')
 
 @gameplay.route('/condition_selection')
 def condition_selection():
@@ -250,9 +250,9 @@ def inflate():
     db.session.commit()
 
     if total_inflates > session['balloon_limit']:
-        return jsonify({'status': 'burst', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'game_round': session['game_round']})
+        return jsonify({'status': 'burst', 'score': session['score'], 'balloon_limit': total_trials, 'progress': session['balloons_completed']+1, 'game_round': session['game_round']})
     else:
-        return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'balloons_completed': session['balloons_completed'], 'game_round': session['game_round']})
+        return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'progress': session['balloons_completed']+1, 'game_round': session['game_round']})
 
 def help():
     # Set the help_provided variable to True

@@ -44,16 +44,16 @@ def index():
     robot_controller.set_robot_ip("robot_2")
     robot_controller.sleep()
 
-    count_false = Players.query.filter_by(customise_first=False, testing=False).count()
-    count_true = Players.query.filter_by(customise_first=True, testing=False).count()
+    non_custom_first = Players.query.filter_by(customise_first=False, testing=False).count()
+    custom_first = Players.query.filter_by(customise_first=True, testing=False).count()
 
-    return render_template('set_up.html', count_false=count_false, count_true=count_true)
+    return render_template('set_up.html', non_custom_first=non_custom_first, custom_first=custom_first)
 
 @onboarding.route('/submit_setup', methods=['POST'])
 def submit_setup():
     # Get the toggle state from the form
     session['exp_cond'] = 'toggleState' in request.form
-
+    
     return render_template('onboarding.html')
 
 @onboarding.route('/submit_id', methods=['POST'])
@@ -62,7 +62,7 @@ def submit_id():
     while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
         player_id = generate_id()  # Generate a new ID
 
-    player = Players(player_id, session['exp_cond'], False)  # Pass the consent to the Players constructor
+    player = Players(player_id, not session['exp_cond'], False)
     session['player_id'] = player_id
     db.session.add(player)
     
@@ -76,7 +76,7 @@ def submit_dev_id():
         player_id = generate_id()  # Generate a new I
     
     # Set testing to True if dev button is clicked
-    player = Players(player_id, session['exp_cond'], True)  # Pass the consent to the Players constructor
+    player = Players(player_id, not session['exp_cond'], True)
     session['player_id'] = player_id
     db.session.add(player)
     
