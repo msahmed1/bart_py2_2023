@@ -5,7 +5,7 @@ import cv2
 import threading
 
 def generate_frames():
-    camera = cv2.VideoCapture(4)
+    camera = cv2.VideoCapture(0)
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
@@ -27,7 +27,7 @@ BALLOON_LIMITS = {
     'green': 32
 }
 
-total_trials = 30 #! MODIFY THIS FOR THE FINAL STUDY
+total_trials = 2 #! MODIFY THIS FOR THE FINAL STUDY
 # Generate list with 50/50 split of 0s and 1s
 half_length = total_trials // 2
 
@@ -322,11 +322,11 @@ def collect_or_burst():
             player_id=session['player_id'],
             balloon_id=session['balloons_completed'],
             game_round=session['game_round'],
-            total_inflates=int(session['inflates'])
+            total_inflates=session['total_inflates']
         )
         db.session.add(balloon_inflate)
     else:
-        balloon_inflate.total_inflates = int(session['total_inflates'])
+        balloon_inflate.total_inflates = session['total_inflates']
     
     db.session.commit()
 
