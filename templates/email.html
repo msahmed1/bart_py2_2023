@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/text_field.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/text_field.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/questions.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <p>
+        As a token of appriciation we would like to thank you for you time by
+        sending you an amazon voulcher.
+      </p>
+      <p>
+        If you would like to accept the voulcher please enter your email below
+      </p>
+      <form action="/submit_email" method="post" id="emailForm">
+        <input
+          type="email"
+          id="email1"
+          name="email1"
+          placeholder="Please enter your email"
+          required
+        />
+        <br />
+
+        <input
+          type="email"
+          id="email2"
+          name="email2"
+          placeholder="Please confirm your email"
+          required
+        />
+        <br />
+
+        <span id="errorMessage" style="color: red"></span>
+        <span id="warningMessage" style="color: orange"></span>
+        <br />
+
+        <button class="button" type="submit">Next</button>
+      </form>
+    </div>
+    <script>
+      document.getElementById("emailForm").onsubmit = function () {
+        var email1 = document.getElementById("email1").value;
+        var email2 = document.getElementById("email2").value;
+
+        if (email1 !== email2) {
+          document.getElementById("errorMessage").textContent =
+            "Emails must match";
+          return false;
+        } else {
+          document.getElementById("errorMessage").textContent = "";
+          return true;
+        }
+      };
+    </script>
+  </body>
+</html>

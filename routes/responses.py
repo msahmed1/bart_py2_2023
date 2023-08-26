@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, session, current_app
+from flask import Blueprint, render_template, request, redirect, session
 from models import db, GameRoundSurvey, Players
-import threading
 import datetime
+import csv
 
 responses = Blueprint('responses', __name__)
 
@@ -147,5 +147,17 @@ def freetext():
         setattr(player, "freetext", request.form["response"])
         db.session.commit()
 
+    return render_template('email.html', banner_image_url=banner_image_url)
+
+@responses.route('/submit_email', methods=['POST'])
+def submit_email():
+    player_id = session['player_id']
+    email = request.form.get('email1')
+
+    # Save the email to a CSV file
+    with open('instance/emails.csv', 'a') as file:
+        writer = csv.writer(file)
+        writer.writerow([email])
+    
     withdrawl_date = datetime.date.today() + datetime.timedelta(days=7)
     return render_template('close.html', banner_image_url=banner_image_url, participant_id=player_id, datetime = str(withdrawl_date.strftime("%b/%d/%Y")))
