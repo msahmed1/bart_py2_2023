@@ -324,7 +324,7 @@ class RobotController:
             pass
     
     @reconnect_on_fail
-    def accept_band(self, colour):
+    def accept_band(self, colour=''):
         if self.disable == False:
             self.posture_service.goToPosture("Sit", 0.5)
 
@@ -334,7 +334,10 @@ class RobotController:
 
             time.sleep(1)
 
-            reponse = "{colour} looks good on me".format(colour=colour)
+            if colour == '':
+                reponse = 'I like your choice'
+            else:
+                reponse = "{colour} looks good on me".format(colour=colour)
 
             self.talk(reponse)
 
