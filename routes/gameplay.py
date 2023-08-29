@@ -190,6 +190,9 @@ def trigger_robot_behavior():
     key_pressed = request.form.get('key')
     robot_controller = current_app.config['robot_controller']
 
+    if 'colour' not in session or not session['colour']:
+        session['colour'] = ''
+
     if key_pressed == 'r':
         robot_controller.change_colour('red')
         robot_controller.talk("red")
