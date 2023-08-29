@@ -123,7 +123,6 @@ def custom_post_error():
 
 @gameplay.route('/custom_cond')
 def custom_cond():
-    print('in custom cond, game round is: ', session['game_round'])
     if session['game_round'] == 1 or session['game_round'] == 2:
         robot_controller = current_app.config['robot_controller']
         robot_controller.set_robot_ip("robot_1")
