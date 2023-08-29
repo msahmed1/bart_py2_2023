@@ -281,6 +281,9 @@ class RobotController:
                 self.leds.fadeRGB("AllLeds", 0.0, 0.0, 255.0, 0.0)
             elif colour == 'white':
                 self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
+            
+            self.leds.fadeRGB("EarLeds", 0, 0, 0, 0.0)
+
         else:
             pass
     @reconnect_on_fail
@@ -396,7 +399,7 @@ class RobotController:
     @reconnect_on_fail
     def low_battery(self):
         if self.disable == False:
-            self.talk('error 801, low battery')
+            self.talk('error 804, low battery')
 
             self.talk('Shutting down')
 
