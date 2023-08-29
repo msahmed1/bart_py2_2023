@@ -343,6 +343,8 @@ def collect_or_burst():
 
     # If the score is 0, redirect to the /noPoints route
     if collected_score == 0:
+        robot_controller = current_app.config['robot_controller']
+        threading.Thread(target=robot_controller.no_points).start()
         return jsonify({'redirect_url': url_for('gameplay.noPoints')})
     elif request.path == '/burst' or session['total_inflates'] > session['balloon_limit']:
         robot_controller = current_app.config['robot_controller']

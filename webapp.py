@@ -483,7 +483,14 @@ class RobotController:
         if self.disable == False:
             self.talk('Oh no')
         else:
-            pass  
+            pass 
+
+    @reconnect_on_fail
+    def no_points(self):
+        if self.disable == False:
+            self.talk('no points')
+        else:
+            pass
 
 # Initialize the robot controller with the IP address of the robot
 app.config['robot_controller'] = RobotController(disable=False)
