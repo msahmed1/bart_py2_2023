@@ -154,10 +154,11 @@ def submit_email():
     player_id = session['player_id']
     email = request.form.get('email1')
 
-    # Save the email to a CSV file
-    with open('instance/emails.csv', 'a') as file:
-        writer = csv.writer(file)
-        writer.writerow([email])
+    if email != '':
+        # Save the email to a CSV file
+        with open('instance/emails.csv', 'a') as file:
+            writer = csv.writer(file)
+            writer.writerow([email])
     
     withdrawl_date = datetime.date.today() + datetime.timedelta(days=7)
     return render_template('close.html', banner_image_url=banner_image_url, participant_id=player_id, datetime = str(withdrawl_date.strftime("%b/%d/%Y")))

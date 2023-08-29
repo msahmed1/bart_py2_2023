@@ -38,7 +38,6 @@
           id="email1"
           name="email1"
           placeholder="Please enter your email"
-          required
         />
         <br />
 
@@ -47,7 +46,6 @@
           id="email2"
           name="email2"
           placeholder="Please confirm your email"
-          required
         />
         <br />
 
@@ -63,7 +61,7 @@
         var email1 = document.getElementById("email1").value;
         var email2 = document.getElementById("email2").value;
 
-        if (email1 !== email2) {
+        if (email1 && email2 && email1 !== email2) {
           document.getElementById("errorMessage").textContent =
             "Emails must match";
           return false;
