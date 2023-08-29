@@ -13,6 +13,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/text_field.css') }}"
     />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
   <body>
     <div class="container">
@@ -27,15 +28,16 @@
         datetime }}, please contact the researcher at hi20047@bristol.ac.uk.
       </p>
       <div id="next-container">
-        <button type="submit" class="button" onclick="navigateToHome()">
-          Next
-        </button>
+        <button class="button" id="next-button">Next</button>
       </div>
     </div>
     <script>
-      function navigateToHome() {
-        window.location.href = "/";
-      }
+      $(document).ready(function () {
+        $("#next-button").on("click", function (event) {
+          $(this).prop("disabled", true);
+          window.location.href = "/";
+        });
+      });
     </script>
   </body>
 </html>
