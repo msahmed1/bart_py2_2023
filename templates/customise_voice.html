@@ -63,36 +63,39 @@
     </script>
   </head>
   <body>
-    <div id="button-container">
-      <button
-        type="button"
-        id="voice1"
-        class="button voice-button {{ 'disabled' if button_states['voice1'] else '' }}"
-      >
-        Voice 1
-      </button>
-      <button
-        type="button"
-        id="voice2"
-        class="button voice-button {{ 'disabled' if button_states['voice2'] else '' }}"
-      >
-        Voice 2
-      </button>
-      <button
-        type="button"
-        id="voice3"
-        class="button voice-button {{ 'disabled' if button_states['voice3'] else '' }}"
-      >
-        Voice 3
-      </button>
-      <button
-        type="button"
-        er
-        id="voice4"
-        class="button voice-button {{ 'disabled' if button_states['voice4'] else '' }}"
-      >
-        Voice 4
-      </button>
+    <div id="form-container">
+      <h4>Press a button to change the robots voice</label><br />
+      <div id="button-container">
+        <button
+          type="button"
+          id="voice1"
+          class="button voice-button {{ 'disabled' if button_states['voice1'] else '' }}"
+        >
+          Voice 1
+        </button>
+        <button
+          type="button"
+          id="voice2"
+          class="button voice-button {{ 'disabled' if button_states['voice2'] else '' }}"
+        >
+          Voice 2
+        </button>
+        <button
+          type="button"
+          id="voice3"
+          class="button voice-button {{ 'disabled' if button_states['voice3'] else '' }}"
+        >
+          Voice 3
+        </button>
+        <button
+          type="button"
+          er
+          id="voice4"
+          class="button voice-button {{ 'disabled' if button_states['voice4'] else '' }}"
+        >
+          Voice 4
+        </button>
+      </div>
     </div>
     <button type="submit" class="button" id="nextButton">Next</button>
     <script>
