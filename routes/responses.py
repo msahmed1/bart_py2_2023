@@ -44,7 +44,7 @@ survey_questions = [
             {"left": "Disagree", "right": "Agree",
                 "question": "I sense that I own this robot.", "name": "i_sense_that_i_own_this_robot"},
             {"left": "Disagree", "right": "Agree",
-                "question": "Robot incorporates a part of myself.", "name": "robot_incorporates_a_part_of_myself"},
+                "question": "This robot incorporates a part of myself.", "name": "this_robot_incorporates_a_part_of_myself"},
         ],
     },
     # {
@@ -97,6 +97,13 @@ survey_questions = [
                 "question": "I am familiar with the robot", "name": "i_am_familiar_with_the_robot"},
         ],
     },
+    {
+        "title": "Please indicate the extent to which you agree or disagree with the following statements about your robot.",
+        "questions": [
+            {"left": "Disagree", "right": "Agree",
+                "question": "The robot gave me good advice", "name": "i_am_confident_in_the_robot"},
+        ]
+    }
 ]
 
 @responses.route('/survey', methods=['GET', 'POST'])
@@ -174,6 +181,7 @@ def freetext():
             player_id=player_id).first()
         
         setattr(player, "freetext", request.form["response"])
+        player.game_completed = True
         db.session.commit()
 
     return render_template('email.html', banner_image_url=banner_image_url)

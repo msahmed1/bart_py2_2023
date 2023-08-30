@@ -11,19 +11,19 @@ class Players(db.Model):
     testing = db.Column(db.Boolean)
 
     consent = db.Column(db.Boolean)
+    game_completed = db.Column(db.Boolean, default=False)
+
+    freetext = db.Column(db.Text, nullable=True)
+
+    # Demographics
+    age = db.Column(db.Integer)
+    gender = db.Column(db.String(20))
+    
+    # Relationships
     balloon_total_inflates = db.relationship(
         'BalloonInflate', backref='player', lazy=True)
     game_round_surveys = db.relationship(
         'GameRoundSurvey', backref='player', lazy=True)
-    
-    # Demographics
-    age = db.Column(db.Integer)
-    gender = db.Column(db.String(20))
-    # ethnicity = db.Column(db.String(50))
-    # education = db.Column(db.String(50))
-    # robot_familiarity = db.Column(db.Integer)
-    
-    freetext = db.Column(db.Text, nullable=True)
 
     def __init__(self, player_id, customise_first, testing, consent=False):
         self.player_id = player_id
@@ -78,25 +78,17 @@ class GameRoundSurvey(db.Model):
     foolish_sensible = db.Column(db.Integer)
 
     this_is_my_robot = db.Column(db.Integer)
-    i_feel_high_degree_of_personal_ownership_for_this_robot = db.Column(
-        db.Integer)
     i_sense_that_i_own_this_robot = db.Column(db.Integer)
-    robot_incorporates_a_part_of_myself = db.Column(db.Integer)
+    this_robot_incorporates_a_part_of_myself = db.Column(db.Integer)
 
-    my_robot_supplies_my_need_for_help_through_a_help_function = db.Column(
-        db.Integer)
-    my_robot_provides_competent_guidanceas_through_a_help_function = db.Column(
-        db.Integer)
-    my_robot_provides_very_sensible_and_effective_advice_if_needed = db.Column(
-        db.Integer)
-    
-    i_can_decide_more_quickly_and_easily_which_action_to_take_than_without_using_this_robotic_advisor = db.Column(db.Integer)
-    i_can_make_better_decisions_than_without_using_this_robotic_advisor = db.Column(db.Integer)
-    i_am_better_informed_about_what_action_to_take_than_without_using_this_robotic_advisor = db.Column(db.Integer)
-    i_can_make_more_accurate_decisions_than_without_using_this_robotic_advisor = db.Column(db.Integer)
-    i_can_better_decide_whether_i_want_to_inflate_the_balloon_or_not = db.Column(db.Integer)
+    i_am_confident_in_the_robot = db.Column(db.Integer)
+    the_robot_provides_security = db.Column(db.Integer)
+    the_robot_has_integrity = db.Column(db.Integer)
+    the_robot_is_reliable = db.Column(db.Integer)
+    i_can_trust_the_robot = db.Column(db.Integer)
+    i_am_familiar_with_the_robot = db.Column(db.Integer)
 
-    def __init__(self, player_id, game_round=0, total_score=0, dislike_like=None, unfriendly_friendly=None, unkind_kind=None, unpleasant_pleasant=None, awful_nice=None, incompetent_competent=None, ignorant_knowledgeable=None, iriresponsible_responsible=None, unitelligent_intelligent=None, foolish_sensible=None, this_is_my_robot=None, i_feel_high_degree_of_personal_ownership_for_this_robot=None, i_sense_that_i_own_this_robot=None, robot_incorporates_a_part_of_myself=None, my_robot_supplies_my_need_for_help_through_a_help_function=None, my_robot_provides_competent_guidanceas_through_a_help_function=None, my_robot_provides_very_sensible_and_effective_advice_if_needed=None, i_can_decide_more_quickly_and_easily_which_action_to_take_than_without_using_this_robotic_advisor=None, i_can_make_better_decisions_than_without_using_this_robotic_advisor=None, i_am_better_informed_about_what_action_to_take_than_without_using_this_robotic_advisor=None, i_can_make_more_accurate_decisions_than_without_using_this_robotic_advisor=None, i_can_better_decide_whether_i_want_to_inflate_the_balloon_or_not=None):
+    def __init__(self, player_id, game_round=0, total_score=0, dislike_like=None, unfriendly_friendly=None, unkind_kind=None, unpleasant_pleasant=None, awful_nice=None, incompetent_competent=None, ignorant_knowledgeable=None, iriresponsible_responsible=None, unitelligent_intelligent=None, foolish_sensible=None, this_is_my_robot=None, i_sense_that_i_own_this_robot=None, this_robot_incorporates_a_part_of_myself=None, i_am_confident_in_the_robot=None, the_robot_provides_security=None, the_robot_has_integrity=None, the_robot_is_reliable=None, i_can_trust_the_robot=None, i_am_familiar_with_the_robot=None):
         super(GameRoundSurvey, self).__init__()
         self.player_id = player_id
         self.game_round = game_round
@@ -115,17 +107,12 @@ class GameRoundSurvey(db.Model):
         self.foolish_sensible = foolish_sensible
 
         self.this_is_my_robot = this_is_my_robot
-        self.i_feel_high_degree_of_personal_ownership_for_this_robot = i_feel_high_degree_of_personal_ownership_for_this_robot
         self.i_sense_that_i_own_this_robot = i_sense_that_i_own_this_robot
-        self.robot_incorporates_a_part_of_myself = robot_incorporates_a_part_of_myself
+        self.this_robot_incorporates_a_part_of_myself = this_robot_incorporates_a_part_of_myself
 
-        self.my_robot_supplies_my_need_for_help_through_a_help_function = my_robot_supplies_my_need_for_help_through_a_help_function
-        self.my_robot_provides_competent_guidanceas_through_a_help_function = my_robot_provides_competent_guidanceas_through_a_help_function
-        self.my_robot_provides_very_sensible_and_effective_advice_if_needed = my_robot_provides_very_sensible_and_effective_advice_if_needed
-
-        self.i_can_decide_more_quickly_and_easily_which_action_to_take_than_without_using_this_robotic_advisor = i_can_decide_more_quickly_and_easily_which_action_to_take_than_without_using_this_robotic_advisor
-        self.i_can_make_better_decisions_than_without_using_this_robotic_advisor = i_can_make_better_decisions_than_without_using_this_robotic_advisor
-        self.i_am_better_informed_about_what_action_to_take_than_without_using_this_robotic_advisor = i_am_better_informed_about_what_action_to_take_than_without_using_this_robotic_advisor
-        self.i_can_make_more_accurate_decisions_than_without_using_this_robotic_advisor = i_can_make_more_accurate_decisions_than_without_using_this_robotic_advisor
-        self.i_can_better_decide_whether_i_want_to_inflate_the_balloon_or_not = i_can_better_decide_whether_i_want_to_inflate_the_balloon_or_not
-        
+        self.i_am_confident_in_the_robot = i_am_confident_in_the_robot
+        self.the_robot_provides_security = the_robot_provides_security
+        self.the_robot_has_integrity = the_robot_has_integrity
+        self.the_robot_is_reliable = the_robot_is_reliable
+        self.i_can_trust_the_robot = i_can_trust_the_robot
+        self.i_am_familiar_with_the_robot = i_am_familiar_with_the_robot
