@@ -104,9 +104,7 @@ def demograph_form():
 def submit_demograph():
     player_id = session['player_id']
     age = request.form['age']
-    gender = request.form['gender']
-    if gender == 'other_gender':
-        gender = request.form.get('other-gender-text')
+    gender = request.form.get('other-gender-text')
     # ethnicity = request.form['ethnicity']
     # education = request.form['education']
     # robot_familiarity = request.form['robot_familiarity']
