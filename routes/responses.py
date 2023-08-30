@@ -187,7 +187,7 @@ def submit_email():
         # Save the email to a CSV file
         with open('instance/emails.csv', 'a') as file:
             writer = csv.writer(file)
-            writer.writerow([email])
+            writer.writerow([email, session['max_score'], datetime.datetime.now()])
     
     withdrawl_date = datetime.date.today() + datetime.timedelta(days=7)
     return render_template('close.html', banner_image_url=banner_image_url, participant_id=player_id, datetime = str(withdrawl_date.strftime("%b/%d/%Y")))

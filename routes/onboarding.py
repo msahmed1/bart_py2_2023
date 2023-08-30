@@ -31,8 +31,10 @@ def index():
     session.pop('balloon_limit', None)
     session.pop('colour', None)
     session.pop('exp_cond', None)
+    session.pop('max_score', None)
 
     session['totalScore'] = 0
+    session['max_score'] = 0
     session['score'] = 0
     session['total_inflates'] = 0
     session['balloon_number'] = 0

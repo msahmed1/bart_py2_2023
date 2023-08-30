@@ -380,6 +380,8 @@ def end():
 
     # Update the database with the total score
     total = session['totalScore']
+    if session['totalScore'] > session['max_score']:
+        session['max_score'] = session['totalScore']
     game_round_survey = GameRoundSurvey.query.filter_by(player_id=player_id, game_round=session['game_round']).first()
 
     if game_round_survey is None:
