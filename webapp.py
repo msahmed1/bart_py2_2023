@@ -131,19 +131,19 @@ class RobotController:
         self.posture_service.goToPosture("Sit", 0.5)
         
         if message != '':
-            time.sleep(1.0)
+            time.sleep(0.5)
 
             self.face_participant()
 
-            time.sleep(1.0)
+            time.sleep(0.5)
 
             self.talk(message)
 
-            time.sleep(1.0)
+            time.sleep(0.5)
 
             self.nod_head()
 
-            time.sleep(1.0)
+            time.sleep(0.5)
 
             self.face_screen()
 
@@ -222,8 +222,6 @@ class RobotController:
 
             self.nod_head()
 
-            time.sleep(1.0)
-
             self.face_screen()
         else:
             pass
@@ -241,13 +239,11 @@ class RobotController:
             # Yes
             self.face_participant()
 
-            time.sleep(0.8)
+            time.sleep(0.5)
 
             self.talk(random.choice(self.inflate_messages))
 
             self.nod_head()
-
-            time.sleep(0.4)
 
             self.face_screen()
         else:
@@ -259,7 +255,7 @@ class RobotController:
             # No
             self.face_participant()
 
-            time.sleep(0.8)
+            time.sleep(0.5)
             
             self.talk(random.choice(self.collect_messages))
 
@@ -331,11 +327,12 @@ class RobotController:
         if self.disable == False:
             self.posture_service.goToPosture("Sit", 0.5)
 
-            self.talk('Thank you')
-            
             self.face_participant()
 
-            time.sleep(1)
+            self.talk('Thank you')
+            
+
+            time.sleep(0.5)
 
             if colour == '':
                 reponse = 'I like your choice'
@@ -355,7 +352,7 @@ class RobotController:
 
             self.face_participant()
 
-            self.talk('My voice can be changed as well')
+            self.talk('You can change my voice as well, which one do you like')
         else:
             pass
 
