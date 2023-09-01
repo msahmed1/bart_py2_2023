@@ -23,9 +23,12 @@
         Your total score is:</br>
         {{ score }}
     </div>
-    <button class="button" onclick="redirectToSurvey()">Next</button>
+    <button class="button" id="nextButton" onclick="redirectToSurvey()">Next</button>
     <script>
         function redirectToSurvey() {
+            // Disable the button to prevent double clicks
+            document.getElementById('nextButton').disabled = true;
+
             window.location.href = "/survey";  // Adjust the path as per your requirements
         }
     </script>
