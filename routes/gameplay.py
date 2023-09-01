@@ -23,7 +23,7 @@ gameplay = Blueprint('gameplay', __name__)
 # All the baloons should start at 1 and be pumped up to different levesl
 # Define the inflate limit for each balloon
 BALLOON_LIMITS = {
-    'red': 8,
+    # 'red': 8,
     'green': 32
 }
 
@@ -33,7 +33,7 @@ half_length = total_trials // 2
 
 balloon_colours = list(BALLOON_LIMITS.keys())
 # 50% of the balloons are red and the other 50% is green
-balloon_colour = [balloon_colours[0]] * half_length + [balloon_colours[1]] * half_length
+balloon_colour = [balloon_colours[0]] * total_trials #+ [balloon_colours[1]] * half_length
 print(balloon_colours)
 
 # Shuffle the list to get a random sequence
