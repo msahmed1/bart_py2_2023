@@ -39,56 +39,23 @@ survey_questions = [
         "questions": [
             {"left": "Disagree", "right": "Agree",
                 "question": "This is my robot", "name": "this_is_my_robot"},
-            # {"left": "Disagree", "right": "Agree",
-            #     "question": "I feel a very high degree of personal ownership for this robot", "name": "i_feel_high_degree_of_personal_ownership_for_this_robot"},
             {"left": "Disagree", "right": "Agree",
-                "question": "I sense that I own this robot.", "name": "i_sense_that_i_own_this_robot"},
+                "question": "I sense that I own this robot", "name": "i_sense_that_i_own_this_robot"},
             {"left": "Disagree", "right": "Agree",
-                "question": "This robot incorporates a part of myself.", "name": "this_robot_incorporates_a_part_of_myself"},
+                "question": "This robot incorporates a part of myself", "name": "this_robot_incorporates_a_part_of_myself"},
         ],
     },
-    # {
-    #     "title": "Please indicate the extent to which you agree or disagree with the following statements about your robot.",
-    #     "questions": [
-    #         {"left": "Disagree", "right": "Agree",
-    #             "question": "My robot supplies my need for help through a help function.", "name": "my_robot_supplies_my_need_for_help_through_a_help_function"},
-    #         {"left": "Disagree", "right": "Agree",
-    #             "question": "My robot provides competent guidance (as needed) through a help function.", "name": "my_robot_provides_competent_guidanceas_through_a_help_function"},
-    #         {"left": "Disagree", "right": "Agree",
-    #             "question": "My robot provides very sensible and effective advice, if needed.", "name": "my_robot_provides_very_sensible_and_effective_advice_if_needed"},
-    #     ],
-    # },
-    # {
-    #     "title": "By Using this robotic advisor...",
-    #     "questions": [
-    #         {"left": "Disagree", "right": "Completely agree", "question": "I can decide more quickly and easily which action to take than without using this robotic advisor", "name": "i_can_decide_more_quickly_and_easily_which_action_to_take_than_without_using_this_robotic_advisor"},
-    #         {"left": "Disagree", "right": "Completely agree", "question": "I can make better decisions than without using this robotic advisor", "name": "i_can_make_better_decisions_than_without_using_this_robotic_advisor"},
-    #         {"left": "Disagree", "right": "Completely agree", "question": "I am better informed about what action to take than without using this robotic advisor", "name": "i_am_better_informed_about_what_action_to_take_than_without_using_this_robotic_advisor"},
-    #         {"left": "Disagree", "right": "Completely agree", "question": "I can make more accurate decisions than without using this robotic advisor", "name": "i_can_make_more_accurate_decisions_than_without_using_this_robotic_advisor"},
-    #         {"left": "Disagree", "right": "Completely agree", "question": "I can better decide whether I want to inflate the balloon or not" , "name": "i_can_better_decide_whether_i_want_to_inflate_the_balloon_or_not"},
-    #     ]
-    # },
     {
         "title": "Please indicate the extent to which you agree or disagree with the following statements about your robot.",
         "questions": [
-            # {"left": "Disagree", "right": "Agree",
-            #     "question": "The robot is deceptive.", "name": "the_robot_is_deceptive"},
-            # {"left": "Disagree", "right": "Agree",
-            #     "question": "The robot behaves in an underhanded manner.", "name": "the_robot_behaves_in_an_underhanded_manner"},
-            # {"left": "Disagree", "right": "Agree",
-            #     "question": "I am suspicious of the robots intent, action, or outputs.", "name": "i_am_suspicious_of_the_robots_intent_action_or_outputs"},
-            # {"left": "Disagree", "right": "Agree",
-            #     "question": "I am wary of the robot.", "name": "i_am_wary_of_the_robot"},
-            # {"left": "Disagree", "right": "Agree",
-            #     "question": "The robots actions will have a harmful or injurious outcome.", "name": "the_robots_actions_will_have_a_harmful_or_injurious_outcome"},
             {"left": "Disagree", "right": "Agree",
                 "question": "I am confident in the robot", "name": "i_am_confident_in_the_robot"},
             {"left": "Disagree", "right": "Agree",
                 "question": "The robot provides security", "name": "the_robot_provides_security"},
             {"left": "Disagree", "right": "Agree",
                 "question": "The robot has integrity", "name": "the_robot_has_integrity"},
-            # {"left": "Disagree", "right": "Agree",
-            #     "question": "The robot is dependable", "name": "the_robot_is_dependable"},
+            {"left": "Disagree", "right": "Agree",
+                "question": "The robot gave good advice", "name": "the_robot_gave_good_advice"},
             {"left": "Disagree", "right": "Agree",
                 "question": "The robot is reliable", "name": "the_robot_is_reliable"},
             {"left": "Disagree", "right": "Agree",
@@ -96,13 +63,6 @@ survey_questions = [
             {"left": "Disagree", "right": "Agree",
                 "question": "I am familiar with the robot", "name": "i_am_familiar_with_the_robot"},
         ],
-    },
-    {
-        "title": "Please indicate the extent to which you agree or disagree with the following statements about your robot.",
-        "questions": [
-            {"left": "Disagree", "right": "Agree",
-                "question": "The robot gave me good advice", "name": "i_am_confident_in_the_robot"},
-        ]
     }
 ]
 
