@@ -47,6 +47,7 @@ class BalloonInflate(db.Model):
     total_inflates_before_help_request = db.Column(db.Integer, default=0)
     # Calculate inflates_after_help_request by subtracting inflates_before_help_request from total_inflates
 
+    time_to_decide = db.Column(db.Float)
     def __init__(self, player_id, balloon_id, total_inflates=0, game_round=0, help_requested=False, robot_response=False, inflated_after_help_request=False):
         super(BalloonInflate, self).__init__()
         self.player_id = player_id

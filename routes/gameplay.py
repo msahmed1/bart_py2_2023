@@ -3,6 +3,7 @@ from models import db, BalloonInflate, GameRoundSurvey
 import random
 import cv2
 import threading
+from datetime import datetime
 
 def generate_frames():
     camera = cv2.VideoCapture(0)
@@ -245,6 +246,12 @@ def inflate():
     elif session['help_provided']:
         balloon_inflate.inflated_after_help_request = True
 
+    if 'help_timestamp' in session:
+        inflate_timestamp = datetime.now()
+        time_to_decide = (inflate_timestamp - session['help_timestamp']).total_seconds()
+        balloon_inflate.time_to_decide = time_to_decide
+        del session['help_timestamp']  # remove the timestamp from the session
+    
     db.session.commit()
 
     if total_inflates > session['balloon_limit']:
@@ -253,6 +260,9 @@ def inflate():
         return jsonify({'status': 'safe', 'score': session['score'], 'balloon_limit': total_trials, 'progress': session['balloons_completed']+1, 'game_round': session['game_round']})
 
 def help():
+    # Record the current time when "Help" is clicked
+    session['help_timestamp'] = datetime.now()
+
     # Set the help_provided variable to True
     session['help_provided'] = True
 
@@ -330,6 +340,12 @@ def collect_or_burst():
     else:
         balloon_inflate.total_inflates = session['total_inflates']
     
+    if 'help_timestamp' in session:
+        collect_timestamp = datetime.now()
+        time_to_decide = (collect_timestamp - session['help_timestamp']).total_seconds()
+        balloon_inflate.time_to_decide = time_to_decide
+        del session['help_timestamp']  # remove the timestamp from the session
+
     db.session.commit()
 
     collected_score = session['score']  # Store the score before resetting it
