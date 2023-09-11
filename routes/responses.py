@@ -51,8 +51,6 @@ survey_questions = [
             {"left": "Disagree", "right": "Agree",
                 "question": "I am confident in the robot", "name": "i_am_confident_in_the_robot"},
             {"left": "Disagree", "right": "Agree",
-                "question": "The robot provides security", "name": "the_robot_provides_security"},
-            {"left": "Disagree", "right": "Agree",
                 "question": "The robot has integrity", "name": "the_robot_has_integrity"},
             {"left": "Disagree", "right": "Agree",
                 "question": "The robot gave good advice", "name": "the_robot_gave_good_advice"},
