@@ -37,6 +37,7 @@ class BalloonInflate(db.Model):
     player_id = db.Column(db.Integer, db.ForeignKey(
         'players.player_id'), nullable=False)
     balloon_id = db.Column(db.Integer, nullable=False)
+    balloon_limit = db.Column(db.Integer, default=0)
     total_inflates = db.Column(db.Integer, default=0)
 
     game_round = db.Column(db.Integer, default=0)
@@ -48,10 +49,11 @@ class BalloonInflate(db.Model):
     # Calculate inflates_after_help_request by subtracting inflates_before_help_request from total_inflates
 
     time_to_decide = db.Column(db.Float)
-    def __init__(self, player_id, balloon_id, total_inflates=0, game_round=0, help_requested=False, robot_response=False, inflated_after_help_request=False):
+    def __init__(self, player_id, balloon_id, balloon_limit, total_inflates=0, game_round=0, help_requested=False, robot_response=False, inflated_after_help_request=False):
         super(BalloonInflate, self).__init__()
         self.player_id = player_id
         self.balloon_id = balloon_id
+        self.balloon_limit = balloon_limit
         self.total_inflates = total_inflates
         self.game_round = game_round
 
@@ -83,14 +85,13 @@ class GameRoundSurvey(db.Model):
     this_robot_incorporates_a_part_of_myself = db.Column(db.Integer)
 
     i_am_confident_in_the_robot = db.Column(db.Integer)
-    the_robot_provides_security = db.Column(db.Integer)
     the_robot_has_integrity = db.Column(db.Integer)
     the_robot_gave_good_advice = db.Column(db.Integer)
     the_robot_is_reliable = db.Column(db.Integer)
     i_can_trust_the_robot = db.Column(db.Integer)
     i_am_familiar_with_the_robot = db.Column(db.Integer)
 
-    def __init__(self, player_id, game_round=0, total_score=0, dislike_like=None, unfriendly_friendly=None, unkind_kind=None, unpleasant_pleasant=None, awful_nice=None, incompetent_competent=None, ignorant_knowledgeable=None, iriresponsible_responsible=None, unitelligent_intelligent=None, foolish_sensible=None, this_is_my_robot=None, i_sense_that_i_own_this_robot=None, this_robot_incorporates_a_part_of_myself=None, i_am_confident_in_the_robot=None, the_robot_provides_security=None, the_robot_has_integrity=None, the_robot_gave_good_advice=None, the_robot_is_reliable=None, i_can_trust_the_robot=None, i_am_familiar_with_the_robot=None):
+    def __init__(self, player_id, game_round=0, total_score=0, dislike_like=None, unfriendly_friendly=None, unkind_kind=None, unpleasant_pleasant=None, awful_nice=None, incompetent_competent=None, ignorant_knowledgeable=None, iriresponsible_responsible=None, unitelligent_intelligent=None, foolish_sensible=None, this_is_my_robot=None, i_sense_that_i_own_this_robot=None, this_robot_incorporates_a_part_of_myself=None, i_am_confident_in_the_robot=None, the_robot_has_integrity=None, the_robot_gave_good_advice=None, the_robot_is_reliable=None, i_can_trust_the_robot=None, i_am_familiar_with_the_robot=None):
         super(GameRoundSurvey, self).__init__()
         self.player_id = player_id
         self.game_round = game_round
@@ -113,7 +114,6 @@ class GameRoundSurvey(db.Model):
         self.this_robot_incorporates_a_part_of_myself = this_robot_incorporates_a_part_of_myself
 
         self.i_am_confident_in_the_robot = i_am_confident_in_the_robot
-        self.the_robot_provides_security = the_robot_provides_security
         self.the_robot_has_integrity = the_robot_has_integrity
         self.the_robot_gave_good_advice = the_robot_gave_good_advice
         self.the_robot_is_reliable = the_robot_is_reliable
