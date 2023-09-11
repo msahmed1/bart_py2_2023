@@ -4,6 +4,7 @@ import random
 import cv2
 import threading
 from datetime import datetime
+import numpy as np
 
 def generate_frames():
     camera = cv2.VideoCapture(0)
@@ -21,21 +22,25 @@ def generate_frames():
 
 gameplay = Blueprint('gameplay', __name__)
 
-# All the baloons should start at 1 and be pumped up to different levesl
 # Define the inflate limit for each balloon
 BALLOON_LIMITS = {
     # 'red': 8,
     'green': 32
 }
 
-total_trials = 2 #! MODIFY THIS FOR THE FINAL STUDY
+total_trials = 30 #! MODIFY THIS FOR THE FINAL STUDY
 # Generate list with 50/50 split of 0s and 1s
 half_length = total_trials // 2
+
+def generate_random_integers(n, mean=16.5, std_dev=5):
+    numbers = np.random.normal(mean, std_dev, n)
+    rounded_numbers = np.round(numbers)
+    return np.clip(rounded_numbers, 1, 32).astype(int)
 
 balloon_colours = list(BALLOON_LIMITS.keys())
 # 50% of the balloons are red and the other 50% is green
 balloon_colour = [balloon_colours[0]] * total_trials #+ [balloon_colours[1]] * half_length
-print(balloon_colours)
+print(len(balloon_colour))
 
 # Shuffle the list to get a random sequence
 ROBOT_FEEDBACK = [True] * half_length + [False] * half_length
@@ -96,7 +101,13 @@ def play():
         session['help_provided'] = False
 
     session['balloon_color'] = balloon_colour[session['balloons_completed']]
-    session['balloon_limit'] = random.randint( 1, BALLOON_LIMITS[session['balloon_color']])
+
+    if session['balloons_completed'] == 0:
+        global balloon_limit
+        balloon_limit = generate_random_integers(total_trials)
+        print(balloon_limit)
+
+    session['balloon_limit'] = balloon_limit[session['balloons_completed']]
 
      # If it is the second game round, handle the collect button functionality like the help button
     if session['game_round'] > 1:
@@ -241,10 +252,12 @@ def inflate():
             player_id=session['player_id'],
             balloon_id=session['balloons_completed'],
             game_round=session['game_round'],
+            balloon_limit=session['balloon_limit'],
         )
         db.session.add(balloon_inflate)
     elif session['help_provided']:
         balloon_inflate.inflated_after_help_request = True
+        balloon_inflate.balloon_limit = session['balloon_limit']
 
     if 'help_timestamp' in session:
         inflate_timestamp = datetime.now()
@@ -334,11 +347,13 @@ def collect_or_burst():
             player_id=session['player_id'],
             balloon_id=session['balloons_completed'],
             game_round=session['game_round'],
-            total_inflates=session['total_inflates']
+            total_inflates=session['total_inflates'],
+            balloon_limit=session['balloon_limit']
         )
         db.session.add(balloon_inflate)
     else:
         balloon_inflate.total_inflates = session['total_inflates']
+        balloon_inflate.balloon_limit = session['balloon_limit']
     
     if 'help_timestamp' in session:
         collect_timestamp = datetime.now()
