@@ -81,8 +81,8 @@ class RobotController:
     @reconnect_on_fail
     def set_default_behaviour(self):
         self.speech_service.setParameter("defaultVoiceSpeed", 80)
-        self.speech_service.setVolume(0.4)
-        self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", True)
+        self.speech_service.setVolume(0.3)
+        self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", False)
         self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
         self.speech_service.setParameter('pitchShift', 1.13)
 
