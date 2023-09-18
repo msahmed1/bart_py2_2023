@@ -46,8 +46,8 @@ def index():
     robot_controller.set_robot_ip("robot_2")
     robot_controller.sleep()
 
-    non_custom_first = Players.query.filter_by(customise_first=False, testing=False).count()
-    custom_first = Players.query.filter_by(customise_first=True, testing=False).count()
+    non_custom_first = Players.query.filter_by(customise_first=False, testing=False, game_completed=True).count()
+    custom_first = Players.query.filter_by(customise_first=True, testing=False, game_completed=True).count()
 
     return render_template('set_up.html', non_custom_first=non_custom_first, custom_first=custom_first)
 
