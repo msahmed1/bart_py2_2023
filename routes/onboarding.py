@@ -38,6 +38,7 @@ def index():
     session['score'] = 0
     session['total_inflates'] = 0
     session['balloon_number'] = 0
+    session['run_once'] = True
 
     robot_controller = current_app.config['robot_controller']
     robot_controller.set_robot_ip("robot_1")

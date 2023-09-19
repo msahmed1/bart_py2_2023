@@ -40,7 +40,6 @@ def generate_random_integers(n, mean=16.5, std_dev=5):
 balloon_colours = list(BALLOON_LIMITS.keys())
 # 50% of the balloons are red and the other 50% is green
 balloon_colour = [balloon_colours[0]] * total_trials #+ [balloon_colours[1]] * half_length
-print(len(balloon_colour))
 
 # Shuffle the list to get a random sequence
 ROBOT_FEEDBACK = [True] * half_length + [False] * half_length
@@ -69,7 +68,7 @@ def gameIntro_robot():
     if 'game_round' not in session:
         session['game_round'] = 1  # Initialize game_round
 
-    if session['game_round'] == 1 or session['game_round'] == 2:
+    if session['game_round'] < 3:
         robot_controller = current_app.config['robot_controller']
         robot_controller.set_robot_ip("robot_1")
     else:
@@ -105,7 +104,6 @@ def play():
     if session['balloons_completed'] == 0:
         global balloon_limit
         balloon_limit = generate_random_integers(total_trials)
-        print(balloon_limit)
 
     session['balloon_limit'] = balloon_limit[session['balloons_completed']]
 
@@ -128,19 +126,19 @@ def custom_pre_error():
 
 @gameplay.route('/custom_post_error')
 def custom_post_error():
-    robot_controller = current_app.config['robot_controller']
-    robot_controller.set_robot_ip("robot_2")
-    robot_controller.start_up()
+    # robot_controller = current_app.config['robot_controller']
     return render_template('custom_after_error.html', banner_image_url=banner_image_url)
 
 @gameplay.route('/custom_cond')
 def custom_cond():
-    if session['game_round'] == 1 or session['game_round'] == 2:
+    if session['game_round'] < 3:
         robot_controller = current_app.config['robot_controller']
         robot_controller.set_robot_ip("robot_1")
     else:
         robot_controller = current_app.config['robot_controller']
         robot_controller.set_robot_ip("robot_2")
+        robot_controller.just_wake_up()
+
 
     robot_controller = current_app.config['robot_controller']
 
@@ -187,14 +185,22 @@ def non_custom_post_error():
 
 @gameplay.route('/error_message_non_customise')
 def error_message_non_customise():
-    robot_controller = current_app.config['robot_controller']
-    threading.Thread(target=robot_controller.low_battery).start()
+    if session['run_once']:
+        robot_controller = current_app.config['robot_controller']
+        threading.Thread(target=robot_controller.low_battery).start()
+        # print("#################### low battery, non custom")
+        # print("session['run_once'] = {}".format(session['run_once']))
+        session['run_once'] = False
     return render_template('error_message_non_customise.html')
 
 @gameplay.route('/error_message_customise')
 def error_message_customise():
-    robot_controller = current_app.config['robot_controller']
-    threading.Thread(target=robot_controller.low_battery).start()
+    if session['run_once']:
+        robot_controller = current_app.config['robot_controller']
+        threading.Thread(target=robot_controller.low_battery).start()
+        # print("session['run_once'] = {}".format(session['run_once']))
+        # print("#################### low battery, custom")
+        session['run_once'] = False
     return render_template('error_message_customise.html')
 
 @gameplay.route('/trigger_robot_behavior', methods=['POST'])
@@ -435,3 +441,16 @@ def end():
     session['totalScore'] = 0
     
     return render_template('total_score.html', score=total)
+
+@gameplay.route('/reconnect_to_robot')
+def reconnect_to_robot():
+    if session['game_round'] < 3:
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_1")
+    else:
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_2")
+    
+    robot_controller.attempt_reconnect()
+
+    return "Attempting to reconnect to robot", 200

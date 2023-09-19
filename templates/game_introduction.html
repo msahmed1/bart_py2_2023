@@ -13,17 +13,34 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/text_field.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <style>
       video.center {
         display: block;
         margin-left: auto;
         margin-right: auto;
       }
+
+      #reconnect {
+        color: #a0a0a0; /* grey color */
+        position: absolute;
+        bottom: 10px; /* padding from the bottom */
+        right: 10px; /* padding from the right */
+        cursor: pointer; /* to indicate it's clickable */
+      }
+
+      #reconnect:active {
+        color: #555555; /* darker shade of grey when clicked */
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
 
   <body>
+    <i class="fa fa-plug" id="reconnect"></i>
     <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
       <!-- <video class="center" width="320" height="240" autoplay="autoplay" controls>
@@ -58,12 +75,12 @@
       </p>
       <p>
         Your highest score from the three blocks will be added to the
-        leaderboard, this is where it gets competitive. The player with the
-        highest score at the end of the study will walk away with a £20 gift
-        card, the second-highest score will receive a £10 gift card, and the
-        third-highest score will get a £5 gift card. Remember, every point
-        matters. So, strategise wisely and aim to collect as many points as
-        possible.
+        leaderboard, this is where it gets competitive. Although everyone will
+        recive a gift. The player with the highest score at the end of the study
+        will walk away with a £20 gift card, the second-highest score will
+        receive a £15 gift card, and the third-highest score will get a £10 gift
+        card. Remember, every point matters. So, strategise wisely and aim to
+        collect as many points as possible.
       </p>
       <div id="next-container">
         <button class="button" id="next-button">Next</button>
@@ -74,6 +91,13 @@
         $("#next-button").on("click", function (event) {
           $(this).prop("disabled", true);
           window.location.href = "/gameIntro_robot";
+        });
+
+        $("#reconnect").click(function () {
+          console.log("Attempting to reconnect to robot via icon click...");
+          $.get("/reconnect_to_robot", function (data) {
+            console.log("Reconnect response: ", data);
+          });
         });
       });
     </script>

@@ -5,6 +5,10 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/button.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <style>
       .flex-row {
         display: flex;
@@ -61,10 +65,23 @@
         font-size: 20px;
         color: black;
       }
+
+      #reconnect {
+        color: #a0a0a0; /* grey color */
+        position: absolute;
+        bottom: 10px; /* padding from the bottom */
+        right: 10px; /* padding from the right */
+        cursor: pointer; /* to indicate it's clickable */
+      }
+
+      #reconnect:active {
+        color: #555555; /* darker shade of grey when clicked */
+      }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
+    <i class="fa fa-plug" id="reconnect"></i>
     <div class="flex-row">
       <div class="score-container">
         <div id="inflate-text" class="text-style">Score: {{ score }}</div>
@@ -103,10 +120,7 @@
               // Otherwise, update the score and inflate the balloon
               $("#inflate-text").text("Score: " + data.score);
               $("#progress-counter").text(
-                "Progress: " +
-                  data.progress +
-                  " of " +
-                  data.balloon_limit
+                "Progress: " + data.progress + " of " + data.balloon_limit
               );
               var balloon = $("#balloon");
               balloon.width(balloon.width() + 20);
@@ -133,6 +147,13 @@
                 collectButton.prop("disabled", false); // Re-enable the button
               }, 1000);
             }
+          });
+        });
+
+        $("#reconnect").click(function () {
+          console.log("Attempting to reconnect to robot via icon click...");
+          $.get("/reconnect_to_robot", function (data) {
+            console.log("Reconnect response: ", data);
           });
         });
       });

@@ -13,6 +13,10 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles/customisation_cond.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <style>
       .container {
         display: flex;
@@ -24,10 +28,23 @@
         margin-top: 10px;
         text-align: center;
       }
+
+      #reconnect {
+        color: #a0a0a0; /* grey color */
+        position: absolute;
+        bottom: 10px; /* padding from the bottom */
+        right: 10px; /* padding from the right */
+        cursor: pointer; /* to indicate it's clickable */
+      }
+
+      #reconnect:active {
+        color: #555555; /* darker shade of grey when clicked */
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
   <body>
+    <i class="fa fa-plug" id="reconnect"></i>
     <div class="container">
       <img src="{{ url_for('gameplay.video_feed') }}" />
     </div>
@@ -87,6 +104,13 @@
               },
             });
           }
+
+          $("#reconnect").click(function () {
+            console.log("Attempting to reconnect to robot via icon click...");
+            $.get("/reconnect_to_robot", function (data) {
+              console.log("Reconnect response: ", data);
+            });
+          });
         }
       });
     </script>
