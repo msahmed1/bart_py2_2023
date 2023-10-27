@@ -152,7 +152,7 @@
 
         $("#reconnect").click(function () {
           console.log("Attempting to reconnect to robot via icon click...");
-          $.get("/reconnect_to_robot", function (data) {
+          $.get("/reconnect_to_robot_inplay", function (data) {
             console.log("Reconnect response: ", data);
           });
         });

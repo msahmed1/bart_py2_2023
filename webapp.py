@@ -36,6 +36,7 @@ class RobotController:
 
         if not self.disable:
             self.set_robot_ip()
+            time.sleep(1)
             # self.connect()
         
             self.inflate_messages = ["I would inflate the balloon"]
@@ -146,6 +147,41 @@ class RobotController:
             time.sleep(0.5)
 
             self.face_screen()
+
+    @reconnect_on_fail
+    def just_wake_up(self):
+        if self.disable == False:
+            self.motion_service.wakeUp()
+
+            # Send robot to Stand Zero
+            self.posture_service.goToPosture("Sit", 0.5)
+            
+            time.sleep(0.5)
+        else:
+            pass
+
+    @reconnect_on_fail
+    def attempt_reconnect(self, talk, inplay):
+        if self.disable == False:
+            self.motion_service.wakeUp()
+
+            # Send robot to Stand Zero
+            if talk == True:
+                self.posture_service.goToPosture("Sit", 0.5)
+            
+                time.sleep(0.5)
+
+            self.face_participant()
+
+            # self.talk('I am sorry, I got confused for a moment')
+
+            if talk == True:
+                self.talk('I am back now, lets try and continue')
+
+            if inplay == True:
+                self.face_screen()
+        else:
+            pass
 
     @reconnect_on_fail
     def face_participant(self):
@@ -300,7 +336,7 @@ class RobotController:
 
             time.sleep(1.0)
 
-            self.talk('Can you choose the colour you like best and put it on me')
+            self.talk('Can you choose the colour you like best, and put it on my left arm')
 
             # lower right hand
             self.motion_service.angleInterpolation(
@@ -365,7 +401,7 @@ class RobotController:
 
             time.sleep(0.5)
 
-            self.talk('can you give me a name')
+            self.talk('can you give me a unique name')
         else:
             pass
 
@@ -398,7 +434,7 @@ class RobotController:
         if self.disable == False:
             self.talk('error 804, low battery')
 
-            self.talk('Shutting down')
+            self.talk('lost connection to the server')
 
             time.sleep(1)
 

@@ -451,6 +451,20 @@ def reconnect_to_robot():
         robot_controller = current_app.config['robot_controller']
         robot_controller.set_robot_ip("robot_2")
     
-    robot_controller.attempt_reconnect()
+    robot_controller.attempt_reconnect(session['more_than_one_reconnect'], inplay=False)
+    session['more_than_one_reconnect'] = True
+
+    return "Attempting to reconnect to robot", 200
+
+@gameplay.route('/reconnect_to_robot_inplay')
+def reconnect_to_robot_inplay():
+    if session['game_round'] < 3:
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_1")
+    else:
+        robot_controller = current_app.config['robot_controller']
+        robot_controller.set_robot_ip("robot_2")
+    
+    robot_controller.attempt_reconnect(talk=True, inplay=True)
 
     return "Attempting to reconnect to robot", 200
