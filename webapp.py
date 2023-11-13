@@ -1,4 +1,5 @@
-from __future__ import print_function  # For print statements to work like in Python 3
+# For print statements to work like in Python 3
+from __future__ import print_function
 from flask import Flask
 from config import Config
 from models import db
@@ -21,8 +22,7 @@ app.register_blueprint(onboarding)
 app.register_blueprint(gameplay)
 app.register_blueprint(responses)
 
-robotIp1 = "164.11.72.91"
-robotIp2 = "164.11.72.133"
+robotIp1 = "164.11.73.26"
 
 PORT = 9559
 
@@ -33,31 +33,19 @@ class RobotController:
     def __init__(self, disable=False):
         self.disable = disable
         self.connected = False
+        self.robotIP = robotIp1
 
         if not self.disable:
-            self.set_robot_ip()
             time.sleep(1)
-            # self.connect()
-        
+            self.connect()
+
             self.inflate_messages = ["I would inflate the balloon"]
             self.collect_messages = ["I would not inflate the balloon"]
-            self.null_messages = ["I can not make a suggestion as you have to make an attempt first"] 
+            self.null_messages = [
+                "I can not make a suggestion as you have to make an attempt first"]
 
-            # self.set_default_behaviour()
+            self.set_default_behaviour()
 
-    def set_robot_ip(self, robot = "robot_1"):
-        if self.disable:
-            print("In Set Robot IP and robot is disabled")
-            return
-        
-        if robot == "robot_1":
-            self.robotIP = robotIp1
-        elif robot == "robot_2":
-            self.robotIP = robotIp2
-        
-        self.connect()
-        self.set_default_behaviour()
-    
     def reconnect_on_fail(func):
         def wrapper(self, *args, **kwargs):
             retries = 0
@@ -65,7 +53,6 @@ class RobotController:
                 try:
                     return func(self, *args, **kwargs)
                 except Exception as e:
-                    # print("###### Failed to connect to robot at %s due to %s. Attempting to reconnect..." % (self.robotIP, str(e)))
                     self.connected = False
                     self.connect()
                     if self.connected:
@@ -75,22 +62,24 @@ class RobotController:
                     else:
                         # If unable to reconnect, raise the exception
                         raise e
-            # print("###### Reached max retries for function {}. Exiting.".format(func.__name__))
             return None  # Or raise another custom exception if necessary
-        return wrapper    
-    
+        return wrapper
+
     @reconnect_on_fail
     def set_default_behaviour(self):
         self.speech_service.setParameter("defaultVoiceSpeed", 80)
         self.speech_service.setVolume(0.3)
-        self.life_service.setAutonomousAbilityEnabled("AutonomousBlinking", False)
-        self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
+        # self.life_service.setAutonomousAbilityEnabled(
+        #     "AutonomousBlinking", False)
+        # self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
         self.speech_service.setParameter('pitchShift', 1.13)
+        self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
 
         names = "body"
         stiffnessLists = 1.0
         timeLimits = 1.0
-        self.motion_service.stiffnessInterpolation(names, stiffnessLists, timeLimits)
+        self.motion_service.stiffnessInterpolation(
+            names, stiffnessLists, timeLimits)
 
     def connect(self):
         if self.disable:
@@ -100,65 +89,43 @@ class RobotController:
         retry_count = 0
         while retry_count < MAX_RETRIES:
             try:
-                self.speech_service = ALProxy("ALTextToSpeech", self.robotIP, PORT)
+                self.speech_service = ALProxy(
+                    "ALTextToSpeech", self.robotIP, PORT)
                 self.motion_service = ALProxy("ALMotion", self.robotIP, PORT)
                 self.leds = ALProxy("ALLeds", self.robotIP, PORT)
-                self.posture_service = ALProxy("ALRobotPosture", self.robotIP, PORT)
+                self.posture_service = ALProxy(
+                    "ALRobotPosture", self.robotIP, PORT)
                 # self.audio_service = ALProxy("ALAudioPlayer", robotIP, PORT)
-                self.life_service = ALProxy("ALAutonomousLife", self.robotIP, PORT)
-                
+                self.life_service = ALProxy(
+                    "ALAutonomousLife", self.robotIP, PORT)
+
                 self.connected = True
                 break
             except Exception as e:
-                print("###### Failed to connect to robot at %s. Retrying in %s seconds..." % (self.robotIP, RETRY_DELAY))
+                print("###### Failed to connect to robot at %s. Retrying in %s seconds..." % (
+                    self.robotIP, RETRY_DELAY))
             retry_count += 1
             time.sleep(RETRY_DELAY)
 
         if not self.connected:
-            print("###### Failed to connect to robot at %s after %s attempts." % (self.robotIP, MAX_RETRIES))
-    
+            print("###### Failed to connect to robot at %s after %s attempts." % (
+                self.robotIP, MAX_RETRIES))
+
     @reconnect_on_fail
-    def start_up(self, message = ''):
+    def start_up(self):
         if self.disable:
             print("In Start Up and robot is disabled")
             return
-        
+
         # Wake up robot
         self.motion_service.wakeUp()
-        
-        self.change_colour('white')
 
         # Send robot to Stand Zero
         self.posture_service.goToPosture("Sit", 0.5)
-        
-        if message != '':
-            time.sleep(0.5)
 
-            self.face_participant()
+        time.sleep(0.5)
 
-            time.sleep(0.5)
-
-            self.talk(message)
-
-            time.sleep(0.5)
-
-            self.nod_head()
-
-            time.sleep(0.5)
-
-            self.face_screen()
-
-    @reconnect_on_fail
-    def just_wake_up(self):
-        if self.disable == False:
-            self.motion_service.wakeUp()
-
-            # Send robot to Stand Zero
-            self.posture_service.goToPosture("Sit", 0.5)
-            
-            time.sleep(0.5)
-        else:
-            pass
+        self.face_participant()
 
     @reconnect_on_fail
     def attempt_reconnect(self, talk, inplay):
@@ -168,12 +135,10 @@ class RobotController:
             # Send robot to Stand Zero
             if talk == True:
                 self.posture_service.goToPosture("Sit", 0.5)
-            
+
                 time.sleep(0.5)
 
             self.face_participant()
-
-            # self.talk('I am sorry, I got confused for a moment')
 
             if talk == True:
                 self.talk('I am back now, lets try and continue')
@@ -186,9 +151,9 @@ class RobotController:
     @reconnect_on_fail
     def face_participant(self):
         if self.disable == False:
-            names  = ["HeadYaw", "HeadPitch"]
-            angles  = [0.5, 0.05]
-            fractionMaxSpeed  = 0.2
+            names = ["HeadYaw", "HeadPitch"]
+            angles = [0.5, 0.05]
+            fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
         else:
             pass
@@ -196,9 +161,9 @@ class RobotController:
     @reconnect_on_fail
     def face_screen(self):
         if self.disable == False:
-            names  = ["HeadYaw", "HeadPitch"]
-            angles  = [-0.5, 0.1]
-            fractionMaxSpeed  = 0.2
+            names = ["HeadYaw", "HeadPitch"]
+            angles = [-0.5, 0.1]
+            fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
         else:
             pass
@@ -209,7 +174,7 @@ class RobotController:
             self.motion_service.angleInterpolation(
                 ["HeadPitch"],
                 [0.5, 0.0],
-                [1  , 1.5],
+                [1, 1.5],
                 False,
                 _async=True
             )
@@ -219,30 +184,30 @@ class RobotController:
     @reconnect_on_fail
     def shake_head(self):
         if self.disable == False:
-            names  = ["HeadYaw", "HeadPitch"]
-            angles  = [-0.8, 0]
-            fractionMaxSpeed  = 0.2
+            names = ["HeadYaw", "HeadPitch"]
+            angles = [-0.8, 0]
+            fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
             time.sleep(0.3)
 
-            names  = ["HeadYaw", "HeadPitch"]
-            angles  = [0.5, 0]
-            fractionMaxSpeed  = 0.2
+            names = ["HeadYaw", "HeadPitch"]
+            angles = [0.5, 0]
+            fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
             time.sleep(0.3)
 
-            names  = ["HeadYaw", "HeadPitch"]
-            angles  = [-0.8, 0]
-            fractionMaxSpeed  = 0.2
+            names = ["HeadYaw", "HeadPitch"]
+            angles = [-0.8, 0]
+            fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
             time.sleep(0.3)
 
-            names  = ["HeadYaw", "HeadPitch"]
-            angles  = [0.5, 0]
-            fractionMaxSpeed  = 0.2
+            names = ["HeadYaw", "HeadPitch"]
+            angles = [0.5, 0]
+            fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
             time.sleep(0.3)
@@ -292,7 +257,7 @@ class RobotController:
             self.face_participant()
 
             time.sleep(0.5)
-            
+
             self.talk(random.choice(self.collect_messages))
 
             self.shake_head()
@@ -300,108 +265,30 @@ class RobotController:
             self.face_screen()
         else:
             pass
-    
+
     @reconnect_on_fail
     def change_colour(self, colour):
         if self.disable == False:
             self.leds.on("AllLeds")
-            if colour == 'red':
-                self.leds.fadeRGB("AllLeds", 255.0, 0.0, 0, 0.0)
-            elif colour == 'green':
+            if colour == 'green':
                 self.leds.fadeRGB("AllLeds", 0.0, 255.0, 0, 0.0)
             elif colour == 'blue':
                 self.leds.fadeRGB("AllLeds", 0.0, 0.0, 255.0, 0.0)
+            elif colour == 'yellow':
+                self.leds.fadeRGB("AllLeds", 255.0, 255.0, 0, 0.0)
+            elif colour == 'red':
+                self.leds.fadeRGB("AllLeds", 255.0, 0.0, 0.0, 0.0)
+            elif colour == 'cyan':
+                self.leds.fadeRGB("AllLeds", 0.0, 255.0, 255.0, 0.0)
+            elif colour == 'magenta':
+                self.leds.fadeRGB("AllLeds", 255.0, 0.0, 255.0, 0.0)
+            elif colour == 'purple':
+                self.leds.fadeRGB("AllLeds", 230,230,250, 0.0)
             elif colour == 'white':
                 self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
-            
-            self.leds.fadeRGB("EarLeds", 0, 0, 0, 0.0)
 
-        else:
-            pass
-    @reconnect_on_fail
-    def request_band(self):
-        if self.disable == False:
-            self.face_participant()
+            # self.leds.fadeRGB("EarLeds", 0, 0, 0, 0.0)
 
-            # Point with right hand
-            self.motion_service.angleInterpolation(
-                ["RShoulderPitch", "RShoulderRoll", "RElbowRoll", "RElbowYaw"],
-                [-0.5, -0.1, -0.8, 0],
-                [1, 1, 1, 1],
-                False,
-                _async=True
-            )
-            
-            self.talk('I see there are different coloured wrist bands on the table')
-
-            time.sleep(1.0)
-
-            self.talk('Can you choose the colour you like best, and put it on my left arm')
-
-            # lower right hand
-            self.motion_service.angleInterpolation(
-                ["RShoulderPitch", "RShoulderRoll", "RElbowRoll", "RElbowYaw"],
-                [0.5, 0.2, 0.55, 0],
-                [1, 1, 1, 1],
-                False,
-                _async=True
-            )
-
-            # Lift left hand
-            self.motion_service.angleInterpolation(
-                ["LShoulderPitch", "LShoulderRoll", "LElbowRoll", "LElbowYaw"],
-                [-1, -0.1, -0.4, -0.1],
-                [1, 1, 1, 1],
-                False,
-                _async=True
-            )
-        else:
-            pass
-    
-    @reconnect_on_fail
-    def accept_band(self, colour=''):
-        if self.disable == False:
-            self.posture_service.goToPosture("Sit", 0.5)
-
-            self.face_participant()
-
-            self.talk('Thank you')
-            
-
-            time.sleep(0.5)
-
-            if colour == '':
-                reponse = 'I like your choice'
-            else:
-                reponse = "{colour} looks good on me".format(colour=colour)
-
-            self.talk(reponse)
-
-            time.sleep(0.5)
-        else:
-            pass
-
-    @reconnect_on_fail
-    def request_voice_change(self):
-        if self.disable == False:
-            time.sleep(0.5)
-
-            self.face_participant()
-
-            self.talk('You can change my voice as well, which one do you like')
-        else:
-            pass
-
-    @reconnect_on_fail
-    def request_name_change(self):
-        if self.disable == False:
-            self.face_participant()
-
-            self.talk('Before we start playing')
-
-            time.sleep(0.5)
-
-            self.talk('can you give me a unique name')
         else:
             pass
 
@@ -412,9 +299,9 @@ class RobotController:
             self.posture_service.goToPosture("Sit", 0.5)
 
             # Bow head
-            names  = ["HeadYaw", "HeadPitch"]
-            angles  = [0, 1]
-            fractionMaxSpeed  = 0.2
+            names = ["HeadYaw", "HeadPitch"]
+            angles = [0, 1]
+            fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
             time.sleep(1.0)
@@ -428,40 +315,6 @@ class RobotController:
             self.life_service.setState("disabled")
         else:
             pass
- 
-    @reconnect_on_fail
-    def low_battery(self):
-        if self.disable == False:
-            self.talk('error 804, low battery')
-
-            self.talk('lost connection to the server')
-
-            time.sleep(1)
-
-            # Return to sit position
-            self.posture_service.goToPosture("Sit", 0.5)
-
-            # Bow head
-            names  = ["HeadYaw", "HeadPitch"]
-            angles  = [0, 1]
-            fractionMaxSpeed  = 0.2
-            self.motion_service.setAngles(names, angles, fractionMaxSpeed)
-
-            time.sleep(1.0)
-
-            # Turn off all lights
-            self.leds.fadeRGB("AllLeds", 0, 0.0, 0, 0.0)
-
-            # Wait a while before restaring
-            time.sleep(30)
-
-            # Wake up robot
-            self.motion_service.wakeUp()
-
-            # Send robot to Stand Zero
-            self.posture_service.goToPosture("Sit", 0.5)
-        else:
-            pass
 
     @reconnect_on_fail
     def null_attempt(self):
@@ -469,25 +322,6 @@ class RobotController:
             self.face_participant()
 
             self.talk(random.choice(self.null_messages))
-
-            self.face_screen()
-        else:
-            pass
-
-    @reconnect_on_fail
-    def start_game_after_customisation(self, robot_name):
-        if self.disable == False:
-            self.face_participant()
-
-            message = '{name}, I like it'.format(name=robot_name)
-
-            self.talk(message)
-
-            time.sleep(0.5)
-            
-            message = 'I will help you during this game, Before you collect your points I will provide you with my suggesstion. Good luck'
-
-            self.talk(message)
 
             self.face_screen()
         else:
@@ -516,7 +350,7 @@ class RobotController:
         if self.disable == False:
             self.talk('Oh no')
         else:
-            pass 
+            pass
 
     @reconnect_on_fail
     def no_points(self):
@@ -524,6 +358,7 @@ class RobotController:
             self.talk('no points')
         else:
             pass
+
 
 # Initialize the robot controller with the IP address of the robot
 app.config['robot_controller'] = RobotController(disable=False)

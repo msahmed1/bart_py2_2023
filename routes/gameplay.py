@@ -1,34 +1,19 @@
 from flask import Blueprint, render_template, request, redirect, session, jsonify, url_for, Response, current_app
 from models import db, BalloonInflate, GameRoundSurvey
 import random
-import cv2
 import threading
 from datetime import datetime
 import numpy as np
-
-def generate_frames():
-    camera = cv2.VideoCapture(0)
-    while True:
-        success, frame = camera.read()  # read the camera frame
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
-            
-    camera.release()
 
 gameplay = Blueprint('gameplay', __name__)
 
 # Define the inflate limit for each balloon
 BALLOON_LIMITS = {
     # 'red': 8,
-    'green': 32
+    'green': 2 #32
 }
 
-total_trials = 30 #! MODIFY THIS FOR THE FINAL STUDY
+total_trials = 2 #! MODIFY THIS FOR THE FINAL STUDY
 # Generate list with 50/50 split of 0s and 1s
 half_length = total_trials // 2
 
@@ -50,39 +35,38 @@ random.shuffle(balloon_colour)
 
 banner_image_url = 'static/logos.png'
 
-# Set up a dictionary to store the state of the buttons
-button_states = {
-    'voice1': False,
-    'voice2': False,
-    'voice3': False,
-    'voice4': False
-}
-
 @gameplay.route('/gameIntro')
 def gameIntro():
+    # Check if the game round has been initialised, if not, initialise it
+    if 'game_round' not in session:
+            session['game_round'] = 1  # Initialize game_round
+    
     return render_template('game_introduction.html', banner_image_url=banner_image_url)
 
 @gameplay.route('/gameIntro_robot')
 def gameIntro_robot():
-    # Check if the game round has been initialized, if not, initialize it
-    if 'game_round' not in session:
-        session['game_round'] = 1  # Initialize game_round
-
-    if session['game_round'] < 3:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_1")
-    else:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_2")
+    robot_controller = current_app.config['robot_controller']
 
     if session['game_round'] == 1:
-        message = 'For this first game I will just watch you play, good luck'
-        robot_controller.start_up(message)
-    else:
-        message = 'Hi, my name is Nao, I am here to help you with this game, good luck'
-        robot_controller.start_up(message)    
+        if session['exp_cond']:
+            name = 'Nao'
+        else:
+            name = session['robot_name']
 
+        message = 'Hi, my name is ' + str(name) + ', For this first game I will just watch you play, good luck'
+
+        robot_controller.talk(message)
+        robot_controller.face_screen()
+    else:
+        message = 'I will help you during this game, Before you collect your points I will provide you with my suggesstion.'
+        robot_controller.talk(message)   
+        robot_controller.face_screen()
+        
     return redirect('/play')
+
+@gameplay.route('/gameIntro_2')
+def condition_selection():
+    return render_template('game_introduction_2.html', banner_image_url=banner_image_url)
 
 @gameplay.route('/play', methods=['GET', 'POST'])
 def play():
@@ -112,132 +96,6 @@ def play():
         return render_template('play.html', score=session['score'], balloon_limit=total_trials, progress=session['balloons_completed']+1, balloon_color=session['balloon_color'], button_value=' Help ')
 
     return render_template('play.html', score=session['score'], balloon_limit=total_trials, progress=session['balloons_completed']+1, balloon_color=session['balloon_color'], button_value='Collect')
-
-@gameplay.route('/condition_selection')
-def condition_selection():
-    if session['exp_cond']:
-        return redirect('/custom_pre_error')
-    else:
-        return redirect('/non_custom_pre_error')
-
-@gameplay.route('/custom_pre_error')
-def custom_pre_error():
-    return render_template('custom_before_error.html', banner_image_url=banner_image_url)
-
-@gameplay.route('/custom_post_error')
-def custom_post_error():
-    # robot_controller = current_app.config['robot_controller']
-    return render_template('custom_after_error.html', banner_image_url=banner_image_url)
-
-@gameplay.route('/custom_cond')
-def custom_cond():
-    if session['game_round'] < 3:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_1")
-    else:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_2")
-        robot_controller.just_wake_up()
-
-
-    robot_controller = current_app.config['robot_controller']
-
-    threading.Thread(target=robot_controller.request_band).start()
-
-    return render_template('customise_clothing.html')
-
-@gameplay.route('/custom_voice')
-def custom_voice():
-    robot_controller = current_app.config['robot_controller']
-
-    threading.Thread(target=robot_controller.request_voice_change).start()
-
-    return render_template('customise_voice.html', button_states=button_states)
-
-@gameplay.route('/custom_name')
-def custom_name():
-    robot_controller = current_app.config['robot_controller']
-
-    threading.Thread(target=robot_controller.request_name_change).start()
-
-    return render_template('customise_name.html')
-
-@gameplay.route('/click/<button_name>')
-def button_click(button_name):
-    if button_name in button_states:
-        # Set the state of all buttons to False
-        for key in button_states:
-            button_states[key] = False
-        # Set the state of the clicked button to True
-        button_states[button_name] = True
-        # Call the function in robot_controller
-        robot_controller = current_app.config['robot_controller']
-        threading.Thread(target=robot_controller.set_voice, args=(button_name,)).start()
-    return jsonify({'status': 'success'})
-
-@gameplay.route('/non_custom_pre_error')
-def non_custom_pre_error():
-    return render_template('non_custom_before_error.html', banner_image_url=banner_image_url)
-
-@gameplay.route('/non_custom_post_error')
-def non_custom_post_error():
-    return render_template('non_custom_after_error.html', banner_image_url=banner_image_url)
-
-@gameplay.route('/error_message_non_customise')
-def error_message_non_customise():
-    if session['run_once']:
-        robot_controller = current_app.config['robot_controller']
-        threading.Thread(target=robot_controller.low_battery).start()
-        # print("#################### low battery, non custom")
-        # print("session['run_once'] = {}".format(session['run_once']))
-        session['run_once'] = False
-    return render_template('error_message_non_customise.html')
-
-@gameplay.route('/error_message_customise')
-def error_message_customise():
-    if session['run_once']:
-        robot_controller = current_app.config['robot_controller']
-        threading.Thread(target=robot_controller.low_battery).start()
-        # print("session['run_once'] = {}".format(session['run_once']))
-        # print("#################### low battery, custom")
-        session['run_once'] = False
-    return render_template('error_message_customise.html')
-
-@gameplay.route('/trigger_robot_behavior', methods=['POST'])
-def trigger_robot_behavior():
-    key_pressed = request.form.get('key')
-    robot_controller = current_app.config['robot_controller']
-
-    if 'colour' not in session or not session['colour']:
-        session['colour'] = ''
-
-    if key_pressed == 'r':
-        robot_controller.change_colour('red')
-        robot_controller.talk("red")
-        session['colour'] = 'red'
-    elif key_pressed == 'g':
-        robot_controller.change_colour('green')
-        robot_controller.talk("green")
-        session['colour'] = 'green'
-    elif key_pressed == 'b':
-        robot_controller.change_colour('blue')
-        robot_controller.talk("blue")
-        session['colour'] = 'blue'
-    elif key_pressed == 'q':
-        robot_controller.accept_band(session['colour'],)
-
-    return "Robot behavior triggered", 200
-
-@gameplay.route('/submit_customisation', methods=['POST'])
-def submit_customisation():
-    robot_name = request.form.get('robot-name')
-    robot_controller = current_app.config['robot_controller']
-    robot_controller.start_game_after_customisation(robot_name)
-    return redirect('/play')
-
-@gameplay.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @gameplay.route('/inflate', methods=['POST'])
 def inflate():
@@ -308,12 +166,12 @@ def help():
                 help_requested=True,
                 robot_response=ROBOT_FEEDBACK[session['balloons_completed']]
             )
-            balloon_inflate.inflate_before_help_request = int(session['total_inflates'])
+            balloon_inflate.total_inflates_before_help_request = int(session['total_inflates'])
             db.session.add(balloon_inflate)
         else:
             balloon_inflate.help_requested = True
             balloon_inflate.robot_response = ROBOT_FEEDBACK[session['balloons_completed']]
-            balloon_inflate.inflate_before_help_request = int(session['total_inflates'])
+            balloon_inflate.total_inflates_before_help_request = int(session['total_inflates'])
         
         db.session.commit()
         
@@ -372,8 +230,6 @@ def collect_or_burst():
     collected_score = session['score']  # Store the score before resetting it
     session['total_inflates'] = 0  # Reset the total_inflates
     session['balloons_completed'] += 1  # Increment the balloons_completed
-
-    # TODO: If help provided then recorde total_inflates after help provided
     
     # Set the help_provided variable to False for the next game round
     session['help_provided'] = False
@@ -444,13 +300,8 @@ def end():
 
 @gameplay.route('/reconnect_to_robot')
 def reconnect_to_robot():
-    if session['game_round'] < 3:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_1")
-    else:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_2")
-    
+    robot_controller = current_app.config['robot_controller']
+
     robot_controller.attempt_reconnect(session['more_than_one_reconnect'], inplay=False)
     session['more_than_one_reconnect'] = True
 
@@ -458,12 +309,7 @@ def reconnect_to_robot():
 
 @gameplay.route('/reconnect_to_robot_inplay')
 def reconnect_to_robot_inplay():
-    if session['game_round'] < 3:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_1")
-    else:
-        robot_controller = current_app.config['robot_controller']
-        robot_controller.set_robot_ip("robot_2")
+    robot_controller = current_app.config['robot_controller']
     
     robot_controller.attempt_reconnect(talk=True, inplay=True)
 

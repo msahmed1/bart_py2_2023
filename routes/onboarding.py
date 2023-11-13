@@ -1,6 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, session, current_app, jsonify
 from models import db, Players
 import random
+import threading
+
+# Set up a dictionary to store the state of the buttons
+button_states = {
+    'voice1': False,
+    'voice2': False,
+    'voice3': False,
+    'voice4': False
+}
 
 onboarding = Blueprint('onboarding', __name__)
 
@@ -29,7 +38,6 @@ def index():
     session.pop('total_inflates', None)
     session.pop('balloon_number', None)
     session.pop('balloon_limit', None)
-    session.pop('colour', None)
     session.pop('exp_cond', None)
     session.pop('max_score', None)
 
@@ -42,11 +50,7 @@ def index():
     session['more_than_one_reconnect'] = False
 
     robot_controller = current_app.config['robot_controller']
-    robot_controller.set_robot_ip("robot_1")
-    robot_controller.sleep()
-
-    robot_controller.set_robot_ip("robot_2")
-    robot_controller.sleep()
+    robot_controller.start_up()
 
     non_custom_first = Players.query.filter_by(customise_first=False, testing=False, game_completed=True).count()
     custom_first = Players.query.filter_by(customise_first=True, testing=False, game_completed=True).count()
@@ -123,4 +127,40 @@ def submit_demograph():
 
     db.session.commit()  # Commit the changes to the database
     
+    return redirect('/robot_setup')
+
+@onboarding.route('/robot_setup')
+def robot_setup():
+    if session['exp_cond']:
+        return render_template('defaul_setup.html')
+    else:
+        return render_template('custom_setup.html', button_states=button_states, banner_image_url=banner_image_url)
+
+@onboarding.route('/voice/<button_name>')
+def voice_button_click(button_name):
+    print('Voice Button clicked: ' + button_name)
+    if button_name in button_states:
+        # Set the state of all buttons to False
+        for key in button_states:
+            button_states[key] = False
+        # Set the state of the clicked button to True
+        button_states[button_name] = True
+        # Call the function in robot_controller
+        robot_controller = current_app.config['robot_controller']
+        threading.Thread(target=robot_controller.set_voice, args=(button_name,)).start()
+    return jsonify({'status': 'success'})
+
+@onboarding.route('/colour/<button_name>')
+def colour_button_click(button_name):
+    print('Colour Button clicked: ' + button_name)
+    # Call the function in robot_controller
+    robot_controller = current_app.config['robot_controller']
+    threading.Thread(target=robot_controller.change_colour, args=(button_name,)).start()
+    return jsonify({'status': 'success'})
+
+@onboarding.route('/submit_customisation', methods=['POST'])
+def submit_customisation():
+    robot_name = request.form.get('robot-name')
+    session['robot_name'] = robot_name
+    # Save the name and use it to introduce the robot
     return redirect('/gameIntro')

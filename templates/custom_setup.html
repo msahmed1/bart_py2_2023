@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <style>
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      #button-container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        /* margin: 5px 0; */
+        align-self: center;
+        margin-top: 5px;
+      }
+
+      #custom-radios div {
+        display: inline-block;
+      }
+
+      #custom-radios input[type="radio"] {
+        display: none;
+      }
+
+      #custom-radios input[type="radio"] + label {
+        color: #333;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+      }
+
+      #custom-radios input[type="radio"] + label span {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        margin: -1px 4px 0 0;
+        vertical-align: middle;
+        cursor: pointer;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+        background-repeat: no-repeat;
+        background-position: center;
+        text-align: center;
+        line-height: 44px;
+      }
+
+      #custom-radios input[type="radio"] + label span img {
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      #custom-radios #colour-1 + label span {
+        background-color: #2ecc71;
+      }
+
+      #custom-radios #colour-2 + label span {
+        background-color: #3498db;
+      }
+
+      #custom-radios #colour-3 + label span {
+        background-color: #f1c40f;
+      }
+
+      #custom-radios #colour-4 + label span {
+        background-color: #e74c3c;
+      }
+
+      #custom-radios #colour-5 + label span {
+        background-color: #40e0d0;
+      }
+
+      #custom-radios #colour-6 + label span {
+        background-color: #ffc0cb;
+      }
+
+      #custom-radios #colour-7 + label span {
+        background-color: #800080;
+      }
+
+      #custom-radios #colour-8 + label span {
+        background-color: #ffffff;
+      }
+
+      #custom-radios input[type="radio"]:checked + label span img {
+        opacity: 1;
+      }
+
+      .radios-container {
+        display: flex;
+        justify-content: center;
+        width: 100%; /* Ensures the container spans the full width */
+      }
+
+      h4,
+      h5 {
+        margin-bottom: 4px;
+      }
+
+      p {
+        margin-top: 4px;
+      }
+
+      ul {
+        margin-top: 4px;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // This function is called when any of the voice-button's is clicked
+        $(".voice-button").click(function (event) {
+          event.preventDefault(); // Prevent the default action (navigation) from happening
+          var button = $(this); // Get the button that was clicked
+          var buttonName = button.attr("id"); // Get the id of the button
+
+          // Make an AJAX request to the Flask route
+          $.ajax({
+            url: "/voice/" + buttonName,
+            type: "GET",
+            success: function (response) {
+              // This function is called when the server responds successfully
+              // Update the classes of the buttons based on the response
+              $(".button").each(function () {
+                var btn = $(this);
+                var btnName = btn.attr("id");
+                if (btnName === buttonName) {
+                  btn.addClass("clicked"); // Make the clicked button active
+                  btn.prop("disabled", true); // Disable the button
+                } else {
+                  btn.removeClass("clicked"); // Make the other buttons inactive
+                  btn.prop("disabled", false); // Enable the button
+                }
+              });
+            },
+            error: function (error) {
+              // This function is called when the server responds with an error
+              console.log(error);
+            },
+          });
+        });
+      });
+      $(document).ready(function () {
+        // This function is called when any of the radio buttons is changed
+        $('input[type="radio"].custom-radio').change(function () {
+          // 'this' refers to the radio button that was changed
+          var colorValue = $(this).val(); // Get the value of the radio button
+
+          // Make an AJAX request to the Flask route
+          $.ajax({
+            url: "/colour/" + colorValue, // Assuming 'colorValue' is the part of the URL you want
+            type: "GET",
+            success: function (response) {
+              // This function is called when the server responds successfully
+              // Handle the response
+              console.log(response);
+            },
+            error: function (error) {
+              // This function is called when the server responds with an error
+              console.log(error);
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <p>
+        Before you start the study, please take this opportunity to personalise
+        your robot companion. This robot will join you throughout the study. To
+        make the experience more engaging, let's give your robot a personal
+        touch.
+      </p>
+
+      <h5>Instructions:</h5>
+      <ul>
+        <li>
+          Take a moment to explore the customisation options we've provided.
+        </li>
+        <li>Feel free to make your robot as unique as you'd like.</li>
+        <!-- <li>When you're finished, we'll move on to the next part of our session.</li> -->
+      </ul>
+
+      <form action="/submit_customisation" method="post">
+        <h4>Name your robot</h4>
+        <p>
+          Please provide a name for your robot. Be as creative as you'd like.
+        </p>
+
+        <input
+          type="text"
+          id="robot-name"
+          name="robot-name"
+          placeholder="Enter robot name"
+          required
+        />
+
+        <h4>Choose a colour for your robot</h4>
+        <p>
+          The robot has LED lights that can display different colors. Select a
+          colour that you think looks good from the following options:
+        </p>
+
+        <div class="radios-container">
+          <div id="custom-radios">
+            <div>
+              <input
+                type="radio"
+                class="custom-radio"
+                id="colour-1"
+                name="colour"
+                value="green"
+              />
+              <label for="colour-1">
+                <span>
+                  <img src="./static/check.svg" alt="Checked Icon" />
+                </span>
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                class="custom-radio"
+                id="colour-2"
+                name="colour"
+                value="blue"
+              />
+              <label for="colour-2">
+                <span>
+                  <img src="./static/check.svg" alt="Checked Icon" />
+                </span>
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                class="custom-radio"
+                id="colour-3"
+                name="colour"
+                value="yellow"
+              />
+              <label for="colour-3">
+                <span>
+                  <img src="./static/check.svg" alt="Checked Icon" />
+                </span>
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                class="custom-radio"
+                id="colour-4"
+                name="colour"
+                value="red"
+              />
+              <label for="colour-4">
+                <span>
+                  <img src="./static/check.svg" alt="Checked Icon" />
+                </span>
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                class="custom-radio"
+                id="colour-5"
+                name="colour"
+                value="cyan"
+              />
+              <label for="colour-5">
+                <span>
+                  <img src="./static/check.svg" alt="Checked Icon" />
+                </span>
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                class="custom-radio"
+                id="colour-6"
+                name="colour"
+                value="magenta"
+              />
+              <label for="colour-6">
+                <span>
+                  <img src="./static/check.svg" alt="Checked Icon" />
+                </span>
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                class="custom-radio"
+                id="colour-7"
+                name="colour"
+                value="purple"
+              />
+              <label for="colour-7">
+                <span>
+                  <img src="./static/check.svg" alt="Checked Icon" />
+                </span>
+              </label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                class="custom-radio"
+                id="colour-8"
+                name="colour"
+                value="white"
+                checked
+              />
+              <label for="colour-8">
+                <span>
+                  <img src="./static/check.svg" alt="Checked Icon" />
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <h4>Select a voice</h4>
+        <p>
+          The robot has a number of different voices. Listen to each sample and
+          select one that you think will sound good.
+        </p>
+        <div id="button-container">
+          <button
+            type="button"
+            id="voice1"
+            class="button voice-button {{ 'disabled' if button_states['voice1'] else '' }}"
+          >
+            Voice 1
+          </button>
+          <button
+            type="button"
+            id="voice2"
+            class="button voice-button {{ 'disabled' if button_states['voice2'] else '' }}"
+          >
+            Voice 2
+          </button>
+          <button
+            type="button"
+            id="voice3"
+            class="button voice-button {{ 'disabled' if button_states['voice3'] else '' }}"
+          >
+            Voice 3
+          </button>
+          <button
+            type="button"
+            id="voice4"
+            class="button voice-button {{ 'disabled' if button_states['voice4'] else '' }}"
+          >
+            Voice 4
+          </button>
+        </div>
+
+        <h4>Decorate your robot</h4>
+        <p>
+          Make your robot stand out, on your left there are a number of stickers
+          you can attach to the surface of the robot as well as parts that you
+          can attach to the sides of the robots head.
+        </p>
+
+        <h4>Review and confirm</h4>
+        <p>
+          Please take a moment to review your customisations. Once you are happy
+          with your selections, click the 'Next' button to continue to the next
+          stage.
+        </p>
+        <div id="next-container">
+          <button type="submit" class="button" id="nextButton">Next</button>
+        </div>
+      </form>
+    </div>
+    <script>
+      $(document).ready(function () {
+        $("form").on("submit", function (event) {
+          var robotName = $("#robot-name").val().trim();
+          if (robotName === "") {
+            alert("Please enter a name for the robot.");
+            event.preventDefault(); // Prevent the form from being submitted if no name is entered
+          } else {
+            var btn = $(this).find('button[type="submit"]');
+            btn.prop("disabled", true); // Disable the button after submission
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

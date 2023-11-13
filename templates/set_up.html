@@ -1,93 +1,93 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='styles/button.css') }}"
-    />
-    <style>
-      #form-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 300px;
-        text-align: center;
-        vertical-align: middle;
-      }
 
-      /* The switch - the box around the slider */
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
-        margin: 0 15px;
-        vertical-align: middle;
-      }
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/button.css') }}" />
+  <style>
+    #form-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      text-align: center;
+      vertical-align: middle;
+    }
 
-      /* Hide default HTML checkbox */
-      .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
+    /* The switch - the box around the slider */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin: 0 15px;
+      vertical-align: middle;
+    }
 
-      /* The slider */
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: 0.4s;
-      }
+    /* Hide default HTML checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
 
-      .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        transition: 0.4s;
-      }
+    /* The slider */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+    }
 
-      input:checked + .slider {
-        background-color: #2196f3;
-      }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+    }
 
-      input:checked + .slider:before {
-        transform: translateX(26px);
-      }
+    input:checked+.slider {
+      background-color: #2196f3;
+    }
 
-      /* Rounded sliders */
-      .slider.round {
-        border-radius: 34px;
-      }
+    input:checked+.slider:before {
+      transform: translateX(26px);
+    }
 
-      .slider.round:before {
-        border-radius: 50%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="form-container">
-      <form action="/submit_setup" method="post">
-        <div>Set condition:</div>
-        <span>C1: {{ custom_first }}</span>
-        <label class="switch">
-          <input type="checkbox" name="toggleState" id="toggleSwitch" />
-          <span class="slider round"></span>
-        </label>
-        <span>C2: {{ non_custom_first }}</span>
-        <div id="button-container">
-          <button type="submit" class="button" id="start-button">Next</button>
-        </div>
-      </form>
-    </div>
-  </body>
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="form-container">
+    <form action="/submit_setup" method="post">
+      <div>Set condition:</div>
+      <span>C1: {{ custom_first }}</span>
+      <label class="switch">
+        <input type="checkbox" name="toggleState" id="toggleSwitch" />
+        <span class="slider round"></span>
+      </label>
+      <span>C2: {{ non_custom_first }}</span>
+      <div id="button-container">
+        <button type="submit" class="button" id="start-button">Next</button>
+      </div>
+    </form>
+  </div>
+</body>
+
 </html>

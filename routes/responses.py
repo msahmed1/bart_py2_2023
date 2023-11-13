@@ -70,16 +70,9 @@ def survey():
     game_round = session['game_round']
 
     if(session['game_round'] == 1):
-        if session['exp_cond'] == True:
-            session['totalScore'] = 0
-            session['game_round'] += 1
-            session['exp_cond'] = False
-            return redirect('/non_custom_post_error')
-        else:
-            session['totalScore'] = 0
-            session['game_round'] += 1
-            session['exp_cond'] = True
-            return redirect('/custom_post_error')
+        session['totalScore'] = 0
+        session['game_round'] += 1
+        return redirect('/gameIntro_2')
 
     if 'question_group_index' not in session:
         session['question_group_index'] = 0
@@ -115,17 +108,6 @@ def survey():
     
     if session['scales_index'] < len(survey_questions):
         return render_template('survey.html', title=survey_questions[session['scales_index']]["title"], scales=survey_questions[session['scales_index']]["questions"], action_url="/survey", banner_image_url=banner_image_url)
-    elif session['game_round'] < 3:
-        if session['exp_cond'] == True:
-            session['totalScore'] = 0
-            session['game_round'] += 1
-            session['exp_cond'] = False
-            return redirect('/non_custom_pre_error')
-        else:
-            session['totalScore'] = 0
-            session['game_round'] += 1
-            session['exp_cond'] = True
-            return redirect('/custom_pre_error')
     else:
         return render_template('freetext.html', banner_image_url=banner_image_url)
         
