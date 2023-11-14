@@ -50,7 +50,12 @@ def index():
     session['more_than_one_reconnect'] = False
 
     robot_controller = current_app.config['robot_controller']
-    robot_controller.start_up()
+
+    robot_controller.set_robot_ip("robot_2")
+    robot_controller.sleep()
+
+    robot_controller.set_robot_ip("robot_1")
+    robot_controller.sleep()
 
     non_custom_first = Players.query.filter_by(customise_first=False, testing=False, game_completed=True).count()
     custom_first = Players.query.filter_by(customise_first=True, testing=False, game_completed=True).count()
@@ -61,6 +66,15 @@ def index():
 def submit_setup():
     # Get the toggle state from the form
     session['exp_cond'] = 'toggleState' in request.form
+
+    robot_controller = current_app.config['robot_controller']
+    robot_controller.face_participant()
+    # robot_controller.set_robot_ip("robot_1")
+    # robot_controller.start_up()
+
+    # if session['exp_cond']:
+    #     robot_controller.set_robot_ip("robot_2")
+    #     robot_controller.sleep()
     
     return render_template('onboarding.html')
 
@@ -113,17 +127,11 @@ def submit_demograph():
     player_id = session['player_id']
     age = request.form['age']
     gender = request.form.get('other-gender-text')
-    # ethnicity = request.form['ethnicity']
-    # education = request.form['education']
-    # robot_familiarity = request.form['robot_familiarity']
 
     player = Players.query.get(player_id)  # Get the player from the database
 
     player.age = age
     player.gender = gender
-    # player.ethnicity = ethnicity
-    # player.education = education
-    # player.robot_familiarity = robot_familiarity
 
     db.session.commit()  # Commit the changes to the database
     
@@ -131,14 +139,10 @@ def submit_demograph():
 
 @onboarding.route('/robot_setup')
 def robot_setup():
-    if session['exp_cond']:
-        return render_template('defaul_setup.html')
-    else:
-        return render_template('custom_setup.html', button_states=button_states, banner_image_url=banner_image_url)
+    return render_template('custom_setup.html', button_states=button_states, banner_image_url=banner_image_url)
 
 @onboarding.route('/voice/<button_name>')
 def voice_button_click(button_name):
-    print('Voice Button clicked: ' + button_name)
     if button_name in button_states:
         # Set the state of all buttons to False
         for key in button_states:
@@ -152,7 +156,6 @@ def voice_button_click(button_name):
 
 @onboarding.route('/colour/<button_name>')
 def colour_button_click(button_name):
-    print('Colour Button clicked: ' + button_name)
     # Call the function in robot_controller
     robot_controller = current_app.config['robot_controller']
     threading.Thread(target=robot_controller.change_colour, args=(button_name,)).start()

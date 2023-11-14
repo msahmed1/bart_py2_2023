@@ -23,6 +23,7 @@ app.register_blueprint(gameplay)
 app.register_blueprint(responses)
 
 robotIp1 = "164.11.73.26"
+robotIp2 = "164.11.73.60"
 
 PORT = 9559
 
@@ -33,11 +34,10 @@ class RobotController:
     def __init__(self, disable=False):
         self.disable = disable
         self.connected = False
-        self.robotIP = robotIp1
 
         if not self.disable:
             time.sleep(1)
-            self.connect()
+            self.set_robot_ip()
 
             self.inflate_messages = ["I would inflate the balloon"]
             self.collect_messages = ["I would not inflate the balloon"]
@@ -67,11 +67,8 @@ class RobotController:
 
     @reconnect_on_fail
     def set_default_behaviour(self):
-        self.speech_service.setParameter("defaultVoiceSpeed", 80)
+        self.speech_service.setParameter("defaultVoiceSpeed", 70)
         self.speech_service.setVolume(0.3)
-        # self.life_service.setAutonomousAbilityEnabled(
-        #     "AutonomousBlinking", False)
-        # self.life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
         self.speech_service.setParameter('pitchShift', 1.13)
         self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
 
@@ -95,9 +92,6 @@ class RobotController:
                 self.leds = ALProxy("ALLeds", self.robotIP, PORT)
                 self.posture_service = ALProxy(
                     "ALRobotPosture", self.robotIP, PORT)
-                # self.audio_service = ALProxy("ALAudioPlayer", robotIP, PORT)
-                self.life_service = ALProxy(
-                    "ALAutonomousLife", self.robotIP, PORT)
 
                 self.connected = True
                 break
@@ -110,6 +104,19 @@ class RobotController:
         if not self.connected:
             print("###### Failed to connect to robot at %s after %s attempts." % (
                 self.robotIP, MAX_RETRIES))
+    
+    def set_robot_ip(self, robot = "robot_1"):
+        if self.disable:
+            print("In Set Robot IP and robot is disabled")
+            return
+        
+        if robot == "robot_1":
+            self.robotIP = robotIp1
+        elif robot == "robot_2":
+            self.robotIP = robotIp2
+        
+        self.connect()
+        self.set_default_behaviour()
 
     @reconnect_on_fail
     def start_up(self):
@@ -124,7 +131,7 @@ class RobotController:
         self.posture_service.goToPosture("Sit", 0.5)
 
         time.sleep(0.5)
-
+        
         self.face_participant()
 
     @reconnect_on_fail
@@ -286,6 +293,8 @@ class RobotController:
                 self.leds.fadeRGB("AllLeds", 230,230,250, 0.0)
             elif colour == 'white':
                 self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
+            elif colour == 'off':
+                self.leds.fadeRGB("AllLeds", 0, 0.0, 0, 0.0)
 
             # self.leds.fadeRGB("EarLeds", 0, 0, 0, 0.0)
 
@@ -299,20 +308,18 @@ class RobotController:
             self.posture_service.goToPosture("Sit", 0.5)
 
             # Bow head
-            names = ["HeadYaw", "HeadPitch"]
-            angles = [0, 1]
-            fractionMaxSpeed = 0.2
-            self.motion_service.setAngles(names, angles, fractionMaxSpeed)
+            # names = ["HeadYaw", "HeadPitch"]
+            # angles = [0, 1]
+            # fractionMaxSpeed = 0.2
+            # self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
-            time.sleep(1.0)
+            # time.sleep(1.0)
 
             # Turn off all lights
             self.leds.fadeRGB("AllLeds", 0, 0.0, 0, 0.0)
 
             # Go to rest position
             # self.motion_service.rest()
-
-            self.life_service.setState("disabled")
         else:
             pass
 
@@ -332,16 +339,14 @@ class RobotController:
         if self.disable == False:
             if voice == 'voice1':
                 self.speech_service.setParameter('pitchShift', 1)
-                self.talk('This is how my new voice sounds like')
             elif voice == 'voice2':
                 self.speech_service.setParameter('pitchShift', 1.13)
-                self.talk('This is how my new voice sounds like')
             elif voice == 'voice3':
                 self.speech_service.setParameter('pitchShift', 1.25)
-                self.talk('This is how my new voice sounds like')
             elif voice == 'voice4':
                 self.speech_service.setParameter('pitchShift', 1.5)
-                self.talk('This is how my new voice sounds like')
+            
+            self.talk('This is my new voice')
         else:
             pass
 
@@ -358,7 +363,6 @@ class RobotController:
             self.talk('no points')
         else:
             pass
-
 
 # Initialize the robot controller with the IP address of the robot
 app.config['robot_controller'] = RobotController(disable=False)

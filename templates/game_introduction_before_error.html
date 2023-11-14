@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/text_field.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <style>
+      video.center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      #reconnect {
+        color: #a0a0a0; /* grey color */
+        position: absolute;
+        bottom: 10px; /* padding from the bottom */
+        right: 10px; /* padding from the right */
+        cursor: pointer; /* to indicate it's clickable */
+      }
+
+      #reconnect:active {
+        color: #555555; /* darker shade of grey when clicked */
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      var timer = setTimeout(function () {
+        window.location.href = "/error_message_non_customise";
+      }, 2000);
+    </script>
+  </head>
+
+  <body>
+    <i class="fa fa-plug" id="reconnect"></i>
+    <div class="container">
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <!-- <video class="center" width="320" height="240" autoplay="autoplay" controls>
+        <source src={{ url_for('static', filename="sample-video.mp4") }}
+        type="video/mp4"> Your browser does not support the video tag.
+      </video> -->
+      <p>Thank you for agreeing to take part in this study.</p>
+      <p>
+        Your aim in this study is to win points by pumping the balloon up. You
+        may pump the balloon up as many times as you wish by pressing the
+        'Inflate' button. Each pump will give you 10 points, but it also
+        increases the risk of the balloon bursting; the speed at which you pump
+        the balloon does not affect the likelihood of the balloon bursting.
+        Strategise wisely and aim to collect as many points as possible.
+      </p>
+      <p>
+        However, if you burst the balloon, you will lose all the points
+        collected from that balloon.
+      </p>
+      <p>
+        You can stop pumping the balloon up at any point and collect your earned
+        points by pressing the 'Collect' button.
+      </p>
+      <p>
+        The robot on your right was programmed to watch and learn when you
+        decide to inflate the balloon and when you decide to collect the points.
+        Later in this study, the robot will use what it has learned to provide
+        you with suggestions on whether or not to inflate the balloon based on
+        your play style.
+      </p>
+      <p>
+        In this study, you will complete 2 blocks, each with 30 balloon trials.
+      </p>
+      <div id="next-container">
+        <button class="button" id="next-button">Next</button>
+      </div>
+    </div>
+  </body>
+</html>
