@@ -31,32 +31,32 @@
           <span class="question-text">What age bracket do you belong to?</span
           ><br />
           <label class="Radio" for="18-25">
-            <input type="radio" id="18-25" name="age" value="18-25" />
+            <input type="radio" id="18-25" name="age" value="18-25" required />
             18-25
           </label>
           <br />
           <label class="Radio" for="26-35">
-            <input type="radio" id="26-35" name="age" value="26-35" />
+            <input type="radio" id="26-35" name="age" value="26-35" required />
             26-35
           </label>
           <br />
           <label class="Radio" for="36-45">
-            <input type="radio" id="36-45" name="age" value="36-45" />
+            <input type="radio" id="36-45" name="age" value="36-45" required />
             36-45
           </label>
           <br />
           <label class="Radio" for="46-55">
-            <input type="radio" id="46-55" name="age" value="46-55" />
+            <input type="radio" id="46-55" name="age" value="46-55" required />
             46-55
           </label>
           <br />
           <label class="Radio" for="56+">
-            <input type="radio" id="56+" name="age" value="56+" />
+            <input type="radio" id="56+" name="age" value="56+" required />
             56+
           </label>
           <br />
           <label class="Radio" for="other_age">
-            <input type="radio" id="other_age" name="age" value="0" />
+            <input type="radio" id="other_age" name="age" value="0" required />
             Prefer not to say
           </label>
           <br /><br />
@@ -72,88 +72,35 @@
             placeholder="Please specify your gender"
             maxlength="20"
           />
+          <span
+            id="gender-error"
+            class="error-message"
+            style="color: red"
+          ></span>
           <br /><br />
         </div>
 
-        <!-- <label for="ethnicity">Which ethnicity best describes you?</label><br>
-            <input type="radio" id="white_caucasian" name="ethnicity" value="white_caucasian">
-            <label for="white_caucasian">White / Caucasian</label><br>
-            <input type="radio" id="asian_pacific_islander" name="ethnicity" value="asian_pacific_islander">
-            <label for="asian_pacific_islander">Asian / Pacific Islander</label><br>
-            <input type="radio" id="Hispanic_Latino" name="ethnicity" value="Hispanic_Latino">
-            <label for="Hispanic_Latino">Hispanic / Latino</label><br>
-            <input type="radio" id="black_african_american" name="ethnicity" value="black_african_american">
-            <label for="black_african_american">Black or African American</label><br><br>
-
-            <label for="education">What is your heighest level of education?</label><br>
-            <input type="radio" id="high-school" name="education" value="high-school">
-            <label for="high-school">High School</label><br>
-            <input type="radio" id="bachelor" name="education" value="bachelor">
-            <label for="bachelor">Bachelor's Degree</label><br>
-            <input type="radio" id="master" name="education" value="master">
-            <label for="master">Master's Degree</label><br>
-            <input type="radio" id="phd" name="education" value="phd">
-            <label for="phd">PhD</label><br><br>
-
-            <label for="robot_familiarity">How familiar are you with Robots:</label><br>
-            <input type="radio" id="not-familiar" name="robot_familiarity" value="not-familiar">
-            <label for="not-familiar">Not Familiar</label><br>
-            <input type="radio" id="somewhat-familiar" name="robot_familiarity" value="somewhat-familiar">
-            <label for="somewhat-familiar">Somewhat Familiar</label><br>
-            <input type="radio" id="very-familiar" name="robot_familiarity" value="very-familiar">
-            <label for="very-familiar">Very Familiar</label><br><br> -->
         <div id="next-container">
           <button class="button">Next</button>
         </div>
       </form>
     </div>
+
     <script>
       document
         .querySelector("form")
         .addEventListener("submit", function (event) {
           var form = event.target;
-          var inputs = form.querySelectorAll('input[type="radio"]');
-          var groups = {};
-          var allFilled = true;
-          var firstNotFilled;
+          var textInput = form.querySelector("#other-gender-text");
 
-          inputs.forEach(function (input) {
-            if (!groups[input.name]) {
-              groups[input.name] = [];
-            }
-
-            groups[input.name].push(input);
-          });
-
-          for (var groupName in groups) {
-            var group = groups[groupName];
-            var groupFilled = group.some(function (input) {
-              return input.checked;
-            });
-
-            if (!groupFilled) {
-              allFilled = false;
-              group.forEach(function (input) {
-                input
-                  .closest(".question")
-                  .querySelector(".question-text").style.color = "red";
-              });
-
-              if (!firstNotFilled) {
-                firstNotFilled = group[0];
-              }
-            } else {
-              group.forEach(function (input) {
-                input
-                  .closest(".question")
-                  .querySelector(".question-text").style.color = "";
-              });
-            }
-          }
-
-          if (!allFilled) {
-            event.preventDefault();
-            firstNotFilled.scrollIntoView();
+          if (textInput.value.trim() === "") {
+            event.preventDefault(); // Prevent form submission
+            textInput.style.borderColor = "red";
+            document.querySelector("#gender-error").textContent =
+              "Please specify your gender";
+          } else {
+            textInput.style.borderColor = "";
+            document.querySelector("#gender-error").textContent = "";
           }
         });
     </script>
