@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, session, jsonify, url_for, Response, current_app
-from models import db, BalloonInflate, GameRoundSurvey
+from models import db, BalloonInflate, FinalSurvey
 import random
 import threading
 from datetime import datetime
@@ -69,7 +69,7 @@ def gameIntro_robot():
 
         message = 'Hi, my name is ' + \
             str(name) + ', For this first game I will just watch you play, good luck'
-        
+
         robot_controller.face_participant()
         robot_controller.talk(message)
         robot_controller.face_screen()
@@ -317,13 +317,13 @@ def end():
     total = session['totalScore']
     if session['totalScore'] > session['max_score']:
         session['max_score'] = session['totalScore']
-    game_round_survey = GameRoundSurvey.query.filter_by(
-        player_id=player_id, game_round=session['game_round']).first()
+    game_round_survey = FinalSurvey.query.filter_by(
+        player_id=player_id).first()
 
     if game_round_survey is None:
         # Player does not exist, create a new one
-        game_round_survey = GameRoundSurvey(
-            player_id=session['player_id'], game_round=session['game_round'], total_score=total)
+        game_round_survey = FinalSurvey(
+            player_id=session['player_id'], total_score=total)
         db.session.add(game_round_survey)
     else:
         # Player exists, update their attributes
@@ -341,6 +341,17 @@ def end():
     session['totalScore'] = 0
 
     return render_template('total_score.html', score=total)
+
+
+@gameplay.route('/controlflow')
+def controlflow():
+    # Only complete the survey at the end of the game
+    if (session['game_round'] == 1):
+        session['totalScore'] = 0
+        session['game_round'] += 1
+        return redirect('/gameIntro_2')
+
+    return redirect('/survey')
 
 
 @gameplay.route('/reconnect_to_robot')
