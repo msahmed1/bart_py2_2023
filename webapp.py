@@ -67,10 +67,11 @@ class RobotController:
 
     @reconnect_on_fail
     def set_default_behaviour(self):
-        self.speech_service.setParameter("defaultVoiceSpeed", 70)
+        self.speech_service.setParameter("defaultVoiceSpeed", 80)
         self.speech_service.setVolume(0.3)
         self.speech_service.setParameter('pitchShift', 1.13)
         self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
+        self.autonomous_life_service.setState("disabled")
 
         names = "body"
         stiffnessLists = 1.0
@@ -92,6 +93,7 @@ class RobotController:
                 self.leds = ALProxy("ALLeds", self.robotIP, PORT)
                 self.posture_service = ALProxy(
                     "ALRobotPosture", self.robotIP, PORT)
+                self.autonomous_life_service = ALProxy("ALAutonomousLife", self.robotIP, PORT)
 
                 self.connected = True
                 break
