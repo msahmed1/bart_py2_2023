@@ -10,10 +10,10 @@ gameplay = Blueprint('gameplay', __name__)
 # Define the inflate limit for each balloon
 BALLOON_LIMITS = {
     # 'red': 8,
-    'green': 2  # 32
+    'green': 32
 }
 
-total_trials = 2  # ! MODIFY THIS FOR THE FINAL STUDY
+total_trials = 30  # ! MODIFY THIS FOR THE FINAL STUDY
 # Generate list with 50/50 split of 0s and 1s
 half_length = total_trials // 2
 
@@ -47,13 +47,19 @@ def gameIntro():
     # Check if the game round has been initialised, if not, initialise it
     if 'game_round' not in session:
         session['game_round'] = 1
-    if session['exp_cond'] and first_run != True:
+    if first_run != True:
         first_run = True
         return render_template('game_introduction_before_error.html', banner_image_url=banner_image_url)
     else:
         if first_run == True:
             robot_controller = current_app.config['robot_controller']
             robot_controller.start_up()
+            if session['exp_cond'] == False:
+                robot_controller.change_colour(session['balloon_color'])
+            else:
+                # Connect to the non customised robot
+                robot_controller = current_app.config['robot_controller']
+                robot_controller.set_robot_ip("robot_2")
         return render_template('game_introduction.html', banner_image_url=banner_image_url)
 
 
@@ -74,7 +80,7 @@ def gameIntro_robot():
         robot_controller.talk(message)
         robot_controller.face_screen()
     else:
-        message = 'I will help you during this game, Before you collect your points I will provide you with my suggesstion.'
+        message = 'I will help you during this game, Before you collect your points I will provide you with my suggesstion. However, I am only allowed to help you once per balloon.'
         robot_controller.face_participant()
         robot_controller.talk(message)
         robot_controller.face_screen()
@@ -82,17 +88,13 @@ def gameIntro_robot():
     return redirect('/play')
 
 
-@gameplay.route('/error_message_non_customise')
-def error_message_non_customise():
+@gameplay.route('/error_message')
+def error_message():
     # Turn off robots leds on the customised robot
     robot_controller = current_app.config['robot_controller']
     robot_controller.change_colour('off')
 
-    # Connect to the non customised robot
-    robot_controller = current_app.config['robot_controller']
-    robot_controller.set_robot_ip("robot_2")
-
-    return render_template('error_message_non_customise.html')
+    return render_template('error_message.html')
 
 
 @gameplay.route('/gameIntro_2')

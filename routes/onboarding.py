@@ -38,8 +38,13 @@ def index():
     session.pop('total_inflates', None)
     session.pop('balloon_number', None)
     session.pop('balloon_limit', None)
-    session.pop('exp_cond', None)
+    session.pop('exp_cond', None) # True if non-customise first, False if customise first
     session.pop('max_score', None)
+    session.pop('run_once', None)
+    session.pop('balloon_color', None)
+    session.pop('robot_name', None)
+    session.pop('more_than_one_reconnect', None)
+    session.pop('robot_ip', None)
 
     session['totalScore'] = 0
     session['max_score'] = 0
@@ -48,6 +53,7 @@ def index():
     session['balloon_number'] = 0
     session['run_once'] = True
     session['more_than_one_reconnect'] = False
+    session['balloon_color'] = 'white'
 
     robot_controller = current_app.config['robot_controller']
 
@@ -66,6 +72,8 @@ def index():
 def submit_setup():
     # Get the toggle state from the form
     session['exp_cond'] = 'toggleState' in request.form
+
+    print('------> In submit_setup and button state is: ', session['exp_cond'])
 
     robot_controller = current_app.config['robot_controller']
     robot_controller.face_participant()
@@ -158,6 +166,7 @@ def voice_button_click(button_name):
 def colour_button_click(button_name):
     # Call the function in robot_controller
     robot_controller = current_app.config['robot_controller']
+    session['balloon_color'] = button_name
     threading.Thread(target=robot_controller.change_colour, args=(button_name,)).start()
     return jsonify({'status': 'success'})
 
