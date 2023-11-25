@@ -39,7 +39,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
       var timer = setTimeout(function () {
-        window.location.href = "/error_message_non_customise";
+        window.location.href = "/error_message";
       }, 2000);
     </script>
   </head>
@@ -48,10 +48,14 @@
     <i class="fa fa-plug" id="reconnect"></i>
     <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
-      <!-- <video class="center" width="320" height="240" autoplay="autoplay" controls>
-        <source src={{ url_for('static', filename="sample-video.mp4") }}
-        type="video/mp4"> Your browser does not support the video tag.
-      </video> -->
+      <div align="center">
+        <audio
+          src="./static/audio/game_intro_2.mp3"
+          controls
+          autoplay
+          style="width: 630px; margin-left: 15px"
+        ></audio>
+      </div>
       <p>Thank you for agreeing to take part in this study.</p>
       <p>
         Your aim in this study is to win points by pumping the balloon up. You

@@ -45,6 +45,7 @@
       <div align="center">
         <audio
           src="./static/audio/game_intro.mp3"
+          id="Audio_Player"
           controls
           autoplay
           style="width: 630px; margin-left: 15px"
@@ -82,8 +83,11 @@
       </div>
     </div>
     <script>
+      let tts = document.getElementById("Audio_Player");
+
       $(document).ready(function () {
         $("#next-button").on("click", function (event) {
+          tts.pause();
           $(this).prop("disabled", true);
           window.location.href = "/gameIntro_robot";
         });
