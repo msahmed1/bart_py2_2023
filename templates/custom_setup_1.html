@@ -114,6 +114,70 @@
       ul {
         margin-top: 4px;
       }
+
+      input[type="range"] {
+        -webkit-appearance: none; /* Override default appearance */
+        width: 80%; /* Set your desired width */
+        height: 5px; /* Set your desired height */
+        background: transparent; /* Transparent background */
+        margin: 0 10px;
+      }
+
+      /* Styles for the thumb */
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px; /* Width of the thumb */
+        height: 20px; /* Height of the thumb */
+        background: #fff; /* Thumb color */
+        cursor: pointer; /* Cursor on hover */
+        border-radius: 50%;
+        border: 1px solid #ddd;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 20px; /* Width of the thumb */
+        height: 20px; /* Height of the thumb */
+        background: #fff; /* Thumb color */
+        cursor: pointer; /* Cursor on hover */
+        border-radius: 50%;
+        border: 1px solid #ddd;
+      }
+
+      /* Styles for the track */
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 5px;
+        cursor: pointer;
+        background: #ddd; /* Default track color */
+        border-radius: 5px;
+      }
+
+      input[type="range"]::-moz-range-track {
+        width: 100%;
+        height: 5px;
+        cursor: pointer;
+        background: #ddd; /* Default track color */
+        border-radius: 5px;
+      }
+
+      /* Styles for filled part (left side) of the track */
+      input[type="range"]::-webkit-slider-runnable-track {
+        background: linear-gradient(
+          to right,
+          #3498db 50%,
+          #ddd 50%
+        ); /* Adjust the percentage as per your need */
+      }
+
+      input[type="range"]::-moz-range-progress {
+        background: #3498db; /* Color for the left side */
+        border-radius: 5px; /* Same as track's border-radius */
+      }
+
+      input[type="range"]::-moz-range-track {
+        background: #ddd; /* Color for the right side */
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -150,28 +214,6 @@
           });
         });
       });
-      $(document).ready(function () {
-        // This function is called when any of the radio buttons is changed
-        $('input[type="radio"].custom-radio').change(function () {
-          // 'this' refers to the radio button that was changed
-          var colorValue = $(this).val(); // Get the value of the radio button
-
-          // Make an AJAX request to the Flask route
-          $.ajax({
-            url: "/colour/" + colorValue, // Assuming 'colorValue' is the part of the URL you want
-            type: "GET",
-            success: function (response) {
-              // This function is called when the server responds successfully
-              // Handle the response
-              console.log(response);
-            },
-            error: function (error) {
-              // This function is called when the server responds with an error
-              console.log(error);
-            },
-          });
-        });
-      });
     </script>
   </head>
   <body>
@@ -190,10 +232,9 @@
           Take a moment to explore the customisation options we've provided.
         </li>
         <li>Feel free to make your robot as unique as you'd like.</li>
-        <!-- <li>When you're finished, we'll move on to the next part of our session.</li> -->
       </ul>
 
-      <form action="/submit_customisation" method="post">
+      <form action="/submit_customisation_1" method="post">
         <h4>Name your robot</h4>
         <p>
           Please provide a name for your robot. Be as creative as you'd like.
@@ -206,137 +247,6 @@
           placeholder="Enter robot name"
           required
         />
-
-        <h4>Choose a colour for your robot</h4>
-        <p>
-          The robot has LED lights that can display different colors. Select a
-          colour that you think looks good from the following options:
-        </p>
-
-        <div class="radios-container">
-          <div id="custom-radios">
-            <div>
-              <input
-                type="radio"
-                class="custom-radio"
-                id="colour-1"
-                name="colour"
-                value="green"
-              />
-              <label for="colour-1">
-                <span>
-                  <img src="./static/check.svg" alt="Checked Icon" />
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <input
-                type="radio"
-                class="custom-radio"
-                id="colour-2"
-                name="colour"
-                value="blue"
-              />
-              <label for="colour-2">
-                <span>
-                  <img src="./static/check.svg" alt="Checked Icon" />
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <input
-                type="radio"
-                class="custom-radio"
-                id="colour-3"
-                name="colour"
-                value="yellow"
-              />
-              <label for="colour-3">
-                <span>
-                  <img src="./static/check.svg" alt="Checked Icon" />
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <input
-                type="radio"
-                class="custom-radio"
-                id="colour-4"
-                name="colour"
-                value="red"
-              />
-              <label for="colour-4">
-                <span>
-                  <img src="./static/check.svg" alt="Checked Icon" />
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <input
-                type="radio"
-                class="custom-radio"
-                id="colour-5"
-                name="colour"
-                value="cyan"
-              />
-              <label for="colour-5">
-                <span>
-                  <img src="./static/check.svg" alt="Checked Icon" />
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <input
-                type="radio"
-                class="custom-radio"
-                id="colour-6"
-                name="colour"
-                value="magenta"
-              />
-              <label for="colour-6">
-                <span>
-                  <img src="./static/check.svg" alt="Checked Icon" />
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <input
-                type="radio"
-                class="custom-radio"
-                id="colour-7"
-                name="colour"
-                value="purple"
-              />
-              <label for="colour-7">
-                <span>
-                  <img src="./static/check.svg" alt="Checked Icon" />
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <input
-                type="radio"
-                class="custom-radio"
-                id="colour-8"
-                name="colour"
-                value="white"
-                checked
-              />
-              <label for="colour-8">
-                <span>
-                  <img src="./static/check.svg" alt="Checked Icon" />
-                </span>
-              </label>
-            </div>
-          </div>
-        </div>
 
         <h4>Select a voice</h4>
         <p>
@@ -374,18 +284,42 @@
           </button>
         </div>
 
-        <h4>Decorate your robot</h4>
-        <p>
-          Make your robot stand out, on your left there are a number of stickers
-          you can attach to the surface of the robot as well as parts that you
-          can attach to the sides of the robots head.
-        </p>
+        <h4>Change voice settings</h4>
+        <h5>Use the slider to change the speed of the voice</h5>
+        <div class="slider-container">
+          <input
+            type="range"
+            id="speedSlider"
+            name="speed"
+            min="50"
+            max="100"
+            value="75"
+          />
+          <span id="speedValue">75</span>
+          <button type="button" class="test-button" id="testSpeed">Test</button>
+        </div>
+
+        <h5>Use the slider to change the volume of the voice</h5>
+        <div class="slider-container">
+          <input
+            type="range"
+            id="volumeSlider"
+            name="volume"
+            min="60"
+            max="100"
+            value="80"
+          />
+          <span id="volumeValue">80</span>
+          <button type="button" class="test-button" id="testVolume">
+            Test
+          </button>
+        </div>
 
         <h4>Review and confirm</h4>
         <p>
           Please take a moment to review your customisations. Once you are happy
-          with your selections, click the 'Next' button to continue to the next
-          stage.
+          with your selections, click the 'Next' button where there are some
+          more customisation options.
         </p>
         <div id="next-container">
           <button type="submit" class="button" id="nextButton">Next</button>
@@ -403,6 +337,25 @@
             var btn = $(this).find('button[type="submit"]');
             btn.prop("disabled", true); // Disable the button after submission
           }
+        });
+      });
+
+      $(document).ready(function () {
+        $("#speedSlider").on("input change", function () {
+          $("#speedValue").text($(this).val());
+        });
+
+        $("#volumeSlider").on("input change", function () {
+          $("#volumeValue").text($(this).val());
+        });
+
+        // Add event listeners for the test buttons if needed
+        $("#testSpeed").click(function () {
+          // Code to test speed
+        });
+
+        $("#testVolume").click(function () {
+          // Code to test volume
         });
       });
     </script>

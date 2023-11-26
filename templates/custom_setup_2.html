@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/button.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/template.css') }}"
+    />
+    <style>
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      #button-container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        /* margin: 5px 0; */
+        align-self: center;
+        margin-top: 5px;
+      }
+
+      #custom-radios div {
+        display: inline-block;
+      }
+
+      #custom-radios input[type="radio"] {
+        display: none;
+      }
+
+      #custom-radios input[type="radio"] + label {
+        color: #333;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+      }
+
+      #custom-radios input[type="radio"] + label span {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        margin: -1px 4px 0 0;
+        vertical-align: middle;
+        cursor: pointer;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+        background-repeat: no-repeat;
+        background-position: center;
+        text-align: center;
+        line-height: 44px;
+      }
+
+      #custom-radios input[type="radio"] + label span img {
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      #custom-radios #colour-1 + label span {
+        background-color: #2ecc71;
+      }
+
+      #custom-radios #colour-2 + label span {
+        background-color: #3498db;
+      }
+
+      #custom-radios #colour-3 + label span {
+        background-color: #f1c40f;
+      }
+
+      #custom-radios #colour-4 + label span {
+        background-color: #e74c3c;
+      }
+
+      #custom-radios #colour-5 + label span {
+        background-color: #40e0d0;
+      }
+
+      #custom-radios #colour-6 + label span {
+        background-color: #ffc0cb;
+      }
+
+      /* #custom-radios #colour-7 + label span {
+        background-color: #800080;
+      } */
+
+      #custom-radios #colour-8 + label span {
+        background-color: #ffffff;
+      }
+
+      #custom-radios input[type="radio"]:checked + label span img {
+        opacity: 1;
+      }
+
+      .radios-container {
+        display: flex;
+        justify-content: center;
+        width: 100%; /* Ensures the container spans the full width */
+      }
+
+      h4,
+      h5 {
+        margin-bottom: 4px;
+      }
+
+      p {
+        margin-top: 4px;
+      }
+
+      ul {
+        margin-top: 4px;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // This function is called when any of the radio buttons is changed
+        $('input[type="radio"].custom-radio').change(function () {
+          // 'this' refers to the radio button that was changed
+          var colorValue = $(this).val(); // Get the value of the radio button
+
+          // Make an AJAX request to the Flask route
+          $.ajax({
+            url: "/colour/" + colorValue, // Assuming 'colorValue' is the part of the URL you want
+            type: "GET",
+            success: function (response) {
+              // This function is called when the server responds successfully
+              // Handle the response
+              console.log(response);
+            },
+            error: function (error) {
+              // This function is called when the server responds with an error
+              console.log(error);
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <p>
+        On the last page you changed some settings for the robot. On this page
+        you will be able to customise the robot's appearance. Feel free to make
+        your robot as unique as you'd like.
+      </p>
+
+      <h4>Choose a colour for your robot</h4>
+      <p>
+        The robot has LED lights that can display different colors. Select a
+        colour that you think looks good from the following options:
+      </p>
+
+      <div class="radios-container">
+        <div id="custom-radios">
+          <div>
+            <input
+              type="radio"
+              class="custom-radio"
+              id="colour-1"
+              name="colour"
+              value="green"
+            />
+            <label for="colour-1">
+              <span>
+                <img src="./static/check.svg" alt="Checked Icon" />
+              </span>
+            </label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              class="custom-radio"
+              id="colour-2"
+              name="colour"
+              value="blue"
+            />
+            <label for="colour-2">
+              <span>
+                <img src="./static/check.svg" alt="Checked Icon" />
+              </span>
+            </label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              class="custom-radio"
+              id="colour-3"
+              name="colour"
+              value="yellow"
+            />
+            <label for="colour-3">
+              <span>
+                <img src="./static/check.svg" alt="Checked Icon" />
+              </span>
+            </label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              class="custom-radio"
+              id="colour-4"
+              name="colour"
+              value="red"
+            />
+            <label for="colour-4">
+              <span>
+                <img src="./static/check.svg" alt="Checked Icon" />
+              </span>
+            </label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              class="custom-radio"
+              id="colour-5"
+              name="colour"
+              value="cyan"
+            />
+            <label for="colour-5">
+              <span>
+                <img src="./static/check.svg" alt="Checked Icon" />
+              </span>
+            </label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              class="custom-radio"
+              id="colour-6"
+              name="colour"
+              value="magenta"
+            />
+            <label for="colour-6">
+              <span>
+                <img src="./static/check.svg" alt="Checked Icon" />
+              </span>
+            </label>
+          </div>
+
+          <!-- <div>
+            <input
+              type="radio"
+              class="custom-radio"
+              id="colour-7"
+              name="colour"
+              value="purple"
+            />
+            <label for="colour-7">
+              <span>
+                <img src="./static/check.svg" alt="Checked Icon" />
+              </span>
+            </label>
+          </div> -->
+
+          <div>
+            <input
+              type="radio"
+              class="custom-radio"
+              id="colour-8"
+              name="colour"
+              value="white"
+              checked
+            />
+            <label for="colour-8">
+              <span>
+                <img src="./static/check.svg" alt="Checked Icon" />
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <h4>Decorate your robot</h4>
+      <p>
+        Make your robot stand out, on your left there are a number of stickers
+        you can attach to the surface of the robot as well as parts that you can
+        attach to the sides of the robots head.
+      </p>
+
+      <h4>Review and confirm</h4>
+      <p>
+        Please take a moment to review your customisations. Once you are happy
+        with your selections, click the 'Next' button to continue to the next
+        stage.
+      </p>
+      <div id="next-container">
+        <button class="button" id="next-button">Next</button>
+      </div>
+    </div>
+    <script>
+      $(document).ready(function () {
+        $("#next-button").on("click", function (event) {
+          $(this).prop("disabled", true);
+          window.location.href = "/gameIntro";
+        });
+      });
+    </script>
+  </body>
+</html>

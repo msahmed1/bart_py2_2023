@@ -15,11 +15,13 @@ onboarding = Blueprint('onboarding', __name__)
 
 banner_image_url = 'static/logos.png'
 
+
 def generate_id():
     first_digit = random.randint(1, 9)
     middle_digits = random.randint(0, 99)
     last_digit = random.randint(1, 9)
     return first_digit * 1000 + middle_digits * 10 + last_digit
+
 
 @onboarding.route('/')
 def index():
@@ -38,7 +40,8 @@ def index():
     session.pop('total_inflates', None)
     session.pop('balloon_number', None)
     session.pop('balloon_limit', None)
-    session.pop('exp_cond', None) # True if non-customise first, False if customise first
+    # True if non-customise first, False if customise first
+    session.pop('exp_cond', None)
     session.pop('max_score', None)
     session.pop('run_once', None)
     session.pop('balloon_color', None)
@@ -55,80 +58,75 @@ def index():
     session['more_than_one_reconnect'] = False
     session['balloon_color'] = 'white'
 
-    robot_controller = current_app.config['robot_controller']
-
-    robot_controller.set_robot_ip("robot_2")
-    robot_controller.sleep()
-
-    robot_controller.set_robot_ip("robot_1")
-    robot_controller.sleep()
-
-    non_custom_first = Players.query.filter_by(customise_first=False, testing=False, game_completed=True).count()
-    custom_first = Players.query.filter_by(customise_first=True, testing=False, game_completed=True).count()
+    non_custom_first = Players.query.filter_by(
+        customise_first=False, testing=False, game_completed=True).count()
+    custom_first = Players.query.filter_by(
+        customise_first=True, testing=False, game_completed=True).count()
 
     return render_template('set_up.html', non_custom_first=non_custom_first, custom_first=custom_first)
+
 
 @onboarding.route('/submit_setup', methods=['POST'])
 def submit_setup():
     # Get the toggle state from the form
     session['exp_cond'] = 'toggleState' in request.form
 
-    print('------> In submit_setup and button state is: ', session['exp_cond'])
-
     robot_controller = current_app.config['robot_controller']
     robot_controller.face_participant()
-    # robot_controller.set_robot_ip("robot_1")
-    # robot_controller.start_up()
-
-    # if session['exp_cond']:
-    #     robot_controller.set_robot_ip("robot_2")
-    #     robot_controller.sleep()
-    
     return render_template('onboarding.html')
+
 
 @onboarding.route('/submit_id', methods=['POST'])
 def submit_id():
     player_id = generate_id()
-    while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
+    # Check if the ID already exists in the database
+    while Players.query.get(player_id) is not None:
         player_id = generate_id()  # Generate a new ID
 
     player = Players(player_id, not session['exp_cond'], False)
     session['player_id'] = player_id
     db.session.add(player)
-    
+
     db.session.commit()
     return redirect('/consent')
+
 
 @onboarding.route('/submit_dev_id', methods=['POST'])
 def submit_dev_id():
     player_id = generate_id()
-    while Players.query.get(player_id) is not None:  # Check if the ID already exists in the database
+    # Check if the ID already exists in the database
+    while Players.query.get(player_id) is not None:
         player_id = generate_id()  # Generate a new I
-    
+
     # Set testing to True if dev button is clicked
     player = Players(player_id, not session['exp_cond'], True)
     session['player_id'] = player_id
     db.session.add(player)
-    
+
     db.session.commit()
     return redirect('/consent')
+
 
 @onboarding.route('/consent')
 def consent():
     return render_template('consent.html', banner_image_url=banner_image_url)
 
+
 @onboarding.route('/submit_consent', methods=['POST'])
 def submit_consent():
     player_id = session['player_id']
-    consent = 'consent' in request.form  # This will be True if the player checked the "I Agree" box, and False otherwise
+    # This will be True if the player checked the "I Agree" box, and False otherwise
+    consent = 'consent' in request.form
     player = Players.query.get(player_id)  # Get the player from the database
     player.consent = consent  # Update the player's consent
     db.session.commit()  # Commit the changes to the database
     return redirect('/demograph')  # Redirect to the play page
 
+
 @onboarding.route('/demograph')
 def demograph_form():
     return render_template('demograph.html', banner_image_url=banner_image_url)
+
 
 @onboarding.route('/submit_demograph', methods=['POST'])
 def submit_demograph():
@@ -142,12 +140,27 @@ def submit_demograph():
     player.gender = gender
 
     db.session.commit()  # Commit the changes to the database
-    
-    return redirect('/robot_setup')
 
-@onboarding.route('/robot_setup')
-def robot_setup():
-    return render_template('custom_setup.html', button_states=button_states, banner_image_url=banner_image_url)
+    return redirect('/custom_setup_1')
+
+
+@onboarding.route('/custom_setup_1')
+def custom_setup_1():
+    return render_template('custom_setup_1.html', button_states=button_states, banner_image_url=banner_image_url)
+
+
+@onboarding.route('/submit_customisation_1', methods=['POST'])
+def submit_customisation():
+    robot_name = request.form.get('robot-name')
+    session['robot_name'] = robot_name
+    # Save the name and use it to introduce the robot
+    return redirect('/custom_setup_2')
+
+
+@onboarding.route('/custom_setup_2')
+def custom_setup_2():
+    return render_template('custom_setup_2.html', button_states=button_states, banner_image_url=banner_image_url)
+
 
 @onboarding.route('/voice/<button_name>')
 def voice_button_click(button_name):
@@ -155,24 +168,20 @@ def voice_button_click(button_name):
         # Set the state of all buttons to False
         for key in button_states:
             button_states[key] = False
-        # Set the state of the clicked button to True
+        # Only set the state of the clicked button to True
         button_states[button_name] = True
         # Call the function in robot_controller
         robot_controller = current_app.config['robot_controller']
-        threading.Thread(target=robot_controller.set_voice, args=(button_name,)).start()
+        threading.Thread(target=robot_controller.set_voice,
+                         args=(button_name,)).start()
     return jsonify({'status': 'success'})
+
 
 @onboarding.route('/colour/<button_name>')
 def colour_button_click(button_name):
     # Call the function in robot_controller
     robot_controller = current_app.config['robot_controller']
     session['balloon_color'] = button_name
-    threading.Thread(target=robot_controller.change_colour, args=(button_name,)).start()
+    threading.Thread(target=robot_controller.change_colour,
+                     args=(button_name,)).start()
     return jsonify({'status': 'success'})
-
-@onboarding.route('/submit_customisation', methods=['POST'])
-def submit_customisation():
-    robot_name = request.form.get('robot-name')
-    session['robot_name'] = robot_name
-    # Save the name and use it to introduce the robot
-    return redirect('/gameIntro')
