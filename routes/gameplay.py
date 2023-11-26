@@ -38,7 +38,7 @@ random.shuffle(balloon_colour)
 
 banner_image_url = 'static/logos.png'
 
-first_run = False
+first_run = True
 
 
 @gameplay.route('/gameIntro')
@@ -47,19 +47,20 @@ def gameIntro():
     # Check if the game round has been initialised, if not, initialise it
     if 'game_round' not in session:
         session['game_round'] = 1
-    if first_run != True:
-        first_run = True
+    if first_run == True:
+        first_run = False
         return render_template('game_introduction_before_error.html', banner_image_url=banner_image_url)
     else:
-        if first_run == True:
+        if first_run == False:
             robot_controller = current_app.config['robot_controller']
-            robot_controller.start_up()
+
             if session['exp_cond'] == False:
                 robot_controller.change_colour(session['balloon_color'])
             else:
                 # Connect to the non customised robot
-                robot_controller = current_app.config['robot_controller']
                 robot_controller.set_robot_ip("robot_2")
+
+            robot_controller.start_up()
         return render_template('game_introduction.html', banner_image_url=banner_image_url)
 
 

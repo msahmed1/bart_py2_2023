@@ -23,7 +23,7 @@ app.register_blueprint(gameplay)
 app.register_blueprint(responses)
 
 robotIp1 = "164.11.73.26"
-robotIp2 = "164.11.73.60"
+robotIp2 = "164.11.72.129"
 
 PORT = 9559
 
@@ -36,8 +36,10 @@ class RobotController:
         self.connected = False
 
         if not self.disable:
-            time.sleep(1)
-            self.set_robot_ip()
+            self.set_robot_ip(robot = "robot_2")
+            self.sleep()
+            self.set_robot_ip(robot = "robot_1")
+            self.sleep()
 
             self.inflate_messages = ["I would inflate the balloon"]
             self.collect_messages = ["I would not inflate the balloon"]
@@ -309,19 +311,8 @@ class RobotController:
             # Return to sit position
             self.posture_service.goToPosture("Sit", 0.5)
 
-            # Bow head
-            # names = ["HeadYaw", "HeadPitch"]
-            # angles = [0, 1]
-            # fractionMaxSpeed = 0.2
-            # self.motion_service.setAngles(names, angles, fractionMaxSpeed)
-
-            # time.sleep(1.0)
-
             # Turn off all lights
-            self.leds.fadeRGB("AllLeds", 0, 0.0, 0, 0.0)
-
-            # Go to rest position
-            # self.motion_service.rest()
+            self.leds.fadeRGB("AllLeds", 0.0, 0.0, 0.0, 0.0)
         else:
             pass
 
