@@ -4,11 +4,23 @@ import random
 import threading
 
 # Set up a dictionary to store the state of the buttons
-button_states = {
+voice_button_states = {
     'voice1': False,
     'voice2': False,
     'voice3': False,
     'voice4': False
+}
+
+speed_button_states = {
+    'slow': False,
+    'default_speed': False,
+    'fast': False,
+}
+
+volume_button_states = {
+    'quiet': False,
+    'default_volume': False,
+    'loud': False,
 }
 
 onboarding = Blueprint('onboarding', __name__)
@@ -146,7 +158,7 @@ def submit_demograph():
 
 @onboarding.route('/custom_setup_1')
 def custom_setup_1():
-    return render_template('custom_setup_1.html', button_states=button_states, banner_image_url=banner_image_url)
+    return render_template('custom_setup_1.html', voice_button_states=voice_button_states, volume_button_states=volume_button_states, speed_button_states=speed_button_states, banner_image_url=banner_image_url)
 
 
 @onboarding.route('/submit_customisation_1', methods=['POST'])
@@ -159,20 +171,48 @@ def submit_customisation():
 
 @onboarding.route('/custom_setup_2')
 def custom_setup_2():
-    return render_template('custom_setup_2.html', button_states=button_states, banner_image_url=banner_image_url)
+    return render_template('custom_setup_2.html', banner_image_url=banner_image_url)
 
 
 @onboarding.route('/voice/<button_name>')
 def voice_button_click(button_name):
-    if button_name in button_states:
+    if button_name in voice_button_states:
         # Set the state of all buttons to False
-        for key in button_states:
-            button_states[key] = False
+        for key in voice_button_states:
+            voice_button_states[key] = False
         # Only set the state of the clicked button to True
-        button_states[button_name] = True
+        voice_button_states[button_name] = True
         # Call the function in robot_controller
         robot_controller = current_app.config['robot_controller']
         threading.Thread(target=robot_controller.set_voice,
+                         args=(button_name,)).start()
+    return jsonify({'status': 'success'})
+
+@onboarding.route('/volume/<button_name>')
+def volume_button_click(button_name):
+    if button_name in volume_button_states:
+        # Set the state of all buttons to False
+        for key in volume_button_states:
+            volume_button_states[key] = False
+        # Only set the state of the clicked button to True
+        volume_button_states[button_name] = True
+        # Call the function in robot_controller
+        robot_controller = current_app.config['robot_controller']
+        threading.Thread(target=robot_controller.set_voice_volume,
+                         args=(button_name,)).start()
+    return jsonify({'status': 'success'})
+
+@onboarding.route('/speed/<button_name>')
+def speed_button_click(button_name):
+    if button_name in speed_button_states:
+        # Set the state of all buttons to False
+        for key in speed_button_states:
+            speed_button_states[key] = False
+        # Only set the state of the clicked button to True
+        speed_button_states[button_name] = True
+        # Call the function in robot_controller
+        robot_controller = current_app.config['robot_controller']
+        threading.Thread(target=robot_controller.set_voice_speed,
                          args=(button_name,)).start()
     return jsonify({'status': 'success'})
 

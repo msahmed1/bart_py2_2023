@@ -30,15 +30,16 @@ PORT = 9559
 MAX_RETRIES = 3
 RETRY_DELAY = 2
 
+
 class RobotController:
     def __init__(self, disable=False):
         self.disable = disable
         self.connected = False
 
         if not self.disable:
-            self.set_robot_ip(robot = "robot_2")
+            self.set_robot_ip(robot="robot_2")
             self.sleep()
-            self.set_robot_ip(robot = "robot_1")
+            self.set_robot_ip(robot="robot_1")
             self.sleep()
 
             self.inflate_messages = ["I would inflate the balloon"]
@@ -69,7 +70,7 @@ class RobotController:
 
     @reconnect_on_fail
     def set_default_behaviour(self):
-        self.speech_service.setParameter("defaultVoiceSpeed", 80)
+        self.speech_service.setParameter("defaultVoiceSpeed", 85)
         self.speech_service.setVolume(0.3)
         self.speech_service.setParameter('pitchShift', 1.13)
         self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
@@ -95,7 +96,8 @@ class RobotController:
                 self.leds = ALProxy("ALLeds", self.robotIP, PORT)
                 self.posture_service = ALProxy(
                     "ALRobotPosture", self.robotIP, PORT)
-                self.autonomous_life_service = ALProxy("ALAutonomousLife", self.robotIP, PORT)
+                self.autonomous_life_service = ALProxy(
+                    "ALAutonomousLife", self.robotIP, PORT)
 
                 self.connected = True
                 break
@@ -108,17 +110,17 @@ class RobotController:
         if not self.connected:
             print("###### Failed to connect to robot at %s after %s attempts." % (
                 self.robotIP, MAX_RETRIES))
-    
-    def set_robot_ip(self, robot = "robot_1"):
+
+    def set_robot_ip(self, robot="robot_1"):
         if self.disable:
             print("In Set Robot IP and robot is disabled")
             return
-        
+
         if robot == "robot_1":
             self.robotIP = robotIp1
         elif robot == "robot_2":
             self.robotIP = robotIp2
-        
+
         self.connect()
         self.set_default_behaviour()
 
@@ -135,7 +137,7 @@ class RobotController:
         self.posture_service.goToPosture("Sit", 0.5)
 
         time.sleep(0.5)
-        
+
         self.face_participant()
 
     @reconnect_on_fail
@@ -294,7 +296,7 @@ class RobotController:
             elif colour == 'magenta':
                 self.leds.fadeRGB("AllLeds", 255.0, 0.0, 255.0, 0.0)
             elif colour == 'purple':
-                self.leds.fadeRGB("AllLeds", 230,230,250, 0.0)
+                self.leds.fadeRGB("AllLeds", 230, 230, 250, 0.0)
             elif colour == 'white':
                 self.leds.fadeRGB("AllLeds", 255.0, 255.0, 255.0, 0.0)
             elif colour == 'off':
@@ -338,8 +340,43 @@ class RobotController:
                 self.speech_service.setParameter('pitchShift', 1.25)
             elif voice == 'voice4':
                 self.speech_service.setParameter('pitchShift', 1.5)
-            
+
             self.talk('This is my new voice')
+        else:
+            pass
+
+    @reconnect_on_fail
+    def set_voice_volume(self, volume):
+        if self.disable == False:
+            if volume == 'quiet':
+                self.speech_service.setVolume(0.2)
+            elif volume == 'default_volume':
+                volume = 'default'
+                self.speech_service.setVolume(0.3)
+            elif volume == 'loud':
+                self.speech_service.setVolume(0.5)
+
+            speach = 'This is my ' + str(volume) + ' volume'
+
+            self.talk(speach)
+        else:
+            pass
+
+    @reconnect_on_fail
+    def set_voice_speed(self, speed):
+        print('in set voice speed, and speed is: ', speed)
+        if self.disable == False:
+            if speed == 'slow':
+                self.speech_service.setParameter('defaultVoiceSpeed', 70)
+            elif speed == 'default_speed':
+                speed = 'default'
+                self.speech_service.setParameter('defaultVoiceSpeed', 85)
+            elif speed == 'fast':
+                self.speech_service.setParameter('defaultVoiceSpeed', 100)
+
+            speach = 'This is my ' + str(speed) + ' voice speed'
+
+            self.talk(speach)
         else:
             pass
 
@@ -356,6 +393,7 @@ class RobotController:
             self.talk('no points')
         else:
             pass
+
 
 # Initialize the robot controller with the IP address of the robot
 app.config['robot_controller'] = RobotController(disable=False)

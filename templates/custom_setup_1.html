@@ -114,70 +114,6 @@
       ul {
         margin-top: 4px;
       }
-
-      input[type="range"] {
-        -webkit-appearance: none; /* Override default appearance */
-        width: 80%; /* Set your desired width */
-        height: 5px; /* Set your desired height */
-        background: transparent; /* Transparent background */
-        margin: 0 10px;
-      }
-
-      /* Styles for the thumb */
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 20px; /* Width of the thumb */
-        height: 20px; /* Height of the thumb */
-        background: #fff; /* Thumb color */
-        cursor: pointer; /* Cursor on hover */
-        border-radius: 50%;
-        border: 1px solid #ddd;
-      }
-
-      input[type="range"]::-moz-range-thumb {
-        width: 20px; /* Width of the thumb */
-        height: 20px; /* Height of the thumb */
-        background: #fff; /* Thumb color */
-        cursor: pointer; /* Cursor on hover */
-        border-radius: 50%;
-        border: 1px solid #ddd;
-      }
-
-      /* Styles for the track */
-      input[type="range"]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 5px;
-        cursor: pointer;
-        background: #ddd; /* Default track color */
-        border-radius: 5px;
-      }
-
-      input[type="range"]::-moz-range-track {
-        width: 100%;
-        height: 5px;
-        cursor: pointer;
-        background: #ddd; /* Default track color */
-        border-radius: 5px;
-      }
-
-      /* Styles for filled part (left side) of the track */
-      input[type="range"]::-webkit-slider-runnable-track {
-        background: linear-gradient(
-          to right,
-          #3498db 50%,
-          #ddd 50%
-        ); /* Adjust the percentage as per your need */
-      }
-
-      input[type="range"]::-moz-range-progress {
-        background: #3498db; /* Color for the left side */
-        border-radius: 5px; /* Same as track's border-radius */
-      }
-
-      input[type="range"]::-moz-range-track {
-        background: #ddd; /* Color for the right side */
-      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -195,7 +131,7 @@
             success: function (response) {
               // This function is called when the server responds successfully
               // Update the classes of the buttons based on the response
-              $(".button").each(function () {
+              $(".voice-button").each(function () {
                 var btn = $(this);
                 var btnName = btn.attr("id");
                 if (btnName === buttonName) {
@@ -209,6 +145,60 @@
             },
             error: function (error) {
               // This function is called when the server responds with an error
+              console.log(error);
+            },
+          });
+        });
+
+        $(".volume-button").click(function (event) {
+          event.preventDefault();
+          var button = $(this);
+          var buttonName = button.attr("id");
+
+          $.ajax({
+            url: "/volume/" + buttonName,
+            type: "GET",
+            success: function (response) {
+              $(".volume-button").each(function () {
+                var btn = $(this);
+                var btnName = btn.attr("id");
+                if (btnName === buttonName) {
+                  btn.addClass("clicked");
+                  btn.prop("disabled", true);
+                } else {
+                  btn.removeClass("clicked");
+                  btn.prop("disabled", false);
+                }
+              });
+            },
+            error: function (error) {
+              console.log(error);
+            },
+          });
+        });
+
+        $(".speed-button").click(function (event) {
+          event.preventDefault();
+          var button = $(this);
+          var buttonName = button.attr("id");
+
+          $.ajax({
+            url: "/speed/" + buttonName,
+            type: "GET",
+            success: function (response) {
+              $(".speed-button").each(function () {
+                var btn = $(this);
+                var btnName = btn.attr("id");
+                if (btnName === buttonName) {
+                  btn.addClass("clicked");
+                  btn.prop("disabled", true);
+                } else {
+                  btn.removeClass("clicked");
+                  btn.prop("disabled", false);
+                }
+              });
+            },
+            error: function (error) {
               console.log(error);
             },
           });
@@ -257,61 +247,88 @@
           <button
             type="button"
             id="voice1"
-            class="button voice-button {{ 'disabled' if button_states['voice1'] else '' }}"
+            class="button voice-button {{ 'disabled' if voice_button_states['voice1'] else '' }}"
           >
             Voice 1
           </button>
           <button
             type="button"
             id="voice2"
-            class="button voice-button {{ 'disabled' if button_states['voice2'] else '' }}"
+            class="button voice-button {{ 'disabled' if voice_button_states['voice2'] else '' }}"
           >
             Voice 2
           </button>
           <button
             type="button"
             id="voice3"
-            class="button voice-button {{ 'disabled' if button_states['voice3'] else '' }}"
+            class="button voice-button {{ 'disabled' if voice_button_states['voice3'] else '' }}"
           >
             Voice 3
           </button>
           <button
             type="button"
             id="voice4"
-            class="button voice-button {{ 'disabled' if button_states['voice4'] else '' }}"
+            class="button voice-button {{ 'disabled' if voice_button_states['voice4'] else '' }}"
           >
             Voice 4
           </button>
         </div>
 
-        <h4>Change voice settings</h4>
-        <h5>Use the slider to change the speed of the voice</h5>
-        <div class="slider-container">
-          <input
-            type="range"
-            id="speedSlider"
-            name="speed"
-            min="50"
-            max="100"
-            value="75"
-          />
-          <span id="speedValue">75</span>
-          <button type="button" class="test-button" id="testSpeed">Test</button>
+        <h4>Set a voice volume</h4>
+        <p>
+          The robot has a number of different voice volumes. Listen to each
+          sample and select one that you think will sound good.
+        </p>
+        <div id="button-container">
+          <button
+            type="button"
+            id="quiet"
+            class="button volume-button {{ 'disabled' if volume_button_states['quiet'] else '' }}"
+          >
+            Quiet
+          </button>
+          <button
+            type="button"
+            id="default_volume"
+            class="button volume-button {{ 'disabled' if volume_button_states['default'] else '' }}"
+          >
+            Default
+          </button>
+          <button
+            type="button"
+            id="loud"
+            class="button volume-button {{ 'disabled' if volume_button_states['loud'] else '' }}"
+          >
+            Loud
+          </button>
         </div>
 
-        <h5>Use the slider to change the volume of the voice</h5>
-        <div class="slider-container">
-          <input
-            type="range"
-            id="volumeSlider"
-            name="volume"
-            min="60"
-            max="100"
-            value="80"
-          />
-          <span id="volumeValue">80</span>
-          <button type="button" class="test-button" id="testVolume">
-            Test
+        <h4>Set a voice speed</h4>
+        <p>
+          The robot has a number of different voice speeds. Listen to each
+          sample and select one that you think will sound good.
+        </p>
+        <div id="button-container">
+          <button
+            type="button"
+            id="slow"
+            class="button speed-button {{ 'disabled' if speed_button_states['slow'] else '' }}"
+          >
+            Slow
+          </button>
+          <button
+            type="button"
+            id="default_speed"
+            class="button speed-button {{ 'disabled' if speed_button_states['default'] else '' }}"
+          >
+            Default
+          </button>
+          <button
+            type="button"
+            id="fast"
+            class="button speed-button {{ 'disabled' if speed_button_states['fast'] else '' }}"
+          >
+            Fast
           </button>
         </div>
 
