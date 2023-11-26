@@ -7,6 +7,8 @@ db = SQLAlchemy()
 class Players(db.Model):
     player_id = db.Column(db.Integer, primary_key=True)
 
+    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+
     customise_first = db.Column(db.Boolean)
     testing = db.Column(db.Boolean)
 
