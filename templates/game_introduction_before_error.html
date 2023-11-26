@@ -48,13 +48,47 @@
     <i class="fa fa-plug" id="reconnect"></i>
     <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
-      <div align="center">
+      <div style="display: flex; align-items: center">
         <audio
-          src="./static/audio/game_intro_2.mp3"
+          src="./static/audio/game_intro.mp3"
+          id="Audio_Player"
           controls
           autoplay
           style="width: 630px; margin-left: 15px"
         ></audio>
+        <div style="margin-left: 10px; display: flex; align-items: center">
+          <div style="display: flex; flex-direction: column">
+            <button
+              class="button"
+              style="
+                width: 100px;
+                padding: 0;
+                margin-top: 0;
+                margin-bottom: 5px;
+                font-size: 14px;
+              "
+              onclick="changeSpeed(-0.2)"
+            >
+              Slow Down
+            </button>
+            <button
+              class="button"
+              style="width: 100px; padding: 0; margin-top: 0; font-size: 14px"
+              onclick="changeSpeed(0.2)"
+            >
+              Speed Up
+            </button>
+          </div>
+          <span
+            id="playbackRate"
+            style="
+              font-family: Arial, sans-serif;
+              max-width: 50px;
+              margin-left: 10px;
+            "
+            >x1.0</span
+          >
+        </div>
       </div>
       <p>Thank you for agreeing to take part in this study.</p>
       <p>
@@ -87,5 +121,17 @@
         <button class="button" id="next-button">Next</button>
       </div>
     </div>
+    <script>
+      var audio = document.getElementById("Audio_Player");
+      audio.volume = 0.3;
+      var playbackRateDisplay = document.getElementById("playbackRate");
+
+      function changeSpeed(val) {
+        if (audio.playbackRate + val > 0) {
+          audio.playbackRate += val;
+          playbackRateDisplay.textContent = "X" + audio.playbackRate.toFixed(1);
+        }
+      }
+    </script>
   </body>
 </html>
