@@ -54,21 +54,24 @@ def gameIntro():
         if first_run == False:
             robot_controller = current_app.config['robot_controller']
 
-            if session['exp_cond'] == False:
-                robot_controller.change_colour(session['balloon_color'])
-            else:
-                # Connect to the non customised robot
+            if session['exp_cond'] == True:
                 robot_controller.set_robot_ip("robot_2")
 
             robot_controller.start_up()
+
+            if session['exp_cond'] == False:
+                robot_controller.change_colour(session['balloon_color'])
+
         return render_template('game_introduction.html', banner_image_url=banner_image_url)
 
 
 @gameplay.route('/gameIntro_robot')
 def gameIntro_robot():
     robot_controller = current_app.config['robot_controller']
+    print("gameIntro_robot")
 
     if session['game_round'] == 1:
+        print("in game round 1")
         if session['exp_cond']:
             name = 'Nao'
         else:
@@ -81,6 +84,7 @@ def gameIntro_robot():
         robot_controller.talk(message)
         robot_controller.face_screen()
     else:
+        print("in game round 2")
         message = 'I will help you during this game, Before you collect your points I will provide you with my suggesstion. However, I am only allowed to help you once per balloon.'
         robot_controller.face_participant()
         robot_controller.talk(message)

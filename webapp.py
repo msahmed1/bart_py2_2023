@@ -37,10 +37,11 @@ class RobotController:
         self.connected = False
 
         if not self.disable:
-            self.set_robot_ip(robot="robot_2")
-            self.sleep()
             self.set_robot_ip(robot="robot_1")
-            self.sleep()
+            self.start_up()
+            self.shake_head()
+            self.set_robot_ip(robot="robot_2")
+            self.start_up()
 
             self.inflate_messages = ["I would inflate the balloon"]
             self.collect_messages = ["I would not inflate the balloon"]
@@ -198,28 +199,28 @@ class RobotController:
     def shake_head(self):
         if self.disable == False:
             names = ["HeadYaw", "HeadPitch"]
-            angles = [-0.8, 0]
+            angles = [-0.8, 0.1]
             fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
             time.sleep(0.3)
 
             names = ["HeadYaw", "HeadPitch"]
-            angles = [0.5, 0]
+            angles = [0.5, 0.1]
             fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
             time.sleep(0.3)
 
             names = ["HeadYaw", "HeadPitch"]
-            angles = [-0.8, 0]
+            angles = [-0.8, 0.1]
             fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
             time.sleep(0.3)
 
             names = ["HeadYaw", "HeadPitch"]
-            angles = [0.5, 0]
+            angles = [-0.5, 0.1]
             fractionMaxSpeed = 0.2
             self.motion_service.setAngles(names, angles, fractionMaxSpeed)
 
@@ -251,15 +252,13 @@ class RobotController:
     def inflate(self):
         if self.disable == False:
             # Yes
-            self.face_participant()
-
-            time.sleep(0.5)
+            # self.face_participant()
 
             self.talk(random.choice(self.inflate_messages))
 
             self.nod_head()
 
-            self.face_screen()
+            # self.face_screen()
         else:
             pass
 
@@ -267,15 +266,13 @@ class RobotController:
     def collect(self):
         if self.disable == False:
             # No
-            self.face_participant()
-
-            time.sleep(0.5)
+            # self.face_participant()
 
             self.talk(random.choice(self.collect_messages))
 
             self.shake_head()
 
-            self.face_screen()
+            # self.face_screen()
         else:
             pass
 
@@ -307,16 +304,19 @@ class RobotController:
         else:
             pass
 
-    @reconnect_on_fail
-    def sleep(self):
-        if self.disable == False:
-            # Return to sit position
-            self.posture_service.goToPosture("Sit", 0.5)
+    # @reconnect_on_fail
+    # def rest(self):
+    #     if self.disable == False:
+    #         # Wake up robot
+    #         self.motion_service.wakeUp()
 
-            # Turn off all lights
-            self.leds.fadeRGB("AllLeds", 0.0, 0.0, 0.0, 0.0)
-        else:
-            pass
+    #         # Return to sit position
+    #         self.posture_service.goToPosture("Sit", 0.5)
+
+    #         # Turn off all lights
+    #         self.leds.fadeRGB("AllLeds", 0.0, 0.0, 0.0, 0.0)
+    #     else:
+    #         pass
 
     @reconnect_on_fail
     def null_attempt(self):

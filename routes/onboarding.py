@@ -70,6 +70,10 @@ def index():
     session['more_than_one_reconnect'] = False
     session['balloon_color'] = 'white'
 
+    robot_controller = current_app.config['robot_controller']
+    robot_controller.set_robot_ip(robot="robot_1")
+    robot_controller.start_up()
+
     non_custom_first = Players.query.filter_by(
         customise_first=False, testing=False, game_completed=True).count()
     custom_first = Players.query.filter_by(
