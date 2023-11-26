@@ -144,13 +144,55 @@
   <body>
     <div class="container">
       <img class="banner" src="{{ banner_image_url }}" alt="Banner Image" />
+      <div style="display: flex; align-items: center">
+        <audio
+          src="./static/audio/customisation_2.mp3"
+          id="Audio_Player"
+          controls
+          autoplay
+          style="width: 630px; margin-left: 15px"
+        ></audio>
+        <div style="margin-left: 10px; display: flex; align-items: center">
+          <div style="display: flex; flex-direction: column">
+            <button
+              class="button"
+              style="
+                width: 100px;
+                padding: 0;
+                margin-top: 0;
+                margin-bottom: 5px;
+                font-size: 14px;
+              "
+              onclick="changeSpeed(-0.2)"
+            >
+              Slow Down
+            </button>
+            <button
+              class="button"
+              style="width: 100px; padding: 0; margin-top: 0; font-size: 14px"
+              onclick="changeSpeed(0.2)"
+            >
+              Speed Up
+            </button>
+          </div>
+          <span
+            id="playbackRate"
+            style="
+              font-family: Arial, sans-serif;
+              max-width: 50px;
+              margin-left: 10px;
+            "
+            >x1.0</span
+          >
+        </div>
+      </div>
       <p>
         On the last page you changed some settings for the robot. On this page
         you will be able to customise the robot's appearance. Feel free to make
         your robot as unique as you'd like.
       </p>
 
-      <h4>Choose a colour for your robot</h4>
+      <h4>Choose a LED colour</h4>
       <p>
         The robot has LED lights that can display different colors. Select a
         colour that you think looks good from the following options:
@@ -283,9 +325,10 @@
 
       <h4>Decorate your robot</h4>
       <p>
-        Make your robot stand out, on your left there are a number of stickers
-        you can attach to the surface of the robot as well as parts that you can
-        attach to the sides of the robots head.
+        Make your robot stand out, on your left there are a number of
+        <strong>stickers</strong> you can attach to the surface of the robot as
+        well as <strong>parts</strong> that you can attach to the sides of the
+        robots head.
       </p>
 
       <h4>Review and confirm</h4>
@@ -299,6 +342,17 @@
       </div>
     </div>
     <script>
+      var audio = document.getElementById("Audio_Player");
+      audio.volume = 0.3;
+      var playbackRateDisplay = document.getElementById("playbackRate");
+
+      function changeSpeed(val) {
+        if (audio.playbackRate + val > 0) {
+          audio.playbackRate += val;
+          playbackRateDisplay.textContent = "X" + audio.playbackRate.toFixed(1);
+        }
+      }
+
       $(document).ready(function () {
         $("#next-button").on("click", function (event) {
           $(this).prop("disabled", true);
